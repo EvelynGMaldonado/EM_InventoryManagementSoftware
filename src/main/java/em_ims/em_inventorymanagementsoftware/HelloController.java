@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,6 +31,197 @@ import java.util.logging.Logger;
  */
 public class HelloController implements Initializable {
 
+    @FXML
+    private Button landingPage_closeBtn;
+
+    @FXML
+    private AnchorPane landing_page;
+
+    @FXML
+    private Label messageLabel;
+
+    @FXML
+    private Button startBtn;
+
+    @FXML
+    private Button LogOut_btn;
+
+    @FXML
+    private Button addPartPageBtn;
+
+    @FXML
+    private Button addProductPageBtn;
+
+    @FXML
+    private Button homePage_addNewPartBtn;
+
+    @FXML
+    private Button homePage_addNewProductBtn;
+
+    @FXML
+    private Button homePage_closeBtn;
+
+    @FXML
+    private Button homePage_deletePartBtn;
+
+    @FXML
+    private Button homePage_deleteProductBtn;
+
+    @FXML
+    private Button homePage_modifyPartBtn;
+
+    @FXML
+    private Button homePage_modifyProductBtn;
+
+    @FXML
+    private Button homePage_searchPartBtn;
+
+    @FXML
+    private TextField homePage_searchPartInputField;
+
+    @FXML
+    private Button homePage_searchProductBtn;
+
+    @FXML
+    private TextField homePage_searchProductInputField;
+
+    @FXML
+    private StackPane home_page;
+
+    @FXML
+    private Button modifyPartPageBtn;
+
+    @FXML
+    private Button modifyProductPageBtn;
+
+    @FXML
+    private TableView<?> parts_tableView;
+
+    @FXML
+    private TableColumn<?, ?> parts_tableView_col_inventoryLevel;
+
+    @FXML
+    private TableColumn<?, ?> parts_tableView_col_partID;
+
+    @FXML
+    private TableColumn<?, ?> parts_tableView_col_partName;
+
+    @FXML
+    private TableColumn<?, ?> parts_tableView_col_priceUnit;
+
+    @FXML
+    private TableView<?> products_tableView;
+
+    @FXML
+    private TableColumn<?, ?> products_tableView_col_inventoryLevel;
+
+    @FXML
+    private TableColumn<?, ?> products_tableView_col_priceUnit;
+
+    @FXML
+    private TableColumn<?, ?> products_tableView_col_productID;
+
+    @FXML
+    private TableColumn<?, ?> products_tableView_col_productName;
+
+    @FXML
+    private Button settingsBtn;
+
+    /**
+     * Void closeBtnAction() method is used to close the landing page which will basically close the application.
+     * @param event represents the event that triggers the action.
+     */
+    @FXML
+    void closeBtnAction(ActionEvent event) {
+        Stage stage = (Stage) landingPage_closeBtn.getScene().getWindow();
+        stage.close();
+    }
+
+    /**
+     * Void LoginButtonOnAction() method is used after the user clicks the start button.
+     * @param event represents the event that triggers the action.
+     * @throws IOException that would be produced by failed or interrupted input/output operations.
+     */
+    @FXML
+    void LoginButtonOnAction(ActionEvent event) throws IOException {
+        startBtn.getScene().getWindow().hide();
+
+        //create new stage
+        Stage ppMainWindow = new Stage();
+        ppMainWindow.setTitle("Parts and Products - EM Inventory Management System");
+
+        //create view for FXML
+        FXMLLoader ppMainLoader = new FXMLLoader(getClass().getResource("home_page-parts&products.fxml"));
+
+        //set view in ppMainWindow
+        ppMainWindow.setScene(new Scene(ppMainLoader.load(), 800, 400));
+
+        //launch
+        ppMainWindow.show();
+    }
+
+    @FXML
+    void KeyReleaseSearchPart(KeyEvent event) {
+
+    }
+
+    @FXML
+    void KeyReleaseSearchProduct(KeyEvent event) {
+
+    }
+
+    @FXML
+    void clickAddPartPageBtn(ActionEvent event) {
+
+    }
+
+    /**
+     * Void clickAddProductPageBtn() method is used to open Add Product Page.
+     * e represents the event that triggers the action.
+     * @exception IOException if an input or output error occurs.
+     * @see IOException
+     */
+    @FXML
+    void clickAddProductPageBtn(ActionEvent event) throws IOException {
+        addProductPageBtn.getScene().getWindow().hide();
+        //create new stage
+        Stage addProductPageWindow = new Stage();
+        addProductPageWindow.setTitle("Add Part - EM Inventory Management System");
+
+        //create view for FXML
+        FXMLLoader addProductPageLoader = new FXMLLoader(getClass().getResource("addProduct_page.fxml"));
+
+        //set view in ppMainWindow
+        addProductPageWindow.setScene(new Scene(addProductPageLoader.load(), 800, 610));
+
+        //launch
+        addProductPageWindow.show();
+    }
+
+    @FXML
+    void clickModifyPartPageBtn(ActionEvent event) {
+
+    }
+
+    @FXML
+    void clickModifyProductPageBtn(ActionEvent event) {
+
+    }
+
+    @FXML
+    void deleteSelectedPart(ActionEvent event) {
+
+    }
+
+    @FXML
+    void deleteSelectedProduct(ActionEvent event) {
+
+    }
+
+    @FXML
+    void logOutBtnAction(ActionEvent event) {
+
+    }
 
 
     /**
@@ -40,68 +233,6 @@ public class HelloController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection connectDB = connectNow.getConnection();
-
-        //SQL Query - executed in the backend database
-        String partsViewQuery = "SELECT partID, part_name, stock, price_unit FROM parts";
-
-        String productsViewQuery = "SELECT productID, product_name, stock, price_unit FROM products";
-
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryPartsOutput = statement.executeQuery(partsViewQuery);
-//
-//            while (queryPartsOutput.next()) {
-//
-//                //populate the observableList
-//                partList.add(new PartData(queryPartsOutput.getInt("partID"),
-//                        queryPartsOutput.getString("part_name"),
-//                        queryPartsOutput.getInt("stock"),
-//                        queryPartsOutput.getBigDecimal("price_unit")));
-//            }
-//
-//
-//            //PropertyValueFactory corresponds to the new PartData fields
-//            //the table column is the one we annotate above
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("partID"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("part_name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            parts_tableView.setItems(partList);
-//            //closing statement once I am done with the query to avoid crashing!!
-//            statement.close();
-//            queryPartsOutput.close();
-//
-//        } catch(SQLException e) {
-//            Logger.getLogger(HelloController.class.getName()).log(Level.SEVERE, null, e);
-//            e.printStackTrace();
-//            e.getCause();
-//        }
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryProductsOutput = statement.executeQuery(productsViewQuery);
-//
-//            while (queryProductsOutput.next()) {
-//                productList.add(new ProductData(queryProductsOutput.getInt("productID"),
-//                        queryProductsOutput.getString("product_name"),
-//                        queryProductsOutput.getInt("stock"),
-//                        queryProductsOutput.getBigDecimal("price_unit")));
-//            }
-//
-//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            products_tableView.setItems(productList);
-//
-//        } catch (SQLException e) {
-//            Logger.getLogger(HelloController.class.getName()).log(Level.SEVERE, null, e);
-//            e.printStackTrace();
-//            e.getCause();
-//        }
 
     }
 }

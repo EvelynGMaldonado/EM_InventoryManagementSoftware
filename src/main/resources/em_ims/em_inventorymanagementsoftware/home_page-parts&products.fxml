@@ -17,7 +17,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="home_page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.inventory_program.HelloController">
+<StackPane fx:id="home_page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="em_ims.em_inventorymanagementsoftware.HelloController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -173,20 +173,11 @@
                                           <TableColumn fx:id="parts_tableView_col_priceUnit" prefWidth="75.0" text="Price/Unit" />
                                       </columns>
                                     </TableView>
-                                    <TextField fx:id="homePage_searchPartInputField" layoutX="207.0" layoutY="35.0" onKeyReleased="#KeyReleaseSearchPart" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
+                                    <TextField fx:id="homePage_searchPartInputField" layoutX="232.0" layoutY="36.0" onKeyReleased="#KeyReleaseSearchPart" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </TextField>
-                                    <Button fx:id="homePage_searchPartBtn" layoutX="278.0" layoutY="35.0" mnemonicParsing="false" onMouseClicked="#btnSearchPart" prefHeight="19.0" prefWidth="31.0" styleClass="searchbar-btn" stylesheets="@startPageDesign.css">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@assets/magnify.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
                                     <Button fx:id="homePage_addNewPartBtn" layoutX="152.0" layoutY="242.0" mnemonicParsing="false" onAction="#clickAddPartPageBtn" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Add" />
                                     <Button fx:id="homePage_modifyPartBtn" layoutX="196.0" layoutY="242.0" mnemonicParsing="false" onAction="#clickModifyPartPageBtn" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Modify" />
                                     <Button fx:id="homePage_deletePartBtn" layoutX="255.0" layoutY="242.0" mnemonicParsing="false" onAction="#deleteSelectedPart" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Delete" />
@@ -211,20 +202,11 @@
                                           <TableColumn fx:id="products_tableView_col_priceUnit" prefWidth="75.0" text="Price/Unit" />
                                        </columns>
                                     </TableView>
-                                    <TextField fx:id="homePage_searchProductInputField" layoutX="207.0" layoutY="35.0" onKeyReleased="#KeyReleaseSearchProduct" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
+                                    <TextField fx:id="homePage_searchProductInputField" layoutX="236.0" layoutY="36.0" onKeyReleased="#KeyReleaseSearchProduct" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </TextField>
-                                    <Button fx:id="homePage_searchProductBtn" layoutX="278.0" layoutY="35.0" mnemonicParsing="false" onMouseClicked="#btnSearchProduct" prefHeight="19.0" prefWidth="31.0" styleClass="searchbar-btn" stylesheets="@startPageDesign.css">
-                                       <graphic>
-                                          <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@assets/magnify.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
                                     <Button fx:id="homePage_addNewProductBtn" layoutX="152.0" layoutY="242.0" mnemonicParsing="false" onAction="#clickAddProductPageBtn" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Add" />
                                     <Button fx:id="homePage_modifyProductBtn" layoutX="196.0" layoutY="242.0" mnemonicParsing="false" onAction="#clickModifyProductPageBtn" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Modify" />
                                     <Button fx:id="homePage_deleteProductBtn" layoutX="255.0" layoutY="242.0" mnemonicParsing="false" onAction="#deleteSelectedProduct" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Delete" />
