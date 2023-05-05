@@ -170,9 +170,27 @@ public class HelloController implements Initializable {
 
     }
 
+    /**
+     * Void clickAddPartPageBtn() method is used to open Add Part Page.
+     * e represents the event that triggers the action.
+     * @exception IOException if an input or output error occurs.
+     * @see IOException
+     */
     @FXML
-    void clickAddPartPageBtn(ActionEvent event) {
+    void clickAddPartPageBtn (ActionEvent event) throws IOException {
+        addPartPageBtn.getScene().getWindow().hide();
+        //create new stage
+        Stage addPartPageWindow = new Stage();
+        addPartPageWindow.setTitle("Add Part - EM Inventory Management System");
 
+        //create view for FXML
+        FXMLLoader addPartPageLoader = new FXMLLoader(getClass().getResource("addPart_page.fxml"));
+
+        //set view in ppMainWindow
+        addPartPageWindow.setScene(new Scene(addPartPageLoader.load(), 600, 400));
+
+        //launch
+        addPartPageWindow.show();
     }
 
     /**
@@ -218,9 +236,42 @@ public class HelloController implements Initializable {
 
     }
 
+    /**
+     * Void logOutBtnAction() method is used to log-out from the EM Inventory Management System Application.
+     * The homepage is closed and the user is redirected to the landing page which has the option for sign-in or sign-up.
+     */
     @FXML
-    void logOutBtnAction(ActionEvent event) {
+    void logOutBtnAction() {
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure that you want to Log Out?");
+            Optional<ButtonType> option = alert.showAndWait();
 
+            if(option.get().equals(ButtonType.OK)) {
+
+                //or go back to the landing page by doing ...
+                LogOut_btn.getScene().getWindow().hide();
+                //create new stage
+                Stage landingPageWindow = new Stage();
+                landingPageWindow.setTitle("Add Part - EM Inventory Management System");
+
+                //create view for FXML
+                FXMLLoader landingPageLoader = new FXMLLoader(getClass().getResource("landing_page.fxml"));
+
+                //set view in ppMainWindow
+                landingPageWindow.setScene(new Scene(landingPageLoader.load(), 600, 400));
+
+                //launch
+                landingPageWindow.show();
+            } else {
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getCause();
+        }
     }
 
 
