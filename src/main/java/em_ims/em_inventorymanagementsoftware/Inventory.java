@@ -14,4 +14,16 @@ public class Inventory {
     public ObservableList<Product> getAllProducts() {
         return allProducts;
     }
+
+    public void addPart(Part addNewPart) {
+        if(addNewPart != null) {
+            allParts.add(addNewPart);
+        }
+    }
+
+    public void addProduct(Product addNewProduct) {
+        if(addNewProduct != null) {
+            this.allProducts.add(addNewProduct);
+        }
+    }
 }

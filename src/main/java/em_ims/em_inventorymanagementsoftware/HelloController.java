@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
  * Public class HelloController is used to retrieve and display the most up-to-date data on the parts and products tables after the user successfully signs in, as well as to manage some functionality such as delete, search, etc.
  */
 public class HelloController implements Initializable {
+    Inventory inventory;
 
     @FXML
     private Button landingPage_closeBtn;
@@ -95,37 +97,42 @@ public class HelloController implements Initializable {
     private Button modifyProductPageBtn;
 
     @FXML
-    private TableView<?> parts_tableView;
+    private TableView<Part> parts_tableView = new TableView<Part>();
 
     @FXML
-    private TableColumn<?, ?> parts_tableView_col_inventoryLevel;
+    private TableColumn<Part, Integer> parts_tableView_col_inventoryLevel = new TableColumn<>("stock");
 
     @FXML
-    private TableColumn<?, ?> parts_tableView_col_partID;
+    private TableColumn<Part, Integer> parts_tableView_col_partID = new TableColumn<>("id");
 
     @FXML
-    private TableColumn<?, ?> parts_tableView_col_partName;
+    private TableColumn<Part, String> parts_tableView_col_partName = new TableColumn<>("name");
 
     @FXML
-    private TableColumn<?, ?> parts_tableView_col_priceUnit;
+    private TableColumn<Part, Double> parts_tableView_col_priceUnit = new TableColumn<>("price");
 
     @FXML
-    private TableView<?> products_tableView;
+    private TableView<Product> products_tableView = new TableView<Product>();
 
     @FXML
-    private TableColumn<?, ?> products_tableView_col_inventoryLevel;
+    private TableColumn<Product, Integer> products_tableView_col_inventoryLevel = new TableColumn<>("stock");
 
     @FXML
-    private TableColumn<?, ?> products_tableView_col_priceUnit;
+    private TableColumn<Product, Double> products_tableView_col_priceUnit = new TableColumn<>("price_unit");
 
     @FXML
-    private TableColumn<?, ?> products_tableView_col_productID;
+    private TableColumn<Product, Integer> products_tableView_col_productID = new TableColumn<>("productID");
 
     @FXML
-    private TableColumn<?, ?> products_tableView_col_productName;
+    private TableColumn<Product, String> products_tableView_col_productName = new TableColumn<>("product_name");
 
     @FXML
     private Button settingsBtn;
+
+    private ObservableList<Part> partInventoryList = FXCollections.observableArrayList();
+    private ObservableList<Product> productInventoryList = FXCollections.observableArrayList();
+    private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
+    private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
 
     /**
      * Void closeBtnAction() method is used to close the landing page which will basically close the application.
@@ -274,6 +281,29 @@ public class HelloController implements Initializable {
         }
     }
 
+    public void addStartDataTables(Inventory inventory) {
+        //outsourced parts start data
+        Part part1 = new Outsourced(1, "Seat post", 15.50, 15, 1, 20, "Super Seat-posts");
+        Part part2 = new Outsourced(2, "Steam", 17.77, 17, 1, 20, "Super Steams");
+
+        //in house parts data
+        Part part3 = new InHouse(3, "Fork", 19.99, 20, 1, 20, 1111);
+        Part part4 = new InHouse(4, "Chain", 23.50, 12, 1, 20, 222);
+
+        //products data
+        Product product1 = new Product(1, "Uni-bike", 175.90, 12, 1, 20);
+        Product product2 = new Product(2, "Mom bike", 299.50, 2, 1, 20);
+
+        //add associated parts
+
+        //adding parts and products to table
+        inventory.addPart(part1);
+        inventory.addPart(part2);
+        inventory.addPart(part3);
+        inventory.addPart(part4);
+        inventory.addProduct(product1);
+        inventory.addProduct(product2);
+    }
 
     /**
      * Public void initialize() method called to initialize a controller after its root element has been completely processed.
@@ -284,6 +314,23 @@ public class HelloController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Inventory inventory = new Inventory();
+        addStartDataTables(inventory);
+        parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        partInventoryList.setAll(inventory.getAllParts());
+        parts_tableView.setItems(partInventoryList);
+
+
+        products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+        products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+        products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+
+        productInventoryList.setAll(inventory.getAllProducts());
+        products_tableView.setItems(productInventoryList);
     }
 }

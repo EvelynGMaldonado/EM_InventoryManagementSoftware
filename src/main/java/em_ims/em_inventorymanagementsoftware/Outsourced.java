@@ -7,6 +7,7 @@ public class Outsourced extends Part {
         setId(id);
         setName(name);
         setPrice(price);
+        setStock(stock);
         setMin(min);
         setMax(max);
         setCompany_name(company_name);
