@@ -190,7 +190,7 @@ public class HelloController implements Initializable {
 
             parts_tableView.setItems(partInventorySearchList);
 
-        } else {
+        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
@@ -200,6 +200,17 @@ public class HelloController implements Initializable {
 
             parts_tableView.getItems().clear();
             homePage_searchPartInputField.clear();
+
+        } else {
+            inventory = new Inventory();
+            addStartDataTables(inventory);
+            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            partInventoryList.setAll(inventory.getAllParts());
+            parts_tableView.setItems(partInventoryList);
 
         }
     }
