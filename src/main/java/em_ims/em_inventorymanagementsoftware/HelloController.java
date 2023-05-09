@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -131,7 +132,7 @@ public class HelloController implements Initializable {
 
     private ObservableList<Part> partInventoryList = FXCollections.observableArrayList();
     private ObservableList<Product> productInventoryList = FXCollections.observableArrayList();
-    private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
+    private ObservableList<Part> partInventorySearchList = FXCollections.observableArrayList();
     private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
 
     /**
@@ -170,6 +171,37 @@ public class HelloController implements Initializable {
     @FXML
     void KeyReleaseSearchPart(KeyEvent event) {
 
+        parts_tableView.getItems().clear();
+        String text = homePage_searchPartInputField.getText().trim();
+        Inventory inventory = new Inventory();
+        addStartDataTables(inventory);
+
+
+        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+
+            inventory.keySearchPart(text);
+
+            partInventorySearchList.setAll(inventory.getPartInventorySearch());
+
+            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            parts_tableView.setItems(partInventorySearchList);
+
+        } else {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
+            alert.showAndWait();
+
+            parts_tableView.getItems().clear();
+            homePage_searchPartInputField.clear();
+
+        }
     }
 
     @FXML
@@ -303,6 +335,29 @@ public class HelloController implements Initializable {
         inventory.addPart(part4);
         inventory.addProduct(product1);
         inventory.addProduct(product2);
+    }
+
+    public void refreshTables() {
+
+
+        Inventory inventory = new Inventory();
+        addStartDataTables(inventory);
+        parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        partInventoryList.setAll(inventory.getAllParts());
+        parts_tableView.setItems(partInventoryList);
+
+
+        products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+        products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+        products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+
+        productInventoryList.setAll(inventory.getAllProducts());
+        products_tableView.setItems(productInventoryList);
     }
 
     /**
