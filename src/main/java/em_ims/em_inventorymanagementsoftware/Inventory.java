@@ -4,12 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class Inventory {
     HelloController helloController;
@@ -17,6 +14,7 @@ public class Inventory {
     private ObservableList<Part> allParts = FXCollections.observableArrayList();
     private ObservableList<Product> allProducts = FXCollections.observableArrayList();
     private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
+    private ObservableList<Part> productInventorySearch = FXCollections.observableArrayList();
 
     public ObservableList<Part> getPartInventorySearch() {
         return partInventorySearch;
@@ -48,42 +46,42 @@ public class Inventory {
         Integer foundID = 0;
 
         for(int i = 0; i < allParts.size(); i++) {
-            if(allParts.get(i).getName().toLowerCase().contains(searchedPart)) {
-                foundName = allParts.get(i).getName();
-                partInventorySearch.clear();
+            if(allParts.get(i).getName().toLowerCase().contains(searchedPart) || Integer.toString(allParts.get(i).getId()).equals(searchedPart) ) {
+                foundName = allParts.get(i).getName().toLowerCase();
+                System.out.println("The value of foundName on line 53 is: " + foundName);
+
+                foundID = Integer.parseInt(Integer.toString(allParts.get(i).getId()));
+                System.out.println("The value of foundID on line 56 is: " + foundID);
+
+//                partInventorySearch.clear();
                 for(Part p : getAllParts()) {
                     if(p.getName().contains(foundName)) {
                         partInventorySearch.add(p);
+                        System.out.println("we are at line 62 under partInventorySearch.add(p)");
+                        System.out.println("the partInventorySearch value for foundName on line 63 is: " + partInventorySearch);
                     }
-                }
-
-                return partInventorySearch;
-
-            } else if(Integer.toString(allParts.get(i).getId()).equals(searchedPart)) {
-                foundID = Integer.parseInt(Integer.toString(allParts.get(i).getId()));
-                partInventorySearch.clear();
-                for(Part p : getAllParts()) {
-                    if(p.getId() == foundID) {
+                    else if(p.getId() == foundID) {
                         partInventorySearch.add(p);
+                        System.out.println("we are at line 67 under partInventorySearch.add(p)");
+                        System.out.println("the partInventorySearch value for foundName on line 68 is: " + partInventorySearch);
                     }
                 }
 
                 return partInventorySearch;
-            }
-            else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error message");
-                alert.setHeaderText(null);
-                alert.setContentText("No matches have been found. Please try again.");
-                alert.showAndWait();
 
-//                HelloController helloController = new HelloController();
-//                helloController.refreshTables();
             }
+//            else {
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setTitle("Error message");
+//                alert.setHeaderText(null);
+//                alert.setContentText("No matches have been found. Please try again.");
+//                alert.showAndWait();
+//            }
         }
 
         return null;
     }
+
 
     public void viewEMInventoryManagementSystem() throws IOException {
 //        startBtn.getScene().getWindow().hide();

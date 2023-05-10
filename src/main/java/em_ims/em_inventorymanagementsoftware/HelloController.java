@@ -133,7 +133,7 @@ public class HelloController implements Initializable {
     private ObservableList<Part> partInventoryList = FXCollections.observableArrayList();
     private ObservableList<Product> productInventoryList = FXCollections.observableArrayList();
     private ObservableList<Part> partInventorySearchList = FXCollections.observableArrayList();
-    private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
+    private ObservableList<Product> productInventorySearchList = FXCollections.observableArrayList();
 
     /**
      * Void closeBtnAction() method is used to close the landing page which will basically close the application.
@@ -176,7 +176,6 @@ public class HelloController implements Initializable {
         Inventory inventory = new Inventory();
         addStartDataTables(inventory);
 
-
         if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
 
             inventory.keySearchPart(text);
@@ -217,7 +216,49 @@ public class HelloController implements Initializable {
 
     @FXML
     void KeyReleaseSearchProduct(KeyEvent event) {
+        products_tableView.getItems().clear();
+        String text = homePage_searchProductInputField.getText().toLowerCase().trim();
+        Inventory inventory = new Inventory();
+        addStartDataTables(inventory);
 
+        if(!text.isEmpty() && !inventory.getAllProducts().isEmpty()) {
+
+            productInventorySearchList.clear();
+            for(Product p : inventory.getAllProducts()) {
+                if(p.getProduct_name().toLowerCase().contains(text) || p.getProductID().toString().equals(text)) {
+                    productInventorySearchList.add(p);
+                }
+            }
+
+            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+
+            products_tableView.setItems(productInventorySearchList);
+
+        } else if(!text.isEmpty() && inventory.getAllProducts().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("No products have been added to the inventory system. Please try again later.");
+            alert.showAndWait();
+
+            products_tableView.getItems().clear();
+            homePage_searchProductInputField.clear();
+
+        } else {
+            inventory = new Inventory();
+            addStartDataTables(inventory);
+            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+
+            productInventoryList.setAll(inventory.getAllProducts());
+            products_tableView.setItems(productInventoryList);
+
+        }
     }
 
     /**
