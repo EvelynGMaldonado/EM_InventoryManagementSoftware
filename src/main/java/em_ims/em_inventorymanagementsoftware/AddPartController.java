@@ -212,7 +212,13 @@ public class AddPartController implements Initializable {
 
     @FXML
     void displayMachineIDOrCompanyName(ActionEvent event) {
-
+        if(inHouseRadioBtn.isSelected()) {
+            displayCompanyOrMachineLabel.setText("Machine ID:");
+            inputCompanyOrMachineInputField.setPromptText("machine ID");
+        } else if(outsourcedRadioBtn.isSelected()) {
+            displayCompanyOrMachineLabel.setText("Company Name:");
+            inputCompanyOrMachineInputField.setPromptText("company name");
+        }
     }
 
     /**
