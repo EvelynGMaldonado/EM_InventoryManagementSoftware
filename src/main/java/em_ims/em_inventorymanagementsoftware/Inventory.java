@@ -11,7 +11,10 @@ import java.io.IOException;
 public class Inventory {
     HelloController helloController;
 
-    private ObservableList<Part> allParts = FXCollections.observableArrayList();
+    public static Part selectedPart;
+    public static Product selectedProduct;
+    public static ObservableList<Part> allParts = FXCollections.observableArrayList();
+//    private ObservableList<Part> allParts = FXCollections.observableArrayList();
     private ObservableList<Product> allProducts = FXCollections.observableArrayList();
     private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
     private ObservableList<Part> productInventorySearch = FXCollections.observableArrayList();
@@ -20,7 +23,11 @@ public class Inventory {
         return partInventorySearch;
     }
 
-    public ObservableList<Part> getAllParts() {
+//    public ObservableList<Part> getAllParts() {
+//        return allParts;
+//    }
+
+    public static ObservableList<Part> getAllParts() {
         return allParts;
     }
 
@@ -82,7 +89,6 @@ public class Inventory {
         return null;
     }
 
-
     public void viewEMInventoryManagementSystem() throws IOException {
 //        startBtn.getScene().getWindow().hide();
 //        Stage stage1 = (Stage) startBtn.getScene().getWindow();
@@ -102,10 +108,15 @@ public class Inventory {
 
     }
 
-    public void addPart(Part addNewPart) {
-        if(addNewPart != null) {
-            allParts.add(addNewPart);
-        }
+//    public void addPart(Part addNewPart) {
+//        if(addNewPart != null) {
+//            allParts.add(addNewPart);
+//        }
+//    }
+
+    public void addPart(int partID, String partName, Double priceUnit, int inventoryLevel, int min, int max, int machineID) {
+        Part newPart = new InHouse(partID, partName, priceUnit, inventoryLevel, min, max, machineID);
+        allParts.add(newPart);
     }
 
     public void addProduct(Product addNewProduct) {
@@ -114,7 +125,7 @@ public class Inventory {
         }
     }
 
-    public Part searchPart(int partID) {
+    public Part validatePart(int partID) {
         if(!allParts.isEmpty()) {
             for (int i = 0; i < allParts.size(); i++) {
                 if(allParts.get(i).getId() == partID) {
@@ -130,18 +141,18 @@ public class Inventory {
 //        alert.showAndWait();
     }
 
-    public ObservableList<Part> searchPart(String partName) {
-        if(!allParts.isEmpty()) {
-            ObservableList searchPartList = FXCollections.observableArrayList();
-            for(Part part : getAllParts()) {
-                if(part.getName().contains(partName)) {
-                    searchPartList.add(part);
-                }
-            }
-            return searchPartList;
-        }
-        return  null;
-    }
+//    public ObservableList<Part> validatePart(String partName) {
+//        if(!allParts.isEmpty()) {
+//            ObservableList searchPartList = FXCollections.observableArrayList();
+//            for(Part part : getAllParts()) {
+//                if(part.getName().contains(partName)) {
+//                    searchPartList.add(part);
+//                }
+//            }
+//            return searchPartList;
+//        }
+//        return  null;
+//    }
 
 
 

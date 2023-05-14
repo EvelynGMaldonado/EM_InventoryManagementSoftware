@@ -1,5 +1,7 @@
 package em_ims.em_inventorymanagementsoftware;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -57,6 +60,11 @@ public class AddPartController implements Initializable {
 
     @FXML
     private Button addPart_cancelBtn;
+
+    @FXML
+    private TextField addPart_partIDTextField;
+
+    private ObservableList partsIdList = FXCollections.observableArrayList();
 
     /**
      * Void addPart_cancelBtnAction() method is used to go back to the landing page while still working on adding a new part to the database.
@@ -205,9 +213,341 @@ public class AddPartController implements Initializable {
     }
 
 
+    /**
+     * Void clickSavePartBtn() method is used to validate that none of the fields are empty, and that the correct data types have been used.
+     * @param event represents the event that triggers the action.
+     * If all validations pass, then the validatePartName() method will be called; otherwise an error alert will be displayed.
+     */
     @FXML
-    void clickSavePartBtn(ActionEvent event) {
+    void clickSavePartBtn(ActionEvent event) throws IOException {
 
+        //retrieve variables for max, min, and inventory validation.
+        String min = addPart_setMin.getText().trim();
+        String max = addPart_setMax.getText().trim();
+        String stock = addPart_setInventoryLevel.getText().trim();
+        int min_check;
+        int max_check;
+        int stock_check;
+
+        //Part Category Selection Validation - No null Accepted ~ it has to select inHouse or Outsourced
+        if(inHouseRadioBtn.isSelected() || outsourcedRadioBtn.isSelected()) {
+            //Not null accepted Input validation checks that none of the fields are blank or empty...
+            if(!addPart_setPartName.getText().trim().isEmpty() || !addPart_setInventoryLevel.getText().trim().isEmpty() || !addPart_setPriceUnit.getText().trim().isEmpty() || !addPart_setMax.getText().trim().isEmpty() || !addPart_setMin.getText().trim().isEmpty() || !inputCompanyOrMachineInputField.getText().trim().isEmpty()) {
+                if(min.matches("\\d+") && max.matches("\\d+") && stock.matches("\\d+")){
+                    min_check = Integer.parseInt(min);
+                    max_check = Integer.parseInt(max);
+                    stock_check = Integer.parseInt(stock);
+                    //min validation --> min has to be >= 0
+                    if(min_check >= 0) {
+                        //max validation --> max has to be > min
+                        if(max_check > min_check) {
+                            //inventory validation --> inventory level has to be >= than min, and <= than max
+                            if(stock_check >= min_check && stock_check <= max_check){
+                                //check if the part name is available or if it already exists using the validatePartName method
+                                validatePartName();
+//                                addPartRedirectsToEMIMSHomePage();
+                            } else{
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error message");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Your Inventory value should be more or equal than your Min value, and less or equal than your Max value.");
+                                alert.showAndWait();
+                            }
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error message");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Your Max value should be more than your Min value.");
+                            alert.showAndWait();
+                        }
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error message");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Your Min value should be more or equal than 0.");
+                        alert.showAndWait();
+                    }
+                } else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Your must enter positive whole numbers only, for: Inventory Level, Min, and Max");
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill all blank fields.");
+                alert.showAndWait();
+            }
+        } else {
+            //alert error when part category hasn't been selected
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the Part Category: In-House or Outsourced.");
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Public void validatePartName() method is used to validate that the new part name does not exist in the EM database.
+     * When the validation passes, the method registerNewPart() is called, unless an Exception is caught.
+     * When the validation does not pass, an error alert will show up, and the user will be requested to use a different name for the new part.
+     */
+    public void validatePartName() {
+        System.out.println("we are into validatePartName() method on line 300!!");
+
+        Inventory inventory = new Inventory();
+        HelloController helloController = new HelloController();
+
+        String verifyPartName = addPart_setPartName.getText().trim().toLowerCase();
+        String partName = "";
+        System.out.println("the name of the part on line 305 is: " + verifyPartName);
+
+        if(!verifyPartName.isEmpty() && inventory.getAllParts().isEmpty()) {
+            partName = verifyPartName;
+            System.out.println("the partName on line 306 is: " + partName);
+            generatePartId(partName);
+        }
+        else if(!verifyPartName.isEmpty() && !inventory.getAllParts().isEmpty()){
+            System.out.println("we are into validatePartName() method with no empty inventory on line 314!!");
+            partName = verifyPartName;
+            for(int i = 0; i < Inventory.allParts.size(); i++) {
+                if(Inventory.allParts.get(i).getName() == partName) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Part Name already exists. Please try again.");
+                    alert.showAndWait();
+                }
+            }
+            generatePartId(partName);
+//            for(Part partsName : inventory.getAllParts()) {
+//                if(partsName.getName().toLowerCase().contains(verifyPartName)) {
+//                    Alert alert = new Alert(Alert.AlertType.ERROR);
+//                    alert.setTitle("Error message");
+//                    alert.setHeaderText(null);
+//                    alert.setContentText("Part Name already exists. Please try again.");
+//                    alert.showAndWait();
+//                } else if(!partsName.getName().toLowerCase().contains(verifyPartName)) {
+//                    partName = verifyPartName;
+//                    System.out.println("the partName on line 320 is: " + partName);
+//                    generatePartId(partName);
+//                }
+//            }
+        }
+//        else if(!verifyPartName.isEmpty() && inventory.getAllParts().isEmpty()) {
+//            partName = verifyPartName;
+//            System.out.println("the partName on line 322 is: " + partName);
+//            generatePartId(partName);
+//        }
+
+//        if(inventory.getAllParts().isEmpty() && !verifyPartName.isEmpty()) {
+//            registerNewPart();
+//        } else if(!inventory.getAllParts().isEmpty()) {
+//            for(Part existentParts : inventory.getAllParts()) {
+//                if(existentParts.getName().trim().toLowerCase().contains(verifyPartName)) {
+//                    Alert alert = new Alert(Alert.AlertType.ERROR);
+//                    alert.setTitle("Error message");
+//                    alert.setHeaderText(null);
+//                    alert.setContentText("Part Name already exists. Please try again.");
+//                    alert.showAndWait();
+//                } else if(!existentParts.getName().trim().toLowerCase().contains(verifyPartName)) {
+//                    registerNewPart();
+//                }
+//            }
+//        }
+    };
+
+    public void generatePartId(String partName) {
+        System.out.println("we are into generatePartId() method on line 365!! and the partName value we are working with is: " + partName);
+
+        Inventory inventory = new Inventory();
+        Integer setPartID = 1;
+        Integer partID = 0;
+
+        if(inventory.getAllParts().isEmpty()) {
+            partID = setPartID;
+            System.out.println("the PartID value on line 373 when inventory is empty is: " + partID);
+            registerNewPart(partName, partID);
+        } else {
+            for(int i = 0; i < Inventory.allParts.size(); i++) {
+                partID = 11;
+                if(Inventory.allParts.get(i).getId() == setPartID) {
+//                setPartID = setPartID++;
+                    partID = setPartID++;
+                    setPartID = partID;
+//                partID = setPartID;
+                    System.out.println("the PartID value on line 379 is: " + partID);
+                    System.out.println("the setPartID value on line 380 is: " + setPartID);
+                }
+
+                partID = setPartID;
+                System.out.println("line 387 -- the partID value on line 386 is: " + partID);
+//                registerNewPart(partName, partID);
+
+            }
+            registerNewPart(partName, partID);
+
+            System.out.println("line 394 -- the partID value on line 386 is: " + partID);
+            System.out.println("line 395 -- the partID and partName value on line 392 is: " + partID  + " " + partName);
+        }
+
+
+    }
+
+    private void registerNewPart(String partName, Integer partID) {
+        System.out.println("we are into private void registerNewPart method on line 402!! and the partID and partName values we are working with is: " + partID  + " " + partName);
+
+        String inventoryLevel = addPart_setInventoryLevel.getText().trim().toLowerCase();
+        String priceUnit = addPart_setPriceUnit.getText().trim();
+        String max= addPart_setMax.getText().trim();
+        String min = addPart_setMin.getText().trim();
+        String machineID = inputCompanyOrMachineInputField.getText().trim();
+        String companyName = inputCompanyOrMachineInputField.getText().trim();
+
+        if(inHouseRadioBtn.isSelected()) {
+            Inventory.allParts.add(new InHouse(
+                    partID,
+                    partName,
+                    Double.parseDouble(priceUnit),
+                    Integer.parseInt(inventoryLevel),
+                    Integer.parseInt(min),
+                    Integer.parseInt(max),
+                    Integer.parseInt(machineID)
+            ));
+            System.out.println("a new in house part has been saved");
+            try {
+                addPartRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(outsourcedRadioBtn.isSelected()) {
+            Inventory.allParts.add(new Outsourced(
+                    partID,
+                    partName,
+                    Double.parseDouble(priceUnit),
+                    Integer.parseInt(inventoryLevel),
+                    Integer.parseInt(min),
+                    Integer.parseInt(max),
+                    companyName
+            ));
+            System.out.println("a new outsourced part has been saved");
+//            addPartRedirectsToEMIMSHomePage();
+        }
+    }
+
+
+    public void registerNewPart(){
+        System.out.println("we are into registerNewPart() method!!");
+        Inventory inventory = new Inventory();
+        String partID = addPart_partIDTextField.getText().trim();
+
+        boolean verifyIdMatch;
+        Integer setPartID;
+        Integer idCounter = 0;
+        Integer latestID = 0;
+
+        //create and add the new inHouse or outsourced part
+        if(inHouseRadioBtn.isSelected()) {
+            //create ID
+            if(partID == null || partID.isEmpty() || partID.equals(0)){
+                if(inventory.getAllParts().isEmpty()){
+                    setPartID = idCounter + 1;
+                    partID = setPartID.toString();
+                    System.out.println("the id value assigned to the new inHouse part on line 336 is: " + partID);
+
+                    addInHousePart(partID);
+                } else if(!inventory.getAllParts().isEmpty()) {
+                    for(Part partsIDs : inventory.getAllParts()) {
+
+                            partsIdList.add(partsIDs);
+
+                            latestID = (Integer) Collections.max(partsIdList);
+                            System.out.println("the latestID value on line 345 is: " + latestID);
+                            idCounter = latestID;
+                            setPartID = idCounter + 1;
+                            partID = setPartID.toString();
+
+                            System.out.println("the id value assigned to the new inHouse part on line 350 is: " + partID);
+
+                            addInHousePart(partID);
+                    }
+
+                }
+            }
+        } else if(outsourcedRadioBtn.isSelected()) {
+            //create ID
+            if(partID == null || partID.isEmpty() || partID.equals(0)){
+                if(inventory.getAllParts().isEmpty()){
+                    setPartID = idCounter + 1;
+                    partID = setPartID.toString();
+                    System.out.println("the id value assigned to the new outsourced part on line 368 is: " + partID);
+                    addOutsourcedPart(partID);
+
+                } else if(!inventory.getAllParts().isEmpty()) {
+                    for(Part partsIDs : inventory.getAllParts()) {
+                            partsIdList.add(partsIDs);
+
+                            latestID = (Integer) Collections.max(partsIdList);
+                            idCounter = latestID;
+                            setPartID = idCounter + 1;
+                            partID = setPartID.toString();
+
+                            System.out.println("the id value assigned to the new outsourced part on line 378 is: " + partID);
+
+                            addOutsourcedPart(partID);
+                    }
+
+                }
+            }
+        }
+    }
+
+    public void addInHousePart(String partID) {
+        Inventory inventory = new Inventory();
+
+        String partName = addPart_setPartName.getText().trim().toLowerCase();
+        String inventoryLevel = addPart_setInventoryLevel.getText().trim().toLowerCase();
+        String priceUnit = addPart_setPriceUnit.getText().trim();
+        String max= addPart_setMax.getText().trim();
+        String min = addPart_setMin.getText().trim();
+        String machineID = inputCompanyOrMachineInputField.getText().trim();
+
+//        inventory.addPart(new InHouse(
+//                Integer.parseInt(partID),
+//                partName,
+//                Double.parseDouble(priceUnit),
+//                Integer.parseInt(inventoryLevel),
+//                Integer.parseInt(min),
+//                Integer.parseInt(max),
+//                Integer.parseInt(machineID)
+//        ));
+
+    }
+
+    public void addOutsourcedPart(String partID) {
+        Inventory inventory = new Inventory();
+
+        String partName = addPart_setPartName.getText().trim().toLowerCase();
+        String inventoryLevel = addPart_setInventoryLevel.getText().trim().toLowerCase();
+        String priceUnit = addPart_setPriceUnit.getText().trim();
+        String max= addPart_setMax.getText().trim();
+        String min = addPart_setMin.getText().trim();
+        String companyName = inputCompanyOrMachineInputField.getText().trim();
+
+//        inventory.addPart(new Outsourced(
+//                Integer.parseInt(partID),
+//                partName,
+//                Double.parseDouble(priceUnit),
+//                Integer.parseInt(inventoryLevel),
+//                Integer.parseInt(min),
+//                Integer.parseInt(max),
+//                companyName
+//        ));
     }
 
     @FXML
@@ -228,6 +568,6 @@ public class AddPartController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        inHouseRadioBtn.setSelected(true);
     }
 }
