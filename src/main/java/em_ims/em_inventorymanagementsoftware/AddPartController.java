@@ -372,30 +372,22 @@ public class AddPartController implements Initializable {
             partID = setPartID;
             System.out.println("the PartID value on line 373 when inventory is empty is: " + partID);
             registerNewPart(partName, partID);
-        } else {
+        } else if(!inventory.getAllParts().isEmpty()){
+            partID = 1;
             for(int i = 0; i < Inventory.allParts.size(); i++) {
-                partID = 11;
-                if(Inventory.allParts.get(i).getId() == setPartID) {
-//                setPartID = setPartID++;
-                    partID = setPartID++;
+                if(Inventory.allParts.get(i).getId() == partID) {
+                    //partID = setPartID++;
+                    partID = setPartID + 1;
+                    System.out.println("the PartID value on line 380 is: " + partID);
                     setPartID = partID;
-//                partID = setPartID;
-                    System.out.println("the PartID value on line 379 is: " + partID);
-                    System.out.println("the setPartID value on line 380 is: " + setPartID);
+                    System.out.println("the setPartID value on line 382 is: " + setPartID);
                 }
-
-                partID = setPartID;
-                System.out.println("line 387 -- the partID value on line 386 is: " + partID);
-//                registerNewPart(partName, partID);
 
             }
             registerNewPart(partName, partID);
-
-            System.out.println("line 394 -- the partID value on line 386 is: " + partID);
-            System.out.println("line 395 -- the partID and partName value on line 392 is: " + partID  + " " + partName);
+            System.out.println("line 387 -- the partID value on line 386 is: " + partID);
+            System.out.println("line 387 -- the partID and partName value on line 392 is: " + partID  + " " + partName);
         }
-
-
     }
 
     private void registerNewPart(String partName, Integer partID) {
