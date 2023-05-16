@@ -313,52 +313,23 @@ public class AddPartController implements Initializable {
         }
         else if(!verifyPartName.isEmpty() && !inventory.getAllParts().isEmpty()){
             System.out.println("we are into validatePartName() method with no empty inventory on line 314!!");
-            partName = verifyPartName;
+//            partName = verifyPartName;
             for(int i = 0; i < Inventory.allParts.size(); i++) {
-                if(Inventory.allParts.get(i).getName() == partName) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error message");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Part Name already exists. Please try again.");
-                    alert.showAndWait();
+                if(Inventory.allParts.get(i).getName().trim().toLowerCase() != verifyPartName) {
+                    partName = verifyPartName;
+                    generatePartId(partName);
+                    break;
+                } else if(Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error message");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Part Name already exists. Please try again.");
+                        alert.showAndWait();
+                        break;
                 }
             }
-            generatePartId(partName);
-//            for(Part partsName : inventory.getAllParts()) {
-//                if(partsName.getName().toLowerCase().contains(verifyPartName)) {
-//                    Alert alert = new Alert(Alert.AlertType.ERROR);
-//                    alert.setTitle("Error message");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Part Name already exists. Please try again.");
-//                    alert.showAndWait();
-//                } else if(!partsName.getName().toLowerCase().contains(verifyPartName)) {
-//                    partName = verifyPartName;
-//                    System.out.println("the partName on line 320 is: " + partName);
-//                    generatePartId(partName);
-//                }
-//            }
-        }
-//        else if(!verifyPartName.isEmpty() && inventory.getAllParts().isEmpty()) {
-//            partName = verifyPartName;
-//            System.out.println("the partName on line 322 is: " + partName);
-//            generatePartId(partName);
-//        }
 
-//        if(inventory.getAllParts().isEmpty() && !verifyPartName.isEmpty()) {
-//            registerNewPart();
-//        } else if(!inventory.getAllParts().isEmpty()) {
-//            for(Part existentParts : inventory.getAllParts()) {
-//                if(existentParts.getName().trim().toLowerCase().contains(verifyPartName)) {
-//                    Alert alert = new Alert(Alert.AlertType.ERROR);
-//                    alert.setTitle("Error message");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Part Name already exists. Please try again.");
-//                    alert.showAndWait();
-//                } else if(!existentParts.getName().trim().toLowerCase().contains(verifyPartName)) {
-//                    registerNewPart();
-//                }
-//            }
-//        }
+        }
     };
 
     public void generatePartId(String partName) {
@@ -428,7 +399,11 @@ public class AddPartController implements Initializable {
                     companyName
             ));
             System.out.println("a new outsourced part has been saved");
-//            addPartRedirectsToEMIMSHomePage();
+            try {
+                addPartRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
