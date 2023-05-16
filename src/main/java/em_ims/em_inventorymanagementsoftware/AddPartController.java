@@ -315,17 +315,19 @@ public class AddPartController implements Initializable {
             System.out.println("we are into validatePartName() method with no empty inventory on line 314!!");
 //            partName = verifyPartName;
             for(int i = 0; i < Inventory.allParts.size(); i++) {
-                if(Inventory.allParts.get(i).getName().trim().toLowerCase() != verifyPartName) {
+                if(!Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                    System.out.println("line 319 -- we are into validatePartName() method with no empty inventory and it does not match with any part name");
                     partName = verifyPartName;
                     generatePartId(partName);
                     break;
                 } else if(Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                    System.out.println("line 324--- we are into validatePartName() method with no empty inventory and part name already exists");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error message");
                         alert.setHeaderText(null);
                         alert.setContentText("Part Name already exists. Please try again.");
                         alert.showAndWait();
-                        break;
+                        return;
                 }
             }
 
