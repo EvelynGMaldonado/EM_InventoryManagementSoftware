@@ -176,93 +176,93 @@ public class HelloController implements Initializable {
     void KeyReleaseSearchPart(KeyEvent event) {
 //
 //        parts_tableView.getItems().clear();
-//        String text = homePage_searchPartInputField.getText().trim();
-//        Inventory inventory = new Inventory();
+        String text = homePage_searchPartInputField.getText().trim();
+        Inventory inventory = new Inventory();
 //        addStartDataTables(inventory);
 //
-//        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
-//
-//            inventory.keySearchPart(text);
-//
-//            partInventorySearchList.setAll(inventory.getPartInventorySearch());
-//
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//            parts_tableView.setItems(partInventorySearchList);
-//
-//        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
-//
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
-//            alert.showAndWait();
-//
-//            parts_tableView.getItems().clear();
-//            homePage_searchPartInputField.clear();
-//
-//        } else {
-//            inventory = new Inventory();
+        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+
+            inventory.keySearchPart(text);
+
+            partInventorySearchList.setAll(inventory.getPartInventorySearch());
+
+            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            parts_tableView.setItems(partInventorySearchList);
+
+        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
+            alert.showAndWait();
+
+            parts_tableView.getItems().clear();
+            homePage_searchPartInputField.clear();
+
+        } else {
+            inventory = new Inventory();
 //            addStartDataTables(inventory);
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//            partInventoryList.setAll(inventory.getAllParts());
-//            parts_tableView.setItems(partInventoryList);
-//
-//        }
+            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            partInventoryList.setAll(inventory.getAllParts());
+            parts_tableView.setItems(partInventoryList);
+
+        }
     }
 
     @FXML
     void KeyReleaseSearchProduct(KeyEvent event) {
 //        products_tableView.getItems().clear();
-//        String text = homePage_searchProductInputField.getText().toLowerCase().trim();
-//        Inventory inventory = new Inventory();
+        String text = homePage_searchProductInputField.getText().toLowerCase().trim();
+        Inventory inventory = new Inventory();
 //        addStartDataTables(inventory);
 //
-//        if(!text.isEmpty() && !inventory.getAllProducts().isEmpty()) {
-//
-//            productInventorySearchList.clear();
-//            for(Product p : inventory.getAllProducts()) {
-//                if(p.getProduct_name().toLowerCase().contains(text) || p.getProductID().toString().equals(text)) {
-//                    productInventorySearchList.add(p);
-//                }
-//            }
-//
-//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            products_tableView.setItems(productInventorySearchList);
-//
-//        } else if(!text.isEmpty() && inventory.getAllProducts().isEmpty()) {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("No products have been added to the inventory system. Please try again later.");
-//            alert.showAndWait();
-//
-//            products_tableView.getItems().clear();
-//            homePage_searchProductInputField.clear();
-//
-//        } else {
-//            inventory = new Inventory();
+        if(!text.isEmpty() && !inventory.getAllProducts().isEmpty()) {
+
+            productInventorySearchList.clear();
+            for(Product p : inventory.getAllProducts()) {
+                if(p.getProduct_name().toLowerCase().contains(text) || p.getProductID().toString().equals(text)) {
+                    productInventorySearchList.add(p);
+                }
+            }
+
+            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+
+            products_tableView.setItems(productInventorySearchList);
+
+        } else if(!text.isEmpty() && inventory.getAllProducts().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("No products have been added to the inventory system. Please try again later.");
+            alert.showAndWait();
+
+            products_tableView.getItems().clear();
+            homePage_searchProductInputField.clear();
+
+        } else {
+            inventory = new Inventory();
 //            addStartDataTables(inventory);
-//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            productInventoryList.setAll(inventory.getAllProducts());
-//            products_tableView.setItems(productInventoryList);
-//
-//        }
+            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+
+            productInventoryList.setAll(inventory.getAllProducts());
+            products_tableView.setItems(productInventoryList);
+
+        }
     }
 
     /**
