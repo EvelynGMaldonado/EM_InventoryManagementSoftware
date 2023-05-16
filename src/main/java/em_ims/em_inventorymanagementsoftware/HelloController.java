@@ -33,6 +33,7 @@ import java.util.logging.Logger;
  */
 public class HelloController implements Initializable {
     Inventory inventory;
+    int index = -1;
 
     @FXML
     private Button landingPage_closeBtn;
@@ -323,6 +324,71 @@ public class HelloController implements Initializable {
 
     @FXML
     void deleteSelectedPart(ActionEvent event) {
+        index = products_tableView.getSelectionModel().getSelectedIndex();
+        System.out.println("the index is: " + index);
+        Inventory inventory = new Inventory();
+        Part selectedItem = parts_tableView.getSelectionModel().getSelectedItem();
+
+        if(selectedItem != null) {
+            try{
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Are you sure that you want to delete this Part from the EM Inventory Management System?");
+                Optional<ButtonType> option = alert.showAndWait();
+
+                if(option.get().equals(ButtonType.OK)) {
+                    Inventory.getAllParts().remove(selectedItem);
+
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Deletion information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Part has been successfully removed from the EM Inventory Management System");
+                    alert.showAndWait();
+
+                    homePage_modifyPartBtn.getScene().getWindow().hide();
+                    viewEMInventoryManagementSystem();
+                } else {
+                    return;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                e.getCause();
+            }
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row that you want to delete.");
+            alert.showAndWait();
+        }
+
+    }
+
+    /**
+     * Public void viewEMInventoryManagementSystem() method is called when the login validation passes.
+     * The home page is displayed.
+     * @exception IOException if an input or output error occurred.
+     * @see IOException
+     */
+    public void viewEMInventoryManagementSystem() throws IOException {
+//        startBtn.getScene().getWindow().hide();
+//        Stage stage1 = (Stage) startBtn.getScene().getWindow();
+//        stage1.close();
+        //create new stage
+        Stage ppMainWindow = new Stage();
+        ppMainWindow.setTitle("Parts and Products - EM Inventory Management System");
+
+        //create view for FXML
+        FXMLLoader ppMainLoader = new FXMLLoader(getClass().getResource("home_page-parts&products.fxml"));
+
+        //set view in ppMainWindow
+        ppMainWindow.setScene(new Scene(ppMainLoader.load(), 800, 400));
+
+        //launch
+        ppMainWindow.show();
 
     }
 
