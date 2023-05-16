@@ -312,9 +312,96 @@ public class HelloController implements Initializable {
         addProductPageWindow.show();
     }
 
+
     @FXML
     void clickModifyPartPageBtn(ActionEvent event) {
+        Part selectedItem = parts_tableView.getSelectionModel().getSelectedItem();
+//        int index = parts_tableView.getSelectionModel().getSelectedIndex();
 
+        String getSinglePartID = "";
+        String getSinglePartName = "";
+        String getSinglePartStock = "";
+        String getSinglePartPriceUnit = "";
+        String getSinglePartMin = "";
+        String getSinglePartMax = "";
+        String getSinglePartMachineID = "";
+        String getSinglePartCompanyName = "";
+        if(selectedItem != null) {
+
+            if(selectedItem instanceof InHouse) {
+                InHouse newPart = (InHouse) selectedItem;
+                getSinglePartMachineID = Integer.toString(newPart.machineID);
+                System.out.println("the getSinglePartMachineID value is: " + getSinglePartMachineID);
+                getSinglePartID = String.valueOf(selectedItem.getId());
+                getSinglePartName = selectedItem.getName();
+                getSinglePartStock = String.valueOf(selectedItem.getStock());
+                getSinglePartPriceUnit = String.valueOf(selectedItem.getPrice());
+                getSinglePartMin = String.valueOf(selectedItem.getMin());
+                getSinglePartMax = String.valueOf(selectedItem.getMax());
+
+                try{
+                    modifyPartPageBtn.getScene().getWindow().hide();
+                    //create new stage
+                    Stage modifyPartPageWindow = new Stage();
+                    modifyPartPageWindow.setTitle("Modify Part - EM Inventory Management System");
+
+                    //create view for FXML
+                    FXMLLoader modifyPartPageLoader = new FXMLLoader(getClass().getResource("modifyPart_page.fxml"));
+                    ModifyPartController modifyPartController = new ModifyPartController(selectedItem, getSinglePartID, getSinglePartName, getSinglePartStock, getSinglePartPriceUnit, getSinglePartMin, getSinglePartMax, getSinglePartMachineID, getSinglePartCompanyName);
+                    modifyPartPageLoader.setController(modifyPartController);
+//                modifyPartController.checkingIfInOrOutSourced(getSinglePartMachineID, getSinglePartCompanyName);
+
+                    //set view in ppMainWindow
+                    modifyPartPageWindow.setScene(new Scene(modifyPartPageLoader.load(), 600, 400));
+
+                    //launch
+                    modifyPartPageWindow.show();
+
+                } catch(IOException e) {
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            } else if(selectedItem instanceof Outsourced) {
+                Outsourced newPart = (Outsourced) selectedItem;
+                getSinglePartCompanyName = newPart.company_name;
+                System.out.println("the getSinglePartCompanyName value is: " + getSinglePartCompanyName);
+                getSinglePartID = String.valueOf(selectedItem.getId());
+                getSinglePartName = selectedItem.getName();
+                getSinglePartStock = String.valueOf(selectedItem.getStock());
+                getSinglePartPriceUnit = String.valueOf(selectedItem.getPrice());
+                getSinglePartMin = String.valueOf(selectedItem.getMin());
+                getSinglePartMax = String.valueOf(selectedItem.getMax());
+
+                try{
+                    modifyPartPageBtn.getScene().getWindow().hide();
+                    //create new stage
+                    Stage modifyPartPageWindow = new Stage();
+                    modifyPartPageWindow.setTitle("Modify Part - EM Inventory Management System");
+
+                    //create view for FXML
+                    FXMLLoader modifyPartPageLoader = new FXMLLoader(getClass().getResource("modifyPart_page.fxml"));
+                    ModifyPartController modifyPartController = new ModifyPartController(selectedItem, getSinglePartID, getSinglePartName, getSinglePartStock, getSinglePartPriceUnit, getSinglePartMin, getSinglePartMax, getSinglePartMachineID, getSinglePartCompanyName);
+                    modifyPartPageLoader.setController(modifyPartController);
+//                modifyPartController.checkingIfInOrOutSourced(getSinglePartMachineID, getSinglePartCompanyName);
+
+                    //set view in ppMainWindow
+                    modifyPartPageWindow.setScene(new Scene(modifyPartPageLoader.load(), 600, 400));
+
+                    //launch
+                    modifyPartPageWindow.show();
+
+                } catch(IOException e) {
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row that you want to modify.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
