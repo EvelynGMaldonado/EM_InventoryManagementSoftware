@@ -371,7 +371,7 @@ public class AddPartController implements Initializable {
         String max= addPart_setMax.getText().trim();
         String min = addPart_setMin.getText().trim();
         String machineID = inputCompanyOrMachineInputField.getText().trim();
-        String companyName = inputCompanyOrMachineInputField.getText().trim();
+        String companyName = inputCompanyOrMachineInputField.getText().trim().toLowerCase();
 
         if(inHouseRadioBtn.isSelected()) {
             Inventory.allParts.add(new InHouse(

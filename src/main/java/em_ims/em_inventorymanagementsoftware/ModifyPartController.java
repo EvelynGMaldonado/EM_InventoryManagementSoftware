@@ -11,9 +11,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -217,130 +214,137 @@ public class ModifyPartController implements Initializable {
      * When the validation does not pass(part name does not match with its ID), the method verifyIfPartNameAlreadyExists() is called, unless an Exception is caught.
      */
     public void validateUpdatedPartNameAndPartID() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        String verifyUpdatedPartNameMatchesPartID = "SELECT count(1) FROM parts WHERE part_name = '" + modifyPart_setPartName.getText() + "' AND partID = '" + modifyPart_partIDTextField.getText() +"'";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryUniqueUpdatedPartNameAndPartIDResult = statement.executeQuery(verifyUpdatedPartNameMatchesPartID);
-//
-//            while(queryUniqueUpdatedPartNameAndPartIDResult.next()) {
-//                //if updated part name matches with the ID... call the UpdatePart(); method
-//                if(queryUniqueUpdatedPartNameAndPartIDResult.getInt(1) == 1) {
-//                    //                    messageLabel.setText("Part Name already exists. Please try again.");
-//                    UpdatePart();
-//                } else {
-//                    //if updated part name does not match with the ID... call the verifyIfPartNameAlreadyExists(); method
-//                    verifyIfPartNameAlreadyExists();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+        System.out.println("we are into validateUpdatedPartNameAndPartID() method with no empty inventory on line 220!!");
+        Inventory inventory = new Inventory();
+
+        String verifyPartName = modifyPart_setPartName.getText().trim().toLowerCase();
+        String partName = "";
+        System.out.println("the name of the part on line 225 is: " + verifyPartName);
+
+        String verifyPartID = modifyPart_partIDTextField.getText().trim();
+        Integer partID = Integer.valueOf(verifyPartID);
+        System.out.println("the id of the part on line 228 is: " + verifyPartID);
+
+        for(int i = 0; i < Inventory.allParts.size(); i++) {
+            //if updated part name matches with the ID... call the UpdatePart(); method
+            if(Inventory.allParts.get(i).getId() == partID && Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                String lastPartName = Inventory.allParts.get(i).getName();
+                partName = lastPartName;
+                System.out.println("line 233 -- we are into validateUpdatedPartNameAndPartID() getting the old part name of the currend part id which is: " + lastPartName);
+                System.out.println("line 232 -- the partName is: " + partName);
+                UpdatePart(partName, partID);
+                break;
+
+            //if updated part name does not match with the ID... call the verifyIfPartNameAlreadyExists(); method
+            } else if(Inventory.allParts.get(i).getId() == partID && !Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                System.out.println("line 241 -- our updated part name does not match with the name previously related to our partID");
+                partName = verifyPartName;
+                System.out.println("line 242 -- the partName is: " + partName);
+                verifyIfPartNameAlreadyExists(partName, partID);
+                break;
+            }
+        }
     };
 
     /**
      * Public void verifyIfPartNameAlreadyExists() method is used to validate if the part name does not exist in the EM database.
      * When the validation passes(part name does not exist in the EM database), the method UpdatePart() is called, unless an Exception is caught.
      * When the validation does not pass (part name already exists in the EM database), an error alert will show up, and the user will be requested to use a different name for the updated part.
+     * @param partName
      */
-    public void verifyIfPartNameAlreadyExists() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        String verifyPartNameAvailability = "SELECT count(1) FROM parts WHERE part_name = '" + modifyPart_setPartName.getText() + "'";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryUniqueUpdatedPartNameResult = statement.executeQuery(verifyPartNameAvailability);
-//
-//            while(queryUniqueUpdatedPartNameResult.next()) {
-//                //if updated part name already exists in our DB, but it does not match with the current ID ... show an error alert
-//                if(queryUniqueUpdatedPartNameResult.getInt(1) == 1) {
-//                    //                    messageLabel.setText("Part Name already exists. Please try again.");
-//
-//                    Alert alert = new Alert(Alert.AlertType.ERROR);
-//                    alert.setTitle("Error message");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Part Name already exists and has a different ID. Please use a different part name or look for the part name in the dashboard, select the row, and click on the Modify button.");
-//                    alert.showAndWait();
-//                } else {
-//                    //if updated part name does not exist in our DB, and it does not match with the current ID... then call the call the UpdatePart(); method.
-//                    UpdatePart();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+    public void verifyIfPartNameAlreadyExists(String partName, Integer partID) {
+        System.out.println("we are into verifyIfPartNameAlreadyExists() method on line 277 and are working with partName value: " + partName);
+
+        Inventory inventory = new Inventory();
+
+        String verifyPartName = modifyPart_setPartName.getText().trim().toLowerCase();
+        System.out.println("the name of the part on line 283 is: " + verifyPartName);
+
+        try {
+            for(int i = 0; i < Inventory.allParts.size(); i++) {
+                //if updated part name does not exist in our DB, and it does not match with the current ID... then call the call the UpdatePart();
+                if(!Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                    System.out.println("line 287 -- we are into verifyIfPartNameAlreadyExists(String partName) method and verifyPartName value is: " + verifyPartName);
+                    partName = verifyPartName;
+                    UpdatePart(partName, partID);
+                    break;
+
+                //if updated part name already exists in our DB, but it does not match with the current ID ... show an error alert
+                } else if(Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                    System.out.println("line 295--- we are into verifyIfPartNameAlreadyExists(String partName) method and part name already exists");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Part Name already exists. Please try again.");
+                    alert.showAndWait();
+                    return;
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            e.getCause();
+        }
     };
 
     /**
      * Public void UpdatePart() method called after the part name validation is passed, and no exceptions were caught.
      * Once the data is successfully updated into the EM database, the modifyPartRedirectsToEMIMSHomePage() method will be called, if no exceptions are caught.
      * An information alert is displayed to notify that the part has been successfully updated into the database.
+     * @param partName
      */
-    public void UpdatePart() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        String modifyPage_partID = modifyPart_partIDTextField.getText();
-//        String updatedPartName = modifyPart_setPartName.getText();
-//        String updatedPartInventoryLevel = modifyPart_setInventoryLevel.getText();
-//        String updatedPartPriceUnit = modifyPart_setPriceUnit.getText();
-//        String updatedPartMax= modifyPart_setMax.getText();
-//        String updatedPartMin = modifyPart_setMin.getText();
-//
-//
-//        if(modifyPartInHouseRadioBtn.isSelected()) {
-//            String updatedMachineId = modifyPart_inputCompanyOrMachineInputField.getText();
-//            String updateCompanyNameToNull = "UPDATE parts SET company_name = NULL WHERE partID = '" + getSinglePartID + "' ";
-//            String updateInHousePartInDB = "UPDATE parts SET part_name = '" + updatedPartName + "', stock = '" + updatedPartInventoryLevel + "', price_unit = '" + updatedPartPriceUnit + "', min = '" + updatedPartMin + "', max = '" + updatedPartMax + "', machineID = '" + updatedMachineId + "' WHERE partID = '" + modifyPage_partID + "' ";
-//
-//            try {
-//                Statement statement = connectDB.createStatement();
-//                statement.executeUpdate(updateInHousePartInDB);
-//                statement.executeUpdate(updateCompanyNameToNull);
-//
-//                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                alert.setTitle("Successful In-House Part Update");
-//                alert.setHeaderText(null);
-//                alert.setContentText("In House Part has been successfully updated in EM Inventory Management System");
-//                alert.showAndWait();
-//
-//                //After successfully saving a new part we redirect to the home_page and are able to see the updated data table
-//                modifyPartRedirectsToEMIMSHomePage();
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                e.getCause();
-//            }
-//
-//        } else if(modifyPartOutsourcedRadioBtn.isSelected()){
-//            String updatedCompanyName = modifyPart_inputCompanyOrMachineInputField.getText();
-//            String updateMachineIDToNull = "UPDATE parts SET machineID = NULL WHERE partID = '" + getSinglePartID + "' ";
-//            String updateOutsourcedPartInDB = "UPDATE parts SET part_name = '" + updatedPartName + "', stock = '" + updatedPartInventoryLevel + "', price_unit = '" + updatedPartPriceUnit + "', min = '" + updatedPartMin + "', max = '" + updatedPartMax + "',  company_name = '" + updatedCompanyName + "' WHERE partID = '" + modifyPage_partID + "' ";
-//
-//            try {
-//                Statement statement = connectDB.createStatement();
-//                statement.executeUpdate(updateMachineIDToNull);
-//                statement.executeUpdate(updateOutsourcedPartInDB);
-//
-//                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                alert.setTitle("Successful Outsourced Part Update");
-//                alert.setHeaderText(null);
-//                alert.setContentText("Outsourced Part has been successfully updated in EM Inventory Management System");
-//                alert.showAndWait();
-//
-//                //After successfully saving the updated part we redirect to the home_page and are able to see the updated data table
-//                modifyPartRedirectsToEMIMSHomePage();
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                e.getCause();
-//            }
-//        }
+    private void UpdatePart(String partName, Integer partID) {
+        System.out.println("we are into private void UpdatePart(String partName) method on line 317!! and the partName value is: " + partName);
+
+        String modifyPage_partID = modifyPart_partIDTextField.getText();
+//        String updatedPartName = modifyPart_setPartName.getText().trim().toLowerCase();
+        String updatedPartInventoryLevel = modifyPart_setInventoryLevel.getText();
+        String updatedPartPriceUnit = modifyPart_setPriceUnit.getText();
+        String updatedPartMax= modifyPart_setMax.getText();
+        String updatedPartMin = modifyPart_setMin.getText();
+        String updateMachineID = modifyPart_inputCompanyOrMachineInputField.getText().trim();
+        String updateCompanyName = modifyPart_inputCompanyOrMachineInputField.getText().trim().toLowerCase();
+
+        if(modifyPartInHouseRadioBtn.isSelected()) {
+             for(int i = 0; i < Inventory.allParts.size(); i++) {
+                 if(Inventory.allParts.get(i).getId() == Integer.parseInt(modifyPage_partID)){
+                     Inventory.allParts.remove(i);
+                     break;
+                 }
+             }
+
+            Inventory.allParts.add(new InHouse(
+                    partID,
+                    partName,
+                    Double.parseDouble(updatedPartPriceUnit),
+                    Integer.parseInt(updatedPartInventoryLevel),
+                    Integer.parseInt(updatedPartMin),
+                    Integer.parseInt(updatedPartMax),
+                    Integer.parseInt(updateMachineID)
+            ));
+            System.out.println("a new in house part has been saved");
+            try {
+                modifyPartRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(modifyPartOutsourcedRadioBtn.isSelected()) {
+            Inventory.allParts.add(new Outsourced(
+                    Integer.parseInt(modifyPage_partID),
+                    partName,
+                    Double.parseDouble(updatedPartPriceUnit),
+                    Integer.parseInt(updatedPartInventoryLevel),
+                    Integer.parseInt(updatedPartMin),
+                    Integer.parseInt(updatedPartMax),
+                    updateCompanyName
+            ));
+            System.out.println("a new outsourced part has been saved");
+            try {
+                modifyPartRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     };
 
     /**
