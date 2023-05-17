@@ -1,4 +1,7 @@
 package em_ims.em_inventorymanagementsoftware;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 
 /**
@@ -15,7 +18,18 @@ public class Product {
     private int stock = 0;
     private int min;
     private int max;
-    private ArrayList<Part> associatedParts = new ArrayList<Part>();
+
+//    private ArrayList<Part> associatedParts = new ArrayList<Part>();
+
+//    public ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+//
+//    public ObservableList<Part> getAllAssociatedParts() {
+//        return allAssociatedParts;
+//    }
+
+    public Product() {
+
+    }
 
     /**
      * Public ProductData Constructor is called when the ProductData object is instantiated.
@@ -131,11 +145,11 @@ public class Product {
         this.max = max;
     }
 
-    public ArrayList<Part> getAssociatedParts() {
-        return associatedParts;
-    }
-
-    public void setAssociatedParts(ArrayList<Part> associatedParts) {
-        this.associatedParts = associatedParts;
-    }
+//    public ArrayList<Part> getAssociatedParts() {
+//        return associatedParts;
+//    }
+//
+//    public void setAssociatedParts(ArrayList<Part> associatedParts) {
+//        this.associatedParts = associatedParts;
+//    }
 }

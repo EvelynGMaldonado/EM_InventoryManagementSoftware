@@ -15,9 +15,10 @@ public class Inventory {
     public static Product selectedProduct;
     public static ObservableList<Part> allParts = FXCollections.observableArrayList();
 //    private ObservableList<Part> allParts = FXCollections.observableArrayList();
-    private ObservableList<Product> allProducts = FXCollections.observableArrayList();
+//    private ObservableList<Product> allProducts = FXCollections.observableArrayList();
+    public static ObservableList<Product> allProducts = FXCollections.observableArrayList();
     private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
-    private ObservableList<Part> productInventorySearch = FXCollections.observableArrayList();
+    private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
 
     public ObservableList<Part> getPartInventorySearch() {
         return partInventorySearch;
@@ -31,7 +32,7 @@ public class Inventory {
         return allParts;
     }
 
-    public ObservableList<Product> getAllProducts() {
+    public static ObservableList<Product> getAllProducts() {
         return allProducts;
     }
 
@@ -119,10 +120,15 @@ public class Inventory {
         allParts.add(newPart);
     }
 
-    public void addProduct(Product addNewProduct) {
-        if(addNewProduct != null) {
-            this.allProducts.add(addNewProduct);
-        }
+    public void addProduct(int productID, String product_name, double price_unit, int stock, int min, int max) {
+        Product newProduct = new Product(productID, product_name, price_unit, stock, min, max);
+        allProducts.add(newProduct);
+    }
+
+    public static ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+
+    public static ObservableList<Part> getAllAssociatedParts() {
+        return allAssociatedParts;
     }
 
     public Part validatePart(int partID) {
