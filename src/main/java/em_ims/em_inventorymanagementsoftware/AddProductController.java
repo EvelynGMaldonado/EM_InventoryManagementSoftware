@@ -280,8 +280,6 @@ public class AddProductController implements Initializable {
     }
 
 
-
-
     /**
      * Void clickSaveNewProductAndAssociatedParts() method is used to validate that none of the fields are empty, and that the correct data types have been used.
      * event represents the event that triggers the action (on click addProduct_saveBtn).
