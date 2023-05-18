@@ -173,14 +173,7 @@ public class Inventory {
 
         if(!allAssociatedParts.isEmpty()) {
             for (int i = 0; i < allAssociatedParts.size(); i++) {
-                if(allAssociatedParts.get(i).getId() == associatedPartID) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error message");
-                    alert.setHeaderText(null);
-                    alert.setContentText("The selected item is already part of this product. Please try again later.");
-                    alert.showAndWait();
-                    break;
-                } else if(allAssociatedParts.get(i).getId() != associatedPartID) {
+                if(allAssociatedParts.get(i).getId() != associatedPartID) {
                     System.out.println("the selected part is not part of our product yet.");
                     associatedPartDetails(getSingleAssociatedPartID);
                     System.out.println("Calling the associatedPartDetails() method.");

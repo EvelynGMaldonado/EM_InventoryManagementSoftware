@@ -109,51 +109,89 @@ public class AddProductController implements Initializable {
         index = parts_tableView.getSelectionModel().getSelectedIndex();
 
         String getSingleAssociatedPartID = "";
-        String getSingleAssociatedPartName = "";
-        String getSingleAssociatedPartStock = "";
-        String getSingleAssociatedPartPriceUnit = "";
 
         //check if a row has been selected
         if(index > -1) {
-            Part selectedPartToAssociate = parts_tableView.getSelectionModel().getSelectedItem();
-
-            getSingleAssociatedPartID = String.valueOf(selectedPartToAssociate.getId());
-            System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
-            getSingleAssociatedPartName = selectedPartToAssociate.getName();
-            System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
-            getSingleAssociatedPartStock = String.valueOf(selectedPartToAssociate.getStock());
-            System.out.println("the getSingleAssociatedPartStock value on line 121 is: " + getSingleAssociatedPartStock);
-            getSingleAssociatedPartPriceUnit = String.valueOf(selectedPartToAssociate.getPrice());
-            System.out.println("the getSingleAssociatedPartPriceUnit value on line 123 is: " + getSingleAssociatedPartPriceUnit);
-
 
             if(associatedPartsIDsByProduct.getItems().isEmpty() || associatedPartsIDsByProduct.getItems() == null) {
-                associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
+                try{
+                    Part selectedPartToAssociate = parts_tableView.getSelectionModel().getSelectedItem();
 
-                inventory.associatedPartDetails(getSingleAssociatedPartID);
+                    getSingleAssociatedPartID = String.valueOf(selectedPartToAssociate.getId());
+                    System.out.println("the getSingleAssociatedPartID value on line 121 is: " + getSingleAssociatedPartID);
 
-                associatedPartsList.setAll(inventory.getAllAssociatedParts());
+                    if(Integer.valueOf(getSingleAssociatedPartID) > 0){
 
-                associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-                associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-                associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+                        try {
+                            inventory.associatedPartDetails(getSingleAssociatedPartID);
 
-                associatedParts_tableview.setItems(associatedPartsList);
+                            associatedPartsList.setAll(inventory.getAllAssociatedParts());
 
+                            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+                            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+                            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+                            associatedParts_tableview.setItems(associatedPartsList);
+
+                            associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
+                            index = -1;
+                            getSingleAssociatedPartID = "";
+
+                        } catch(Exception e){
+                            e.printStackTrace();
+                            e.getCause();
+                        }
+
+                    }
+
+                } catch(Exception e){
+                    e.printStackTrace();
+                    e.getCause();
+                }
 
             } else if(!associatedPartsIDsByProduct.getItems().isEmpty()) {
-                inventory.validateAssociatedPart(getSingleAssociatedPartID);
-                associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
+                try{
+                    Part selectedPartToAssociate = parts_tableView.getSelectionModel().getSelectedItem();
 
-                associatedPartsList.setAll(inventory.getAllAssociatedParts());
+                    getSingleAssociatedPartID = String.valueOf(selectedPartToAssociate.getId());
+                    System.out.println("the getSingleAssociatedPartID value on line 146 is: " + getSingleAssociatedPartID);
 
-                associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-                associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-                associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+//                    if(Integer.valueOf(getSingleAssociatedPartID) > 0){
+                    if(!associatedPartsIDsByProduct.getItems().contains(getSingleAssociatedPartID)){
 
-                associatedParts_tableview.setItems(associatedPartsList);
+                        try {
+                            inventory.validateAssociatedPart(getSingleAssociatedPartID);
+
+                            associatedPartsList.setAll(inventory.getAllAssociatedParts());
+
+                            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+                            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+                            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+                            associatedParts_tableview.setItems(associatedPartsList);
+
+                            associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
+                            index = -1;
+                            getSingleAssociatedPartID = "";
+
+                        } catch(Exception e){
+                            e.printStackTrace();
+                            e.getCause();
+                        }
+
+                    } else if (associatedPartsIDsByProduct.getItems().contains(getSingleAssociatedPartID)) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error message");
+                        alert.setHeaderText(null);
+                        alert.setContentText("The selected item is already part of this product. Please try again later.");
+                        alert.showAndWait();
+                    }
+                } catch(Exception e){
+                    e.printStackTrace();
+                    e.getCause();
+                }
             }
 
         } else {
