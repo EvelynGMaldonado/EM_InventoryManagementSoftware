@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,12 +18,18 @@ public class Inventory {
 //    private ObservableList<Part> allParts = FXCollections.observableArrayList();
 //    private ObservableList<Product> allProducts = FXCollections.observableArrayList();
     public static ObservableList<Product> allProducts = FXCollections.observableArrayList();
-    private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
-    private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
 
+    private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
     public ObservableList<Part> getPartInventorySearch() {
         return partInventorySearch;
     }
+
+    private ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+    public ObservableList<Part> getAllAssociatedParts() {
+        return allAssociatedParts;
+    }
+
+    private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
 
 //    public ObservableList<Part> getAllParts() {
 //        return allParts;
@@ -42,6 +49,34 @@ public class Inventory {
 
     public int productListSize() {
         return allProducts.size();
+    }
+
+    public ObservableList<Part> associatedPartDetails(String getSingleAssociatedPartID) {
+        System.out.println("line 54 --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
+
+        Integer associatedPartID = Integer.valueOf(getSingleAssociatedPartID);
+        String foundName = "";
+        Integer foundID = 0;
+
+        for (int i = 0; i < allParts.size(); i++) {
+            if(allParts.get(i).getId() == associatedPartID) {
+                foundID = allParts.get(i).getId();
+                System.out.println("the foundID value is: " + foundID);
+                foundName = allParts.get(i).getName();
+                System.out.println("the foundName value is: " + foundName);
+
+                for(Part p : getAllParts()) {
+                    if(p.getId() == foundID) {
+                        allAssociatedParts.add(p);
+                        System.out.println("we are at line 70 under allAssociatedParts.add(p)");
+                        System.out.println("the allAssociatedParts value for foundID on line 69 is: " + allAssociatedParts);
+                    }
+                }
+                return partInventorySearch;
+            }
+        }
+        return null;
+
     }
 
     public ObservableList<Part> keySearchPart(String partSearchByKey){
@@ -71,7 +106,7 @@ public class Inventory {
                     else if(p.getId() == foundID) {
                         partInventorySearch.add(p);
                         System.out.println("we are at line 67 under partInventorySearch.add(p)");
-                        System.out.println("the partInventorySearch value for foundName on line 68 is: " + partInventorySearch);
+                        System.out.println("the partInventorySearch value for foundID on line 68 is: " + partInventorySearch);
                     }
                 }
 
@@ -125,26 +160,33 @@ public class Inventory {
         allProducts.add(newProduct);
     }
 
-    public static ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+//    public void addAssociateParts(int partID, String partName, Double priceUnit, int inventoryLevel) {
+//
+//    };
 
-    public static ObservableList<Part> getAllAssociatedParts() {
-        return allAssociatedParts;
-    }
 
-    public Part validatePart(int partID) {
-        if(!allParts.isEmpty()) {
-            for (int i = 0; i < allParts.size(); i++) {
-                if(allParts.get(i).getId() == partID) {
-                    return allParts.get(i);
+
+    public void validateAssociatedPart(String getSingleAssociatedPartID) {
+        System.out.println("line 170 we are into the validateAssociatedPart(String getSingleAssociatedPartID) method --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
+
+        Integer associatedPartID = Integer.valueOf(getSingleAssociatedPartID);
+
+        if(!allAssociatedParts.isEmpty()) {
+            for (int i = 0; i < allAssociatedParts.size(); i++) {
+                if(allAssociatedParts.get(i).getId() == associatedPartID) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The selected item is already part of this product. Please try again later.");
+                    alert.showAndWait();
+                    break;
+                } else if(allAssociatedParts.get(i).getId() != associatedPartID) {
+                    System.out.println("the selected part is not part of our product yet.");
+                    associatedPartDetails(getSingleAssociatedPartID);
+                    System.out.println("Calling the associatedPartDetails() method.");
                 }
             }
         }
-        return null;
-//        Alert alert = new Alert(Alert.AlertType.ERROR);
-//        alert.setTitle("Error message");
-//        alert.setHeaderText(null);
-//        alert.setContentText("No matches have been found. Please try again.");
-//        alert.showAndWait();
     }
 
 //    public ObservableList<Part> validatePart(String partName) {
