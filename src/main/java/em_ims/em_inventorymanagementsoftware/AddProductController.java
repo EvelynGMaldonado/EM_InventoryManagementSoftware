@@ -115,15 +115,15 @@ public class AddProductController implements Initializable {
 
         //check if a row has been selected
         if(index > -1) {
-            Part selectedProduct = parts_tableView.getSelectionModel().getSelectedItem();
+            Part selectedPartToAssociate = parts_tableView.getSelectionModel().getSelectedItem();
 
-            getSingleAssociatedPartID = String.valueOf(selectedProduct.getId());
+            getSingleAssociatedPartID = String.valueOf(selectedPartToAssociate.getId());
             System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
-            getSingleAssociatedPartName = selectedProduct.getName();
+            getSingleAssociatedPartName = selectedPartToAssociate.getName();
             System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
-            getSingleAssociatedPartStock = String.valueOf(selectedProduct.getStock());
+            getSingleAssociatedPartStock = String.valueOf(selectedPartToAssociate.getStock());
             System.out.println("the getSingleAssociatedPartStock value on line 121 is: " + getSingleAssociatedPartStock);
-            getSingleAssociatedPartPriceUnit = String.valueOf(selectedProduct.getPrice());
+            getSingleAssociatedPartPriceUnit = String.valueOf(selectedPartToAssociate.getPrice());
             System.out.println("the getSingleAssociatedPartPriceUnit value on line 123 is: " + getSingleAssociatedPartPriceUnit);
 
 
