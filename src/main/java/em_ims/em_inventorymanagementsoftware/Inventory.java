@@ -24,8 +24,8 @@ public class Inventory {
         return partInventorySearch;
     }
 
-    private ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
-    public ObservableList<Part> getAllAssociatedParts() {
+    private static ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+    public static ObservableList<Part> getAllAssociatedParts() {
         return allAssociatedParts;
     }
 

@@ -166,6 +166,85 @@ public class AddProductController implements Initializable {
     }
 
     /**
+     * Void deleteSelectedAssociatedPart() method is used to delete the associated part from the selected row on the products_associated_parts table.
+     * @param event represents the event that triggers the action.
+     * A confirmation alert is displayed, if the user clicks ok then the part will be unassociated from the product, and the products_associated_parts table will be updated, unless an Exception is caught. If the user clicks cancel, then the action is aborted.
+     * An error alert is displayed when no row has been selected.
+     */
+    @FXML
+    void deleteSelectedAssociatedPart(ActionEvent event) {
+        Inventory inventory = new Inventory();
+        index = associatedParts_tableview.getSelectionModel().getSelectedIndex();
+
+        String getSingleAssociatedPartID = "";
+        String getSingleAssociatedPartName = "";
+        String getSingleAssociatedPartStock = "";
+        String getSingleAssociatedPartPriceUnit = "";
+
+        //check if a row has been selected
+        if(index > -1) {
+            Part removeAssociatedPart = parts_tableView.getSelectionModel().getSelectedItem();
+
+            getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
+            System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
+            getSingleAssociatedPartName = removeAssociatedPart.getName();
+            System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
+            getSingleAssociatedPartStock = String.valueOf(removeAssociatedPart.getStock());
+            System.out.println("the getSingleAssociatedPartStock value on line 121 is: " + getSingleAssociatedPartStock);
+            getSingleAssociatedPartPriceUnit = String.valueOf(removeAssociatedPart.getPrice());
+            System.out.println("the getSingleAssociatedPartPriceUnit value on line 123 is: " + getSingleAssociatedPartPriceUnit);
+
+            if(!associatedPartsIDsByProduct.getItems().isEmpty() && removeAssociatedPart != null) {
+                try{
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Are you sure that you want to remove this associated part from the current product?");
+                    Optional<ButtonType> option = alert.showAndWait();
+
+                    if(option.get().equals(ButtonType.OK)) {
+                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
+
+                        alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Deletion information");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Associated part has been successfully removed from the current product");
+                        alert.showAndWait();
+
+                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+
+                        associatedPartsList.setAll(inventory.getAllAssociatedParts());
+
+                        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+                        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+                        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+                        associatedParts_tableview.setItems(associatedPartsList);
+
+                    } else {
+                        return;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            }
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row part that you want to remove from your associated parts table.");
+            alert.showAndWait();
+        }
+    }
+
+
+
+
+    /**
      * Void clickSaveNewProductAndAssociatedParts() method is used to validate that none of the fields are empty, and that the correct data types have been used.
      * event represents the event that triggers the action (on click addProduct_saveBtn).
      * If all validations pass, then the validateProductName() method will be called; otherwise an error alert will be displayed.
@@ -369,62 +448,7 @@ public class AddProductController implements Initializable {
 //        }
     }
 
-    /**
-     * Void deleteSelectedAssociatedPart() method is used to delete the associated part from the selected row on the products_associated_parts table.
-     * @param event represents the event that triggers the action.
-     * A confirmation alert is displayed, if the user clicks ok then the part will be unassociated from the product, and the products_associated_parts table will be updated, unless an Exception is caught. If the user clicks cancel, then the action is aborted.
-     * An error alert is displayed when no row has been selected.
-     */
-    @FXML
-    void deleteSelectedAssociatedPart(ActionEvent event) {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        index = associatedParts_tableview.getSelectionModel().getSelectedIndex();
-////        parts_tableView.getItems().remove(selectedItem);
-//
-//        if(index > -1) {
-//            PreparedStatement pst;
-//            RowPartData selectedItem = associatedParts_tableview.getSelectionModel().getSelectedItem();
-//
-//            String deleteSelectedAssociatedPart = "DELETE FROM associated_parts WHERE partID = ?";
-//
-//            try {
-//
-//                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                alert.setTitle("Confirmation Message");
-//                alert.setHeaderText(null);
-//                alert.setContentText("Are you sure that you want to delete this Associated Part from your Product?");
-//                Optional<ButtonType> option = alert.showAndWait();
-//
-//                if(option.get().equals(ButtonType.OK)) {
-//                    pst = connectDB.prepareStatement(deleteSelectedAssociatedPart);
-//                    pst.setString(1, selectedItem.getPartID().toString());
-//                    pst.execute();
-//
-//                    alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setTitle("Deletion information");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Associated Part has been successfully removed from Current Product");
-//                    alert.showAndWait();
-//
-//                    displayAssociatedPartDataTableView();
-//                } else {
-//                    return;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                e.getCause();
-//            }
-//
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Please select the associated part data row that you want to delete.");
-//            alert.showAndWait();
-//        }
 
-    }
 
     /**
      * Void addProduct_cancelBtnAction() method is used to go back to the landing page while still working on adding a new product to the database.
