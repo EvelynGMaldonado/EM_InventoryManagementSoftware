@@ -86,6 +86,7 @@ public class AddProductController implements Initializable {
     private ObservableList<Part>associatedPartsList = FXCollections.observableArrayList();
 
     private  String [] associatedPartId = {};
+
     private ListView<String> associatedPartsIDsByProduct = new ListView<String>();
 
     Product temporaryProduct = new Product();
@@ -111,10 +112,6 @@ public class AddProductController implements Initializable {
         String getSingleAssociatedPartName = "";
         String getSingleAssociatedPartStock = "";
         String getSingleAssociatedPartPriceUnit = "";
-//        String getSingleAssociatedPartMin = "";
-//        String getSingleAssociatedPartMax = "";
-//        String getSingleAssociatedPartMachineID = "";
-//        String getSingleAssociatedPartCompanyName = "";
 
         //check if a row has been selected
         if(index > -1) {
