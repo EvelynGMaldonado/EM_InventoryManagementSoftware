@@ -100,7 +100,7 @@ public class AddProductController implements Initializable {
      * All the data from the selected row is retrieved.
      * displayAssociatedPartDataTableView() method is called when the data is successfully retrieved from the parts table and inserted into the associated parts table.
      * error alert is shown when there is no selected row or when the part has been already associated to the product.
-     * information alert is shown when the part data has been successfully associated to the current product.
+     * The bottom associated parts table updates and shows the current associated parts data after adding a new associated part, unless an exception is caught.
      */
     @FXML
     void clickAddAssociatedPartBtn(ActionEvent event){
@@ -166,43 +166,6 @@ public class AddProductController implements Initializable {
             alert.setContentText("Please select the data row part that you want to associate with your product.");
             alert.showAndWait();
         }
-    }
-
-    /**
-     * Public void displayAssociatedPartDataTableView() method is called when the selected part has been successfully associated do our product.
-     * The bottom associated parts table updates and shows the current associated parts data after adding a new associated part, unless an exception is caught.
-     * @param selectedItem
-     */
-    public void displayAssociatedPartDataTableView(Part selectedItem) {
-
-//
-//        String associatedPartsViewQuery = "SELECT partID, part_name, stock, price_unit FROM associated_parts";
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryAssociatedPartsView = statement.executeQuery(associatedPartsViewQuery);
-//
-//            while (queryAssociatedPartsView.next()) {
-//
-//                //populate the observableList
-//                associatedPartList.add(new RowPartData(queryAssociatedPartsView.getInt("partID"),
-//                        queryAssociatedPartsView.getString("part_name"),
-//                        queryAssociatedPartsView.getInt("stock"),
-//                        queryAssociatedPartsView.getBigDecimal("price_unit")));
-//            }
-//
-//            //PropertyValueFactory corresponds to the new PartData fields
-//            //the table column is the one we annotate above
-//            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("partID"));
-//            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("part_name"));
-//            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            associatedParts_tableview.setItems(associatedPartList);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
     }
 
     /**
