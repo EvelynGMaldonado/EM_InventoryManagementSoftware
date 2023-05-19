@@ -90,6 +90,7 @@ public class AddProductController implements Initializable {
     private ListView<String> associatedPartsIDsByProduct = new ListView<String>();
 
     Product temporaryProduct = new Product();
+    Product newProduct = new Product();
 
     public AddProductController() {
     }
@@ -138,6 +139,8 @@ public class AddProductController implements Initializable {
                             index = -1;
                             getSingleAssociatedPartID = "";
 
+                            newProduct.setpAssociatedParts(selectedPartToAssociate);
+
                         } catch(Exception e){
                             e.printStackTrace();
                             e.getCause();
@@ -175,6 +178,8 @@ public class AddProductController implements Initializable {
                             associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
                             index = -1;
                             getSingleAssociatedPartID = "";
+
+                            newProduct.setpAssociatedParts(selectedPartToAssociate);
 
                         } catch(Exception e){
                             e.printStackTrace();
@@ -221,7 +226,7 @@ public class AddProductController implements Initializable {
 
         //check if a row has been selected
         if(index > -1) {
-            Part removeAssociatedPart = parts_tableView.getSelectionModel().getSelectedItem();
+            Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
 
             getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
             System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
@@ -260,6 +265,7 @@ public class AddProductController implements Initializable {
 
                         associatedParts_tableview.setItems(associatedPartsList);
 
+                        newProduct.getPassociatedParts().remove(removeAssociatedPart);
                     } else {
                         return;
                     }
@@ -349,29 +355,68 @@ public class AddProductController implements Initializable {
      * When the validation does not pass, an error alert will show up, and the user will be requested to use a different name for the new product.
      */
     public void validateProductName() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        String verifyProductName = "SELECT count(1) FROM products WHERE product_name = '" + addProduct_setProductName.getText() + "'";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryUniqueProductNameResult = statement.executeQuery(verifyProductName);
-//
-//            while(queryUniqueProductNameResult.next()) {
-//                if(queryUniqueProductNameResult.getInt(1) == 1) {
-//                    Alert alert = new Alert(Alert.AlertType.ERROR);
-//                    alert.setTitle("Error message");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Product Name already exists. Please try again.");
-//                    alert.showAndWait();
-//                } else {
-//                    registerNewProduct();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+        System.out.println("we are into validateProductName() method on line 352!!");
+        Inventory inventory = new Inventory();
+
+        String verifyProductName = addProduct_setProductName.getText().trim().toLowerCase();
+        String productName = "";
+        System.out.println("the name of the product on line 356 is: " + verifyProductName);
+
+        if(!verifyProductName.isEmpty() && inventory.getAllProducts().isEmpty()) {
+            productName = verifyProductName;
+            System.out.println("the productName on line 306 is: " + productName);
+            generateProductId(productName);
+        }
+        else if(!verifyProductName.isEmpty() && !inventory.getAllProducts().isEmpty()){
+            System.out.println("we are into validateProductName() method with no empty inventory on line 365!!");
+
+            for(int i = 0; i < Inventory.allParts.size(); i++) {
+                if(!Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(verifyProductName)) {
+                    System.out.println("line 369 -- we are into validateProductName() method with no empty inventory and it does not match with any product name");
+                    productName = verifyProductName;
+                    generateProductId(productName);
+                    break;
+                } else if(Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(verifyProductName)) {
+                    System.out.println("line 324--- we are into validateProductName() method with no empty inventory and product name already exists");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Product Name already exists. Please try again.");
+                    alert.showAndWait();
+                    return;
+                }
+            }
+
+        }
+
+    }
+
+    private void generateProductId(String productName) {
+        System.out.println("we are into generateProductId() method on line 389!! and the productName value we are working with is: " + productName);
+
+        Inventory inventory = new Inventory();
+        Integer setProductID = 1;
+        Integer productID = 0;
+
+        if(inventory.getAllProducts().isEmpty()) {
+            productID = setProductID;
+            System.out.println("the productID value on line 397 when inventory is empty is: " + productID);
+            registerNewProduct(productName, productID);
+        } else if(!inventory.getAllProducts().isEmpty()){
+            productID = 1;
+            for(int i = 0; i < Inventory.allProducts.size(); i++) {
+                if(Inventory.allProducts.get(i).getProductID() == productID) {
+                    productID = setProductID + 1;
+                    System.out.println("the productID value on line 404 is: " + productID);
+                    setProductID = productID;
+                    System.out.println("the setProductID value on line 406 is: " + setProductID);
+                }
+
+            }
+            registerNewProduct(productName, productID);
+            System.out.println("line 411 -- the productID value on line 410 is: " + productID);
+            System.out.println("line 412 -- the productID and productName value on line 412 is: " + productID  + " " + productName);
+        }
     }
 
     /**
@@ -379,111 +424,64 @@ public class AddProductController implements Initializable {
      * Once the data is inserted, the registerCurrentProductAssociatedParts() method will be called, if no exceptions are caught.
      * An information alert is displayed to notify that the new product has been successfully registered to the database.
      */
-    public void registerNewProduct() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        String productName = addProduct_setProductName.getText();
-//        String inventoryLevel = addProduct_setInventoryLevel.getText();
-//        String priceUnit = addProduct_setPrice.getText();
-//        String max= addProduct_setMax.getText();
-//        String min = addProduct_setMin.getText();
-//
-//        String insertNewProductFields = "INSERT INTO products (product_name, stock, price_unit, min, max) VALUES ('";
-//        String insertNewProductValues = productName + "', '" + inventoryLevel + "', '" + priceUnit + "', '" + min + "', '" + max + "')";
-//        String insertNewProductToDB = insertNewProductFields + insertNewProductValues;
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            statement.executeUpdate(insertNewProductToDB);
-//
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Successful Product Registration");
-//            alert.setHeaderText(null);
-//            alert.setContentText("New Product has been successfully added to EM Inventory Management System");
-//            alert.showAndWait();
-//
-//            registerCurrentProductAssociatedParts();
-//
-//            //After successfully saving a new product we call the registerCurrentProductAssociatedPart() method
-////            registerCurrentProductAssociatedPart();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
-    }
+    private void registerNewProduct(String productName, Integer productID) {
 
-    /**
-     * Public void registerCurrentProductAssociatedParts() method called after the new product is registered, and no exceptions were caught.
-     * Once the data is inserted, the registerCurrentProductAssociatedParts() method will be called, if no exceptions are caught.
-     * The productID is queried from the products table, and then the product and the associated parts are inserted into the products_associated_parts table.
-     * An information alert is displayed to notify that the New Product and its PartsID have been successfully added to table products_associated_parts; and the addProductRedirectsToEMIMSHomePage() method is called.
-     */
-    //Last step on add New product functionality
-    public void registerCurrentProductAssociatedParts() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        String currentProductName = addProduct_setProductName.getText();
-//        System.out.println("the product name is: " + currentProductName);
-//
-//        String currentProductID = "";
-//        String getCurrentProductIDQuery = "SELECT productID FROM products WHERE product_name = '" + currentProductName + "'";
-//        try{
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryCurrentProductIDResult = statement.executeQuery(getCurrentProductIDQuery);
-//
-//            while(queryCurrentProductIDResult.next()) {
-//                currentProductID = queryCurrentProductIDResult.getString("productID");
-//                System.out.println("The current productID on line 374 is: " + currentProductID);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
-//
-//        String currentAssociatedPartsIDs = "";
-//        String getCurrentAssociatedPartsIDsQuery = "SELECT partID FROM associated_parts";
-//        try{
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryCurrentAssociatedPartsIDsResult = statement.executeQuery(getCurrentAssociatedPartsIDsQuery);
-//
-//            while(queryCurrentAssociatedPartsIDsResult.next()) {
-//                currentAssociatedPartsIDs = queryCurrentAssociatedPartsIDsResult.getString("partID");
-//                System.out.println("The current partsID on line 391 is: " + currentAssociatedPartsIDs);
-//
-//                String insertPartsPerProductFields = "INSERT INTO products_associated_parts (productID, partID) VALUES ('";
-//                String insertPartsPerProductValues = currentProductID + "', '" + currentAssociatedPartsIDs + "') ";
-//
-//                String finalAssociation = insertPartsPerProductFields + insertPartsPerProductValues;
-//
-//                try{
-//                    statement = connectDB.createStatement();
-//                    statement.executeUpdate(finalAssociation);
-//
-//                }catch(SQLException e){
-//                    e.printStackTrace();
-//                    e.getCause();
-//                }
-//            }
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Successful Product and PartsID data association");
-//            alert.setHeaderText(null);
-//            alert.setContentText("New Product and its PartsID have been successfully added to table products_associated_parts at the EM Inventory Management System");
-//            alert.showAndWait();
-//
-//            //After successfully saving a new product we redirect to the home_page and are able to see the updated data table
-//            addProductRedirectsToEMIMSHomePage();
-//
-//        } catch(SQLException e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-    }
+        System.out.println("we are into private void registerNewProduct method on line 429! and the productID and productName values we are working with is: " + productID  + " " + productName);
+        String inventoryLevel = addProduct_setInventoryLevel.getText().trim();
+        String priceUnit = addProduct_setPrice.getText().trim();
+        String max= addProduct_setMax.getText().trim();
+        String min = addProduct_setMin.getText().trim();
 
+        if(associatedPartsIDsByProduct.getItems().isEmpty() || associatedPartsIDsByProduct.getItems() == null) {
+            Inventory.allProducts.add(new Product(
+                    productID,
+                    productName,
+                    Double.parseDouble(priceUnit),
+                    Integer.parseInt(inventoryLevel),
+                    Integer.parseInt(min),
+                    Integer.parseInt(max)
+            ));
+            System.out.println("line 444 --- a new product with none associated parts has been saved");
+            try {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successful Product Registration");
+                alert.setHeaderText(null);
+                alert.setContentText("New Product with none associated parts has been successfully added to EM Inventory Management System");
+                alert.showAndWait();
+
+                addProductRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(!associatedPartsIDsByProduct.getItems().isEmpty()) {
+            Product newProductWithAssociatedParts = new Product(
+                    productID,
+                    productName,
+                    Double.parseDouble(priceUnit),
+                    Integer.parseInt(inventoryLevel),
+                    Integer.parseInt(min),
+                    Integer.parseInt(max)
+            );
+            int index = 0;
+            while(index < associatedParts_tableview.getItems().size()) {
+                Part partToAssociate = associatedParts_tableview.getItems().get(index);
+                newProductWithAssociatedParts.setpAssociatedParts(partToAssociate);
+                index++;
+            }
+            Inventory.addProduct(newProductWithAssociatedParts);
+            System.out.println("line 466--- a new product with associated parts has been saved");
+            try {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successful Product Registration");
+                alert.setHeaderText(null);
+                alert.setContentText("New Product with associated parts has been successfully added to EM Inventory Management System");
+                alert.showAndWait();
+                addProductRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
     /**
@@ -703,5 +701,7 @@ public class AddProductController implements Initializable {
         parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         parts_tableView.setItems(inventory.getAllParts());
+
+        temporaryProduct = Inventory.selectedProduct;
     }
 }

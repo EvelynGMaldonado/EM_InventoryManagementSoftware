@@ -416,6 +416,7 @@ public class HelloController implements Initializable {
         Inventory inventory = new Inventory();
         Part selectedItem = parts_tableView.getSelectionModel().getSelectedItem();
 
+        Part selectedPart = parts_tableView.getSelectionModel().getSelectedItem();
         if(selectedItem != null) {
             try{
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -481,7 +482,8 @@ public class HelloController implements Initializable {
 
     @FXML
     void deleteSelectedProduct(ActionEvent event) {
-
+        Inventory inventory = new Inventory();
+        Product selectedProduct = products_tableView.getSelectionModel().getSelectedItem();
     }
 
     /**
@@ -597,5 +599,8 @@ public class HelloController implements Initializable {
 //        productInventoryList.setAll(inventory.getAllProducts());
 //        products_tableView.setItems(productInventoryList);
         products_tableView.setItems(inventory.getAllProducts());
+
+        Inventory.selectedPart = null;
+        Inventory.selectedProduct = null;
     }
 }

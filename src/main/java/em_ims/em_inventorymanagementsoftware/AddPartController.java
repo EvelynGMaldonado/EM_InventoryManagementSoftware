@@ -334,7 +334,7 @@ public class AddPartController implements Initializable {
         }
     };
 
-    public void generatePartId(String partName) {
+    private void generatePartId(String partName) {
         System.out.println("we are into generatePartId() method on line 365!! and the partName value we are working with is: " + partName);
 
         Inventory inventory = new Inventory();

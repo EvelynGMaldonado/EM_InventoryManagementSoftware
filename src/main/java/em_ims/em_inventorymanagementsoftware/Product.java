@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * FUTURE ENHANCEMENT:
  */
 public class Product {
+    private ObservableList<Part> pAssociatedParts = FXCollections.observableArrayList();
     private int productID;
     private String product_name;
     private double price_unit = 0.0;
@@ -21,11 +22,15 @@ public class Product {
 
 //    private ArrayList<Part> associatedParts = new ArrayList<Part>();
 
-//    public ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+//    public ObservableList<Part> allProductAssociatedParts = FXCollections.observableArrayList();
 //
-//    public ObservableList<Part> getAllAssociatedParts() {
-//        return allAssociatedParts;
-//    }
+    public ObservableList<Part> getPassociatedParts() {
+        return pAssociatedParts;
+    }
+
+    public void setpAssociatedParts(Part part) {
+        pAssociatedParts.add(part);
+    }
 
     public Product() {
 

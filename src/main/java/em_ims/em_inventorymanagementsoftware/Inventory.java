@@ -144,11 +144,11 @@ public class Inventory {
 
     }
 
-//    public void addPart(Part addNewPart) {
-//        if(addNewPart != null) {
-//            allParts.add(addNewPart);
-//        }
-//    }
+    public  static void addProduct(Product product) {
+        if(product != null) {
+            allProducts.add(product);
+        }
+    }
 
     public void addPart(int partID, String partName, Double priceUnit, int inventoryLevel, int min, int max, int machineID) {
         Part newPart = new InHouse(partID, partName, priceUnit, inventoryLevel, min, max, machineID);
@@ -159,12 +159,6 @@ public class Inventory {
         Product newProduct = new Product(productID, product_name, price_unit, stock, min, max);
         allProducts.add(newProduct);
     }
-
-//    public void addAssociateParts(int partID, String partName, Double priceUnit, int inventoryLevel) {
-//
-//    };
-
-
 
     public void validateAssociatedPart(String getSingleAssociatedPartID) {
         System.out.println("line 170 we are into the validateAssociatedPart(String getSingleAssociatedPartID) method --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
