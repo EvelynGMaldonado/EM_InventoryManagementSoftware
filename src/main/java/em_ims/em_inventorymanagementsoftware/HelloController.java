@@ -406,7 +406,56 @@ public class HelloController implements Initializable {
 
     @FXML
     void clickModifyProductPageBtn(ActionEvent event) {
+        index = products_tableView.getSelectionModel().getSelectedIndex();
+        Product selectedItem = products_tableView.getSelectionModel().getSelectedItem();
+        String getSingleProductID = "";
+        String getSingleProductName = "";
+        String getSingleProductStock = "";
+        String getSingleProductPriceUnit = "";
+        String getSingleProductMin = "";
+        String getSingleProductMax = "";
 
+        Integer selectedProductID = selectedItem.getProductID();
+
+        if(index > -1) {
+
+            try {
+                getSingleProductID = String.valueOf(selectedItem.getProductID());
+                getSingleProductName = selectedItem.getProduct_name();
+                System.out.println("getProductName is: " + getSingleProductName);
+                getSingleProductStock = String.valueOf(selectedItem.getStock());
+                getSingleProductPriceUnit = String.valueOf(selectedItem.getPrice_unit());
+                getSingleProductMin = String.valueOf(selectedItem.getMin());
+                getSingleProductMax = String.valueOf(selectedItem.getMax());
+
+                modifyProductPageBtn.getScene().getWindow().hide();
+                //create new stage
+                Stage modifyProductPageWindow = new Stage();
+                modifyProductPageWindow.setTitle("Modify Product - EM Inventory Management System");
+
+                //create view for FXML
+                FXMLLoader modifyProductPageLoader = new FXMLLoader(getClass().getResource("modifyProduct_page.fxml"));
+
+                ModifyProductController modifyProductController = new ModifyProductController(selectedItem, getSingleProductID, getSingleProductName, getSingleProductStock, getSingleProductPriceUnit, getSingleProductMin, getSingleProductMax);
+                modifyProductPageLoader.setController(modifyProductController);
+
+                //set view in ppMainWindow
+                modifyProductPageWindow.setScene(new Scene(modifyProductPageLoader.load(), 800, 610));
+
+                //launch
+                modifyProductPageWindow.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                e.getCause();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row that you want to modify.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
