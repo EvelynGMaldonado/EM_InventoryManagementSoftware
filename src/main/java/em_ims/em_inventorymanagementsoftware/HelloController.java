@@ -415,7 +415,7 @@ public class HelloController implements Initializable {
         String getSingleProductMin = "";
         String getSingleProductMax = "";
 
-        Integer selectedProductID = selectedItem.getProductID();
+        Integer selectedProductID = 0;
 
         if(index > -1) {
 
@@ -427,6 +427,7 @@ public class HelloController implements Initializable {
                 getSingleProductPriceUnit = String.valueOf(selectedItem.getPrice_unit());
                 getSingleProductMin = String.valueOf(selectedItem.getMin());
                 getSingleProductMax = String.valueOf(selectedItem.getMax());
+                selectedProductID = selectedItem.getProductID();
 
                 modifyProductPageBtn.getScene().getWindow().hide();
                 //create new stage
@@ -436,7 +437,7 @@ public class HelloController implements Initializable {
                 //create view for FXML
                 FXMLLoader modifyProductPageLoader = new FXMLLoader(getClass().getResource("modifyProduct_page.fxml"));
 
-                ModifyProductController modifyProductController = new ModifyProductController(selectedItem, getSingleProductID, getSingleProductName, getSingleProductStock, getSingleProductPriceUnit, getSingleProductMin, getSingleProductMax);
+                ModifyProductController modifyProductController = new ModifyProductController(selectedItem, getSingleProductID, getSingleProductName, getSingleProductStock, getSingleProductPriceUnit, getSingleProductMin, getSingleProductMax, selectedProductID);
                 modifyProductPageLoader.setController(modifyProductController);
 
                 //set view in ppMainWindow

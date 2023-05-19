@@ -695,6 +695,8 @@ public class AddProductController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Inventory inventory = new Inventory();
 
+        associatedParts_tableview.getItems().remove(true);
+
         parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
         parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
         parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));

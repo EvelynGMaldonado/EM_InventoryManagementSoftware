@@ -176,6 +176,14 @@ public class Inventory {
         }
     }
 
+    /**
+     * Public void updateProduct() method is used to replace an old product with the updated product.
+     * @param index index of old product
+     * @param selectedProduct updated product
+     */
+    public void updateProduct(int index, Product selectedProduct) {
+        allProducts.set(index, selectedProduct);
+    }
 //    public ObservableList<Part> validatePart(String partName) {
 //        if(!allParts.isEmpty()) {
 //            ObservableList searchPartList = FXCollections.observableArrayList();

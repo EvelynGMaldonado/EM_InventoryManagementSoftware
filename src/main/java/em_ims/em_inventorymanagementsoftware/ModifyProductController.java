@@ -1,5 +1,6 @@
 package em_ims.em_inventorymanagementsoftware;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -110,6 +111,7 @@ public class ModifyProductController implements Initializable {
     private final String getSingleProductPriceUnit;
     private final String getSingleProductMin;
     private final String getSingleProductMax;
+    private final Integer selectedProductID;
 
     int index = -1;
 
@@ -129,7 +131,7 @@ public class ModifyProductController implements Initializable {
      * @param getSingleProductMin getSingleProductMin parameter and initializes the private final String getSingleProductMin variable.
      * @param getSingleProductMax getSingleProductMax parameter and initializes the  private final String getSingleProductMax variable.
      */
-    public ModifyProductController(Product product, String getSingleProductID, String getSingleProductName, String getSingleProductStock, String getSingleProductPriceUnit, String getSingleProductMin, String getSingleProductMax) {
+    public ModifyProductController(Product product, String getSingleProductID, String getSingleProductName, String getSingleProductStock, String getSingleProductPriceUnit, String getSingleProductMin, String getSingleProductMax, Integer selectedProductID) {
         this.product = product;
         this.getSingleProductID = getSingleProductID;
         this.getSingleProductName = getSingleProductName;
@@ -137,6 +139,10 @@ public class ModifyProductController implements Initializable {
         this.getSingleProductPriceUnit = getSingleProductPriceUnit;
         this.getSingleProductMin = getSingleProductMin;
         this.getSingleProductMax = getSingleProductMax;
+        this.selectedProductID = selectedProductID;
+
+        productData = product;
+        System.out.println("line 145 --- the productData ID value is: " + productData.getProductID());
 
     }
 
@@ -819,12 +825,6 @@ public class ModifyProductController implements Initializable {
         String getSingleAssociatedPartStock = "";
         String getSingleAssociatedPartPriceUnit = "";
 
-        modifyProduct_productIDTextField.setText(getSingleProductID);
-        modifyProduct_setProductName.setText(getSingleProductName);
-        modifyProduct_setInventoryLevel.setText(getSingleProductStock);
-        modifyProduct_setPriceUnit.setText(getSingleProductPriceUnit);
-        modifyProduct_setMin.setText(getSingleProductMin);
-        modifyProduct_setMax.setText(getSingleProductMax);
 
         Inventory inventory = new Inventory();
 
@@ -835,5 +835,25 @@ public class ModifyProductController implements Initializable {
 
         parts_tableView.setItems(inventory.getAllParts());
 
+
+        modifyProduct_productIDTextField.setText(getSingleProductID);
+        modifyProduct_setProductName.setText(getSingleProductName);
+        modifyProduct_setInventoryLevel.setText(getSingleProductStock);
+        modifyProduct_setPriceUnit.setText(getSingleProductPriceUnit);
+        modifyProduct_setMin.setText(getSingleProductMin);
+        modifyProduct_setMax.setText(getSingleProductMax);
+
+        associatedPartsData = FXCollections.observableArrayList(productData.getPassociatedParts());
+        associatedParts_tableview.setItems(associatedPartsData);
+        int index = 0;
+        while(index < associatedParts_tableview.getItems().size()) {
+            productData.setpAssociatedParts(associatedParts_tableview.getItems().get(index));
+            index++;
+        }
+
+        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
 }
