@@ -826,7 +826,14 @@ public class ModifyProductController implements Initializable {
         modifyProduct_setMin.setText(getSingleProductMin);
         modifyProduct_setMax.setText(getSingleProductMax);
 
+        Inventory inventory = new Inventory();
 
+        parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        parts_tableView.setItems(inventory.getAllParts());
 
     }
 }
