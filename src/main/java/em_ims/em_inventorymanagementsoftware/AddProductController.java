@@ -229,7 +229,7 @@ public class AddProductController implements Initializable {
                 }
             }
 
-        } else if(parts_tableView.getSelectionModel().isEmpty()){
+        } else if(associatedParts_tableview.getSelectionModel().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
             alert.setHeaderText(null);
@@ -322,7 +322,7 @@ public class AddProductController implements Initializable {
         else if(!verifyProductName.isEmpty() && !inventory.getAllProducts().isEmpty()){
             System.out.println("we are into validateProductName() method with no empty inventory on line 365!!");
 
-            for(int i = 0; i < Inventory.allParts.size(); i++) {
+            for(int i = 0; i < Inventory.allProducts.size(); i++) {
                 if(!Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(verifyProductName)) {
                     System.out.println("line 369 -- we are into validateProductName() method with no empty inventory and it does not match with any product name");
                     productName = verifyProductName;
@@ -393,12 +393,12 @@ public class AddProductController implements Initializable {
                     Integer.parseInt(min),
                     Integer.parseInt(max)
             ));
-            System.out.println("line 444 --- a new product with none associated parts has been saved");
+            System.out.println("line 396 --- a new product with none associated parts has been saved");
             try {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Successful Product Registration");
                 alert.setHeaderText(null);
-                alert.setContentText("New Product with none associated parts has been successfully added to EM Inventory Management System");
+                alert.setContentText("New Product with zero associated parts has been successfully added to EM Inventory Management System");
                 alert.showAndWait();
 
                 addProductRedirectsToEMIMSHomePage();

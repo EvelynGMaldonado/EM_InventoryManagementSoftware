@@ -574,52 +574,6 @@ public class HelloController implements Initializable {
         }
     }
 
-//    public void addStartDataTables(Inventory inventory) {
-//        //outsourced parts start data
-//        Part part1 = new Outsourced(1, "Seat post", 15.50, 15, 1, 20, "Super Seat-posts");
-//        Part part2 = new Outsourced(2, "Steam", 17.77, 17, 1, 20, "Super Steams");
-//
-//        //in house parts data
-//        Part part3 = new InHouse(3, "Fork", 19.99, 20, 1, 20, 1111);
-//        Part part4 = new InHouse(4, "Chain", 23.50, 12, 1, 20, 222);
-//
-//        //products data
-//        Product product1 = new Product(1, "Uni-bike", 175.90, 12, 1, 20);
-//        Product product2 = new Product(2, "Mom bike", 299.50, 2, 1, 20);
-//
-//        //add associated parts
-//
-//        //adding parts and products to table
-//        inventory.addPart(part1);
-//        inventory.addPart(part2);
-//        inventory.addPart(part3);
-//        inventory.addPart(part4);
-//        inventory.addProduct(product1);
-//        inventory.addProduct(product2);
-//    }
-
-//    public void refreshTables() {
-//
-//        Inventory inventory = new Inventory();
-//        addStartDataTables(inventory);
-//        parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//        parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//        parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-////        partInventoryList.setAll(inventory.getAllParts());
-//        parts_tableView.setItems(partInventoryList);
-//
-//
-//        products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-//        products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-//        products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//        products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-////        productInventoryList.setAll(inventory.getAllProducts());
-//        products_tableView.setItems(productInventoryList);
-//    }
-
     /**
      * Public void initialize() method called to initialize a controller after its root element has been completely processed.
      * @param url is used to resolve relative paths for the root object. It is null if the url is not known.

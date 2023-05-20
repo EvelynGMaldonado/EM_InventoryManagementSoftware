@@ -2,12 +2,7 @@ package em_ims.em_inventorymanagementsoftware;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 
 public class Inventory {
     HelloController helloController;
@@ -15,11 +10,12 @@ public class Inventory {
     public static Part selectedPart;
     public static Product selectedProduct;
     public static ObservableList<Part> allParts = FXCollections.observableArrayList();
-//    private ObservableList<Part> allParts = FXCollections.observableArrayList();
-//    private ObservableList<Product> allProducts = FXCollections.observableArrayList();
     public static ObservableList<Product> allProducts = FXCollections.observableArrayList();
 
     private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
+
+
+
     public ObservableList<Part> getPartInventorySearch() {
         return partInventorySearch;
     }
@@ -43,13 +39,13 @@ public class Inventory {
         return allProducts;
     }
 
-    public int partListSize() {
-        return allParts.size();
-    }
-
-    public int productListSize() {
-        return allProducts.size();
-    }
+//    public int partListSize() {
+//        return allParts.size();
+//    }
+//
+//    public int productListSize() {
+//        return allProducts.size();
+//    }
 
     public ObservableList<Part> associatedPartDetails(String getSingleAssociatedPartID) {
         System.out.println("line 55 --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
@@ -127,25 +123,6 @@ public class Inventory {
         return null;
     }
 
-    public void viewEMInventoryManagementSystem() throws IOException {
-//        startBtn.getScene().getWindow().hide();
-//        Stage stage1 = (Stage) startBtn.getScene().getWindow();
-//        stage1.close();
-        //create new stage
-        Stage ppMainWindow = new Stage();
-        ppMainWindow.setTitle("Parts and Products - EM Inventory Management System");
-
-        //create view for FXML
-        FXMLLoader ppMainLoader = new FXMLLoader(getClass().getResource("home_page-parts&products.fxml"));
-
-        //set view in ppMainWindow
-        ppMainWindow.setScene(new Scene(ppMainLoader.load(), 800, 400));
-
-        //launch
-        ppMainWindow.show();
-
-    }
-
     public  static void addProduct(Product product) {
         if(product != null) {
             allProducts.add(product);
@@ -162,43 +139,29 @@ public class Inventory {
         allProducts.add(newProduct);
     }
 
-    public void validateAssociatedPart(String getSingleAssociatedPartID) {
-        System.out.println("line 170 we are into the validateAssociatedPart(String getSingleAssociatedPartID) method --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
-
-        Integer associatedPartID = Integer.valueOf(getSingleAssociatedPartID);
-
-        if(!allAssociatedParts.isEmpty()) {
-            for (int i = 0; i < allAssociatedParts.size(); i++) {
-                if(allAssociatedParts.get(i).getId() != associatedPartID) {
-                    System.out.println("the selected part is not part of our product yet.");
-                    associatedPartDetails(getSingleAssociatedPartID);
-                    System.out.println("Calling the associatedPartDetails() method.");
-                }
-            }
-        }
-    }
+//    public void validateAssociatedPart(String getSingleAssociatedPartID) {
+//        System.out.println("line 170 we are into the validateAssociatedPart(String getSingleAssociatedPartID) method --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
+//
+//        Integer associatedPartID = Integer.valueOf(getSingleAssociatedPartID);
+//
+//        if(!allAssociatedParts.isEmpty()) {
+//            for (int i = 0; i < allAssociatedParts.size(); i++) {
+//                if(allAssociatedParts.get(i).getId() != associatedPartID) {
+//                    System.out.println("the selected part is not part of our product yet.");
+//                    associatedPartDetails(getSingleAssociatedPartID);
+//                    System.out.println("Calling the associatedPartDetails() method.");
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Public void updateProduct() method is used to replace an old product with the updated product.
      * @param index index of old product
-     * @param selectedProduct updated product
+     * @param product updated product
      */
-    public void updateProduct(int index, Product selectedProduct) {
-        allProducts.set(index, selectedProduct);
+    public static void updateProduct(int index, Product product) {
+        allProducts.set(index, product);
     }
-//    public ObservableList<Part> validatePart(String partName) {
-//        if(!allParts.isEmpty()) {
-//            ObservableList searchPartList = FXCollections.observableArrayList();
-//            for(Part part : getAllParts()) {
-//                if(part.getName().contains(partName)) {
-//                    searchPartList.add(part);
-//                }
-//            }
-//            return searchPartList;
-//        }
-//        return  null;
-//    }
-
-
 
 }

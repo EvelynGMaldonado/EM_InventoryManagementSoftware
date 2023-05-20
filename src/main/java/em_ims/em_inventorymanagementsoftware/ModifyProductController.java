@@ -16,11 +16,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.*;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ModifyProductController implements Initializable {
     @FXML
@@ -101,6 +98,12 @@ public class ModifyProductController implements Initializable {
     @FXML
     private Button modifyProduct_searchPartBtn;
 
+    private ObservableList<Part> partInventorySearchList = FXCollections.observableArrayList();
+
+    private ObservableList<Part> partInventoryList = FXCollections.observableArrayList();
+
+    private ListView<String> associatedPartsIDsByProduct = new ListView<String>();
+
     /**
      * private final variables are not accessible outside the class.
      * private final variables values are final (no changes allowed) once the variable is initialized.
@@ -144,6 +147,53 @@ public class ModifyProductController implements Initializable {
         productData = product;
         System.out.println("line 145 --- the productData ID value is: " + productData.getProductID());
 
+        associatedPartsData = FXCollections.observableArrayList(productData.getPassociatedParts());
+//        associatedParts_tableview.setItems(associatedPartsData);
+//        int index = 0;
+//        while(index < associatedParts_tableview.getItems().size()) {
+//            productData.setpAssociatedParts(associatedParts_tableview.getItems().get(index));
+//            index++;
+//        }
+
+    }
+
+    private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) {
+
+        if(!associatedParts_tableview.getItems().contains(singlePart)){
+            newProduct.setpAssociatedParts(singlePart);
+            associatedParts_tableview.setItems(newProduct.getPassociatedParts());
+            associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
+
+            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            associatedParts_tableview.getSelectionModel().clearSelection();
+            parts_tableView.getSelectionModel().clearSelection();
+
+        } else if(associatedParts_tableview.getItems().contains(singlePart)) {
+            associatedParts_tableview.setItems(newProduct.getPassociatedParts());
+
+            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            associatedParts_tableview.getSelectionModel().clearSelection();
+            parts_tableView.getSelectionModel().clearSelection();
+        }
+
+
+
+
+//        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+//        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+//
+//        associatedParts_tableview.getSelectionModel().clearSelection();
+//        parts_tableView.getSelectionModel().clearSelection();
     }
 
     /**
@@ -154,88 +204,46 @@ public class ModifyProductController implements Initializable {
      */
     @FXML
     void clickAddAssociatedPartBtn(ActionEvent event){
-        index = parts_tableView.getSelectionModel().getSelectedIndex();
-//
-//        String getSelectedPartIDToAssociate = "";
-//        String getSelectedPartNameToAssociate = "";
-//        String getSelectedPartStockToAssociate = "";
-//        String getSelectedPartPriceUnitToAssociate = "";
-//
-//        //check if a row has been selected
-//        if(index > -1) {
-//            DatabaseConnection connectNow = new DatabaseConnection();
-//            Connection connectDB = connectNow.getConnection();
-//
-//            PartData selectedItem = parts_tableView.getSelectionModel().getSelectedItem();
-//            String verifyIfAssociatedPartIDAlreadyExists = "SELECT count(1) FROM modify_associated_parts WHERE partID = '" + selectedItem.getPartID() + "'";
-//            try {
-//                Statement statement = connectDB.createStatement();
-//                ResultSet queryUniqueAssociatedPartIDResult = statement.executeQuery(verifyIfAssociatedPartIDAlreadyExists);
-//
-//                while(queryUniqueAssociatedPartIDResult.next()) {
-//                    if(queryUniqueAssociatedPartIDResult.getInt(1) == 1) {
-//                        Alert alert = new Alert(Alert.AlertType.ERROR);
-//                        alert.setTitle("Error message");
-//                        alert.setHeaderText(null);
-//                        alert.setContentText("Part is already associated to this product.");
-//                        alert.showAndWait();
-//                    } else {
-//                        //retrieve data of selected item
-//                        String associateSelectedPartToCurrentProduct = "SELECT partID, part_name, stock, price_unit FROM parts WHERE partID = '" + selectedItem.getPartID() + "'";
-//
-//                        try {
-//                            statement = connectDB.createStatement();
-//                            ResultSet querySelectedPartToAssociateResult = statement.executeQuery(associateSelectedPartToCurrentProduct);
-//                            // System.out.println("The selected part to associate is: "+querySelectedPartResult.);
-//                            while(querySelectedPartToAssociateResult.next()) {
-//                                System.out.println(querySelectedPartToAssociateResult.getString("partID"));
-//                                System.out.println(querySelectedPartToAssociateResult.getString("part_name"));
-//                                getSelectedPartIDToAssociate = querySelectedPartToAssociateResult.getString("partID");
-//                                getSelectedPartNameToAssociate = querySelectedPartToAssociateResult.getString("part_name");
-//                                //                    System.out.println("getSingleAssociatedPartName is: " + getSingleAssociatedPartName);
-//                                getSelectedPartStockToAssociate = querySelectedPartToAssociateResult.getString("stock");
-//                                getSelectedPartPriceUnitToAssociate = querySelectedPartToAssociateResult.getString("price_unit");
-//                            }
-//                            String insertSelectedAssociatedPartFields = "INSERT INTO modify_associated_parts (partID, part_name, stock, price_unit) VALUES ('";
-//                            String insertSelectedAssociatedPartValues = getSelectedPartIDToAssociate + "', '" + getSelectedPartNameToAssociate + "', '" + getSelectedPartStockToAssociate + "', '" + getSelectedPartPriceUnitToAssociate + "')";
-//                            String insertSelectedAssociatedPartToDB_modify_associated_partsTable = insertSelectedAssociatedPartFields + insertSelectedAssociatedPartValues;
-//
-//                            try {
-//                                statement = connectDB.createStatement();
-//                                statement.executeUpdate(insertSelectedAssociatedPartToDB_modify_associated_partsTable);
-//
-//                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                                alert.setTitle("Successful New Part Association");
-//                                alert.setHeaderText(null);
-//                                alert.setContentText("New Part has been successfully associated to the current product");
-//                                alert.showAndWait();
-//
-//                                //After successfully saving a new part we update the associated parts table on the modify product page
-//                                displayAssociatedPartDataTableView();
-//
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                                e.getCause();
-//                            }
-//
-//                        } catch (SQLException e) {
-//                            e.printStackTrace();
-//                            e.getCause();
-//                        }
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                e.getCause();
-//            }
-//
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Please select the data row that you want to delete.");
-//            alert.showAndWait();
-//        }
+        Inventory inventory = new Inventory();
+
+        if(parts_tableView.getSelectionModel().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row part that you want to associate with your product.");
+            alert.showAndWait();
+            return;
+
+        } else if(!parts_tableView.getSelectionModel().isEmpty()){
+            Part singlePart = parts_tableView.getSelectionModel().getSelectedItem();
+            String getSingleAssociatedPartID = String.valueOf(singlePart.getId());
+
+            if(associatedPartsIDsByProduct.getItems().isEmpty() || associatedPartsIDsByProduct.getItems() == null) {
+
+                addSelectedPart(singlePart, getSingleAssociatedPartID);
+
+            }  else if(!associatedPartsIDsByProduct.getItems().isEmpty() || associatedPartsIDsByProduct.getItems() != null) {
+
+                if(!associatedPartsIDsByProduct.getItems().contains(getSingleAssociatedPartID)){
+
+                    addSelectedPart(singlePart, getSingleAssociatedPartID);
+
+                } else if(associatedPartsIDsByProduct.getItems().contains(getSingleAssociatedPartID)) {
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The selected item is already part of this product. Please try again later.");
+                    alert.showAndWait();
+
+                    parts_tableView.getSelectionModel().clearSelection();
+
+                    return;
+
+                }
+            }
+
+        }
     }
 
     /**
@@ -309,185 +317,135 @@ public class ModifyProductController implements Initializable {
      * When the validation does not pass(product name does not match with its ID), the method verifyIfProductNameAlreadyExists() is called, unless an Exception is caught.
      */
     public void validateUpdatedProductNameAndProductID() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        String verifyUpdatedProductNameMatchesProductID = "SELECT count(1) FROM products WHERE product_name = '" + modifyProduct_setProductName.getText() + "' AND productID = '" + modifyProduct_productIDTextField.getText() +"'";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryUniqueUpdatedProductNameAndProductIDResult = statement.executeQuery(verifyUpdatedProductNameMatchesProductID);
-//
-//            while(queryUniqueUpdatedProductNameAndProductIDResult.next()) {
-//                //if updated part name matches with the ID... call the UpdatePart(); method
-//                if(queryUniqueUpdatedProductNameAndProductIDResult.getInt(1) == 1) {
-//                    //                    messageLabel.setText("Part Name already exists. Please try again.");
-//                    updateProduct();
-//                } else {
-//                    //if updated part name does not match with the ID... call the verifyIfPartNameAlreadyExists(); method
-//                    verifyIfProductNameAlreadyExists();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+        System.out.println("we are into validateUpdatedProductNameAndProductID() method on line 352!!");
+        Inventory inventory = new Inventory();
+
+        String verifyProductName = modifyProduct_setProductName.getText().trim().toLowerCase();
+        String productName = "";
+        System.out.println("the name of the updated product on line 295 is: " + verifyProductName);
+
+        Integer verifyProductID = Integer.valueOf(modifyProduct_productIDTextField.getText());
+        Integer productID = 0;
+
+        for(int i = 0; i < Inventory.allProducts.size(); i++) {
+            if(!Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(verifyProductName) && Inventory.allProducts.get(i).getProductID() == verifyProductID) {
+                System.out.println("line 304 -- we are into validateUpdatedProductNameAndProductID() method where productID does not match with the updated product name");
+                productName = verifyProductName;
+                productID = verifyProductID;
+                verifyIfProductNameAlreadyExists(productName, productID);
+
+                break;
+            } else if(Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(verifyProductName) && Inventory.allProducts.get(i).getProductID() == verifyProductID) {
+                System.out.println("line 308--- we are into validateProductName() method with no empty inventory and product name already exists");
+                productID = verifyProductID;
+                productName = verifyProductName;
+
+                updateProduct(productID, productName);
+            }
+        }
     }
 
     /**
      * Public void verifyIfProductNameAlreadyExists() method is used to validate if the product name does not exist in the EM database.
      * When the validation passes(product name does not exist in the EM database), the method updateProduct() is called, unless an Exception is caught.
      * When the validation does not pass (product name already exists in the EM database), an error alert will show up, and the user will be requested to use a different name for the updated product.
+     * @param productName
+     * @param productID
      */
-    public void verifyIfProductNameAlreadyExists() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        String verifyProductNameAvailability = "SELECT count(1) FROM products WHERE product_name = '" + modifyProduct_setProductName.getText() + "'";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryUniqueUpdatedProductNameResult = statement.executeQuery(verifyProductNameAvailability);
-//
-//            while(queryUniqueUpdatedProductNameResult.next()) {
-//                //if updated part name already exists in our DB, but it does not match with the current ID ... show an error alert
-//                if(queryUniqueUpdatedProductNameResult.getInt(1) == 1) {
-//
-//                    Alert alert = new Alert(Alert.AlertType.ERROR);
-//                    alert.setTitle("Error message");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Product Name already exists and has a different ID. Please use a different product name or look for the product name in the dashboard, select the row, and click on the Modify button.");
-//                    alert.showAndWait();
-//                } else {
-//                    //if updated part name does not exist in our DB, and it does not match with the current ID... then call the call the UpdatePart(); method.
-//                    updateProduct();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+    public void verifyIfProductNameAlreadyExists(String productName, Integer productID) {
+        for(int i = 0; i < Inventory.allProducts.size(); i++) {
+            if(!Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(productName)) {
+                System.out.println("line 327 -- we are into verifyIfProductNameAlreadyExists(String productName, Integer productID) method. Product name does not exist");
+                updateProduct(productID, productName);
+                break;
+            } else if(Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(productName)) {
+                System.out.println("line 331--- we are into verifyIfProductNameAlreadyExists(String productName, Integer productID) method. Product name already exists");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error message");
+                alert.setHeaderText(null);
+                alert.setContentText("Product Name already exists. Please try again.");
+                alert.showAndWait();
+                return;
+            }
+        }
     }
 
     /**
-     * Public void updateProduct() method called after the product name validation is passed, and no exceptions were caught.
+     * Private void updateProduct() method called after the product name validation is passed, and no exceptions were caught.
      * Public void updateProduct() is used to update the product specifications into the products table at the EM database.
      * Once the product data is successfully updated into the EM database:
      * an information alert is displayed to notify that the product has been successfully updated into the database, unless an Exception is caught.
      * updateCurrentProductAssociatedParts() method will be called, unless an Exception is caught.
      */
-    public void updateProduct(){
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        String modifyPage_productID = modifyProduct_productIDTextField.getText();
-//        String updatedProductName = modifyProduct_setProductName.getText();
-//        String updatedProductInventoryLevel = modifyProduct_setInventoryLevel.getText();
-//        String updatedProductPriceUnit = modifyProduct_setPriceUnit.getText();
-//        String updatedProductMax= modifyProduct_setMax.getText();
-//        String updatedProductMin = modifyProduct_setMin.getText();
-//
-//        String updateProductDataInDB = "UPDATE products SET product_name = '" + updatedProductName + "', stock = '" + updatedProductInventoryLevel + "', price_unit = '" + updatedProductPriceUnit + "', min = '" + updatedProductMin + "', max = '" + updatedProductMax + "' WHERE productID = '" + modifyPage_productID + "' ";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            statement.executeUpdate(updateProductDataInDB);
-//
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Successful Product Data Update");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Product Data has been successfully updated in EM Inventory Management System");
-//            alert.showAndWait();
-//
-//            //After successfully updating the product, we call the updateCurrentProductAssociatedParts(); method
-//            updateCurrentProductAssociatedParts();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
-    }
+    private void updateProduct(Integer productID, String productName) {
 
-    /**
-     * Public void updateCurrentProductAssociatedParts() method called after the product data specifications are successfully updated into the database.
-     * Public void updateCurrentProductAssociatedParts() is the last step on modify product functionality, and it is used to retrieve current productID from the products table, select all the updated partsID from our temporary modify_associated_parts table, and update the products_associated_parts table with thw most updated products and their associated parts.
-     * Once the product-parts association data is successfully updated into the EM database, the modifyProductRedirectsToEMIMSHomePage() method will be called, if no exceptions are caught.
-     * An information alert is displayed to notify that the product and its associated parts has been successfully updated into the database.
-     */
-    public void updateCurrentProductAssociatedParts() {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        String currentProductName = modifyProduct_setProductName.getText();
-//        System.out.println("line 318 -- The product name is: " + currentProductName);
-//
-//        //Retrieve current productID from the products table
-//        String currentProductID = "";
-//        String getCurrentProductIDQuery = "SELECT productID FROM products WHERE product_name = '" + currentProductName + "'";
-//        try{
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryCurrentProductIDResult = statement.executeQuery(getCurrentProductIDQuery);
-//
-//            while(queryCurrentProductIDResult.next()) {
-//                currentProductID = queryCurrentProductIDResult.getString("productID");
-//                System.out.println("The current productID on line 328 is: " + currentProductID);
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
-//
-//        //Empty the pre-existent productID- partsID relations in the products_associated_parts table
-//        PreparedStatement pst;
-//        String deleteSelectedAssociatedPart = "DELETE FROM products_associated_parts WHERE productID =  '" + currentProductID + "'";
-//        try{
-//            pst = connectDB.prepareStatement(deleteSelectedAssociatedPart);
-//            pst.execute();
-//
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
-//
-//        //select all the partsID from our temporary modify_associated_parts table
-//        String updatedAssociatedPartsIDs = "";
-//        String getUpdatedAssociatedPartsIDsQuery = "SELECT partID FROM modify_associated_parts";
-//        try{
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryUpdatedAssociatedPartsIDsResult = statement.executeQuery(getUpdatedAssociatedPartsIDsQuery);
-//
-//            //while we have partsIDS left we keep inserting them into products_associated_parts table
-//            while(queryUpdatedAssociatedPartsIDsResult.next()) {
-//                updatedAssociatedPartsIDs = queryUpdatedAssociatedPartsIDsResult.getString("partID");
-//                System.out.println("The current partsID on line 368 are: " + updatedAssociatedPartsIDs);
-//
-//                String insertPartsPerProductFields = "INSERT INTO products_associated_parts (productID, partID) VALUES ('";
-//                String insertPartsPerProductValues = currentProductID + "', '" + updatedAssociatedPartsIDs + "') ";
-//                String finalAssociation = insertPartsPerProductFields + insertPartsPerProductValues;
-//
-//                try{
-//                    statement = connectDB.createStatement();
-//                    statement.executeUpdate(finalAssociation);
-//
-//                }catch(SQLException e){
-//                    e.printStackTrace();
-//                    e.getCause();
-//                }
-//            }
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Successful Update Product and PartsID data association");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Product and its PartsID association has been successfully updated to table products_associated_parts at the EM Inventory Management System");
-//            alert.showAndWait();
-//
-//            //After successfully saving a new product we redirect to the home_page and are able to see the updated data table
-//            modifyProductRedirectsToEMIMSHomePage();
-//
-//        } catch(SQLException e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String modifyPage_productID = modifyProduct_productIDTextField.getText();
+        String updatedProductName = modifyProduct_setProductName.getText();
+        String updatedProductInventoryLevel = modifyProduct_setInventoryLevel.getText().trim();
+        String updatedProductPriceUnit = modifyProduct_setPriceUnit.getText().trim();
+        String updatedProductMax= modifyProduct_setMax.getText().trim();
+        String updatedProductMin = modifyProduct_setMin.getText().trim();
+
+        if(associatedPartsIDsByProduct.getItems().isEmpty() || associatedPartsIDsByProduct.getItems() == null) {
+            Product updatedProductWithoutAssociatedParts = new Product(
+                    productID,
+                    productName,
+                    Double.parseDouble(updatedProductPriceUnit),
+                    Integer.parseInt(updatedProductInventoryLevel),
+                    Integer.parseInt(updatedProductMin),
+                    Integer.parseInt(updatedProductMax)
+            );
+            int index = 0;
+            while(index < associatedParts_tableview.getItems().size()) {
+                Part partToAssociate = associatedParts_tableview.getItems().get(index);
+                updatedProductWithoutAssociatedParts.setpAssociatedParts(partToAssociate);
+                index++;
+            }
+            Inventory.updateProduct(Inventory.getAllProducts().indexOf(productData), updatedProductWithoutAssociatedParts);
+            System.out.println("line 382--- a updated product with zero associated parts has been saved");
+            try {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successful Product Registration");
+                alert.setHeaderText(null);
+                alert.setContentText("New Product with zero associated parts has been successfully added to EM Inventory Management System");
+                alert.showAndWait();
+
+                //After successfully updating the product we redirect to the home_page, and we are able to see the updated data table
+                modifyProductRedirectsToEMIMSHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(!associatedPartsIDsByProduct.getItems().isEmpty()) {
+            Product updatedProductWithAssociatedParts = new Product(
+                    productID,
+                    productName,
+                    Double.parseDouble(updatedProductPriceUnit),
+                    Integer.parseInt(updatedProductInventoryLevel),
+                    Integer.parseInt(updatedProductMin),
+                    Integer.parseInt(updatedProductMax)
+            );
+            int index = 0;
+            while(index < associatedParts_tableview.getItems().size()) {
+                Part partToAssociate = associatedParts_tableview.getItems().get(index);
+                updatedProductWithAssociatedParts.setpAssociatedParts(partToAssociate);
+                index++;
+            }
+            Inventory.updateProduct(Inventory.getAllProducts().indexOf(productData), updatedProductWithAssociatedParts);
+            System.out.println("line 411--- a updated product with associated parts has been saved");
+            try {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successful Product Registration");
+                alert.setHeaderText(null);
+                alert.setContentText("New Product with associated parts has been successfully added to EM Inventory Management System");
+                alert.showAndWait();
+
+                //After successfully updating the product we redirect to the home_page, and we are able to see the updated data table
+                modifyProductRedirectsToEMIMSHomePage();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //remove associated part btn removes the data of the selected row from the associated part data table
@@ -499,91 +457,64 @@ public class ModifyProductController implements Initializable {
      */
     @FXML
     void deleteSelectedAssociatedPart (ActionEvent event) {
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//        index = associatedParts_tableview.getSelectionModel().getSelectedIndex();
-////        parts_tableView.getItems().remove(selectedItem);
-//
-//        if(index > -1) {
-//            PreparedStatement pst;
-//            ProductPartsData selectedItem = associatedParts_tableview.getSelectionModel().getSelectedItem();
-//
-//            String deleteSelectedAssociatedPart = "DELETE FROM modify_associated_parts WHERE partID = ?";
-//
-//            try {
-//
-//                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                alert.setTitle("Confirmation Message");
-//                alert.setHeaderText(null);
-//                alert.setContentText("Are you sure that you want to delete this Associated Part from your Product?");
-//                Optional<ButtonType> option = alert.showAndWait();
-//
-//                if(option.get().equals(ButtonType.OK)) {
-//                    pst = connectDB.prepareStatement(deleteSelectedAssociatedPart);
-//                    pst.setString(1, selectedItem.getPartID().toString());
-//                    pst.execute();
-//
-//                    alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setTitle("Deletion information");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Associated Part has been successfully removed from Current Product");
-//                    alert.showAndWait();
-//
-//                    displayAssociatedPartDataTableView();
-//                } else {
-//                    return;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                e.getCause();
-//            }
-//
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Please select the associated part data row that you want to delete.");
-//            alert.showAndWait();
-//        }
-    }
+        Inventory inventory = new Inventory();
 
-    //display the current associated parts data after add a new associated part
-    /** Public void displayAssociatedPartDataTableView() method is called after successfully adding (clickAddAssociatedPartBtn() method) or deleting (deleteSelectedAssociatedPart() method) an associated part to the product we are modifying.
-     * Public void displayAssociatedPartDataTableView() method is used to refresh the associated parts table located on the modify product page, and shows the most current data parts association.
-     */
-    public void displayAssociatedPartDataTableView() {
-//        associatedPartsByProductList.clear();
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        String associatedPartsViewQuery = "SELECT partID, part_name, stock, price_unit FROM modify_associated_parts";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryAssociatedPartsView = statement.executeQuery(associatedPartsViewQuery);
-//
-//            while (queryAssociatedPartsView.next()) {
-//
-//                //populate the observableList
-//                associatedPartsByProductList.add(new ProductPartsData(queryAssociatedPartsView.getInt("partID"),
-//                        queryAssociatedPartsView.getString("part_name"),
-//                        queryAssociatedPartsView.getInt("stock"),
-//                        queryAssociatedPartsView.getBigDecimal("price_unit")));
-//            }
-//            //PropertyValueFactory corresponds to the new PartData fields
-//            //the table column is the one we annotate above
-//            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("partID"));
-//            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("part_name"));
-//            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            associatedParts_tableview.setItems(associatedPartsByProductList);
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+        String getSingleAssociatedPartID = "";
+        String getSingleAssociatedPartName = "";
+        String getSingleAssociatedPartStock = "";
+        String getSingleAssociatedPartPriceUnit = "";
+
+        //check if a row has been selected
+        if(!associatedParts_tableview.getSelectionModel().isEmpty()) {
+            Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
+
+            getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
+            System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
+            getSingleAssociatedPartName = removeAssociatedPart.getName();
+            System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
+            getSingleAssociatedPartStock = String.valueOf(removeAssociatedPart.getStock());
+            System.out.println("the getSingleAssociatedPartStock value on line 121 is: " + getSingleAssociatedPartStock);
+            getSingleAssociatedPartPriceUnit = String.valueOf(removeAssociatedPart.getPrice());
+            System.out.println("the getSingleAssociatedPartPriceUnit value on line 123 is: " + getSingleAssociatedPartPriceUnit);
+
+            if(!associatedPartsIDsByProduct.getItems().isEmpty() && removeAssociatedPart != null) {
+                try{
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Are you sure that you want to remove this associated part from the current product?");
+                    Optional<ButtonType> option = alert.showAndWait();
+
+                    if(option.get().equals(ButtonType.OK)) {
+//                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
+                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
+
+                        alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Deletion information");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Associated part has been successfully removed from the current product");
+                        alert.showAndWait();
+
+                        associatedParts_tableview.getSelectionModel().clearSelection();
+                        parts_tableView.getSelectionModel().clearSelection();
+                    } else {
+                        return;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    e.getCause();
+                }
+            }
+
+        } else if(parts_tableView.getSelectionModel().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row part that you want to remove from your associated parts table.");
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -695,52 +626,48 @@ public class ModifyProductController implements Initializable {
      */
     @FXML
     void keyReleaseSearchPart(KeyEvent event) {
-//        String text = modifyProduct_searchPartInputField.getText();
-//        //System.out.println(text);
+        //
+//        parts_tableView.getItems().clear();
+        String text = modifyProduct_searchPartInputField.getText().trim();
+        Inventory inventory = new Inventory();
+//        addStartDataTables(inventory);
 //
-//        DatabaseConnection connectNow = new DatabaseConnection();
-//        Connection connectDB = connectNow.getConnection();
-//
-//        //SQL Query - executed in the backend database
-//        String partsViewQuery = "SELECT partID, part_name, stock, price_unit FROM parts";
-//
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet queryPartsOutput = statement.executeQuery(partsViewQuery);
-//            parts_tableView.getItems().clear();
-//            while (queryPartsOutput.next()) {
-//
-//                //populate the observableList
-//                String name = queryPartsOutput.getString("part_name");
-//                String partID = Integer.toString(queryPartsOutput.getInt("partID"));
-//                PartData data = new PartData(Integer.parseInt(partID),
-//                        name,
-//                        queryPartsOutput.getInt("stock"),
-//                        queryPartsOutput.getBigDecimal("price_unit"));
-//                if(name.toLowerCase().contains(text.toLowerCase()) && partList.contains(data) == false || partID.equals(text)) {
-//                    partList.add(data);
-//                }
-//            }
-//
-//            //PropertyValueFactory corresponds to the new PartData fields
-//            //the table column is the one we annotate above
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("partID"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("part_name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            parts_tableView.setItems(partList);
-//
-//            //closing statement once I am done with the query to avoid crashing!!
-//            statement.close();
-//            queryPartsOutput.close();
-//            connectDB.close();
-//
-//        } catch(SQLException e) {
-//            Logger.getLogger(HelloController.class.getName()).log(Level.SEVERE, null, e);
-//            e.printStackTrace();
-//            e.getCause();
-//        }
+        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+
+            inventory.keySearchPart(text);
+
+            partInventorySearchList.setAll(inventory.getPartInventorySearch());
+
+            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            parts_tableView.setItems(partInventorySearchList);
+
+        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
+            alert.showAndWait();
+
+            parts_tableView.getItems().clear();
+            modifyProduct_searchPartInputField.clear();
+
+        } else {
+            inventory = new Inventory();
+//            addStartDataTables(inventory);
+            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            partInventoryList.setAll(inventory.getAllParts());
+            parts_tableView.setItems(partInventoryList);
+
+        }
     }
 
     //SIDE MENU
@@ -820,6 +747,10 @@ public class ModifyProductController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        associatedParts_tableview.getSelectionModel().clearSelection();
+        parts_tableView.getSelectionModel().clearSelection();
+        associatedParts_tableview.getItems().remove(associatedPartsData);
+
         String getSingleAssociatedPartID = "";
         String getSingleAssociatedPartName = "";
         String getSingleAssociatedPartStock = "";
@@ -843,11 +774,11 @@ public class ModifyProductController implements Initializable {
         modifyProduct_setMin.setText(getSingleProductMin);
         modifyProduct_setMax.setText(getSingleProductMax);
 
-        associatedPartsData = FXCollections.observableArrayList(productData.getPassociatedParts());
+//        associatedPartsData = FXCollections.observableArrayList(productData.getPassociatedParts());
         associatedParts_tableview.setItems(associatedPartsData);
         int index = 0;
         while(index < associatedParts_tableview.getItems().size()) {
-            productData.setpAssociatedParts(associatedParts_tableview.getItems().get(index));
+            newProduct.setpAssociatedParts(associatedParts_tableview.getItems().get(index));
             index++;
         }
 
