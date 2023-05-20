@@ -115,7 +115,6 @@ public class AddProductController implements Initializable {
     }
 
 
-
     /**
      * Void clickAddAssociatedPartBtn() method is used after the user selects one row from the upper table and clicks the add button.
      * event represents the event that triggers the action.
@@ -187,7 +186,7 @@ public class AddProductController implements Initializable {
         String getSingleAssociatedPartPriceUnit = "";
 
         //check if a row has been selected
-        if(index > -1) {
+        if(!associatedParts_tableview.getSelectionModel().isEmpty()) {
             Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
 
             getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
@@ -208,7 +207,9 @@ public class AddProductController implements Initializable {
                     Optional<ButtonType> option = alert.showAndWait();
 
                     if(option.get().equals(ButtonType.OK)) {
-                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
+//                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
+                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
 
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Deletion information");
@@ -216,19 +217,8 @@ public class AddProductController implements Initializable {
                         alert.setContentText("Associated part has been successfully removed from the current product");
                         alert.showAndWait();
 
-                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
-
-                        associatedPartsList.setAll(inventory.getAllAssociatedParts());
-
-                        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-                        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-                        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-                        associatedParts_tableview.setItems(associatedPartsList);
-
-                        newProduct.getPassociatedParts().remove(removeAssociatedPart);
                         associatedParts_tableview.getSelectionModel().clearSelection();
+                        parts_tableView.getSelectionModel().clearSelection();
                     } else {
                         return;
                     }
@@ -239,7 +229,7 @@ public class AddProductController implements Initializable {
                 }
             }
 
-        } else {
+        } else if(parts_tableView.getSelectionModel().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
             alert.setHeaderText(null);
