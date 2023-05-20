@@ -650,15 +650,12 @@ public class AddProductController implements Initializable {
 
         Inventory inventory = new Inventory();
 
-//        associatedParts_tableview.getItems().remove(true);
-
         parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
         parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
         parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
         parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         parts_tableView.setItems(inventory.getAllParts());
-
 
         associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
         associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
