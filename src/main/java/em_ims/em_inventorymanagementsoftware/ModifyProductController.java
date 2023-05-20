@@ -448,16 +448,59 @@ public class ModifyProductController implements Initializable {
     void deleteSelectedAssociatedPart (ActionEvent event) {
         Inventory inventory = new Inventory();
 
+        Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
+
         String getSingleAssociatedPartID = "";
         String getSingleAssociatedPartName = "";
 
-//        if(associatedParts_tableview.getSelectionModel().isEmpty()) {
+        if(associatedParts_tableview.getSelectionModel().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the data row part that you want to remove from your associated parts table.");
+            alert.showAndWait();
+        } else if(!associatedParts_tableview.getSelectionModel().isEmpty()) {
+            getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
+            System.out.println("the getSingleAssociatedPartID value on line 464 is: " + getSingleAssociatedPartID);
+            getSingleAssociatedPartName = removeAssociatedPart.getName();
+            System.out.println("the getSingleAssociatedPartName value on line 466 is: " + getSingleAssociatedPartName);
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure that you want to remove this associated part from the current product?");
+            Optional<ButtonType> option = alert.showAndWait();
+
+                if(option.get().equals(ButtonType.OK)) {
+
+//                    if(associatedParts_tableview.getItems().contains(removeAssociatedPart)) {
+//                        newProduct.removepAssociatedParts(removeAssociatedPart);
+//                        associatedParts_tableview.setItems(newProduct.getPassociatedParts());
 //
-//        } else if() {
+//                        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+//                        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//                        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//                        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 //
-//        } else {
-//
-//        }
+//                        associatedParts_tableview.getSelectionModel().clearSelection();
+//                        parts_tableView.getSelectionModel().clearSelection();
+//                    }
+
+                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
+
+                        alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Deletion information");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Associated part has been successfully removed from the current product");
+                        alert.showAndWait();
+
+                        associatedParts_tableview.getSelectionModel().clearSelection();
+                        parts_tableView.getSelectionModel().clearSelection();
+                } else {
+                        return;
+                }
+        }
 
         //check if a row has been selected
 //        if(!associatedParts_tableview.getSelectionModel().isEmpty()) {

@@ -32,6 +32,8 @@ public class Product {
         pAssociatedParts.add(part);
     }
 
+    public void removepAssociatedParts(Part part) {pAssociatedParts.remove(part);}
+
     public Product() {
 
     }
