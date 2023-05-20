@@ -52,7 +52,7 @@ public class Inventory {
     }
 
     public ObservableList<Part> associatedPartDetails(String getSingleAssociatedPartID) {
-        System.out.println("line 54 --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
+        System.out.println("line 55 --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
 
         Integer associatedPartID = Integer.valueOf(getSingleAssociatedPartID);
         String foundName = "";
@@ -65,14 +65,16 @@ public class Inventory {
                 foundName = allParts.get(i).getName();
                 System.out.println("the foundName value is: " + foundName);
 
-                for(Part p : getAllParts()) {
-                    if(p.getId() == foundID) {
+                for(Part p : getAllAssociatedParts()) {
+//                for(Part p : getAllParts()) {
+                    if(p.getId() != foundID) {
+//                    if(p.getId() == foundID) {
                         allAssociatedParts.add(p);
                         System.out.println("we are at line 70 under allAssociatedParts.add(p)");
                         System.out.println("the allAssociatedParts value for foundID on line 69 is: " + allAssociatedParts);
                     }
                 }
-                return partInventorySearch;
+                return allAssociatedParts;
             }
         }
         return null;
