@@ -534,6 +534,55 @@ public class HelloController implements Initializable {
     void deleteSelectedProduct(ActionEvent event) {
         Inventory inventory = new Inventory();
         Product selectedProduct = products_tableView.getSelectionModel().getSelectedItem();
+
+        if(products_tableView.getSelectionModel().isEmpty()) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the product that you want to remove from the products table.");
+            alert.showAndWait();
+
+            return;
+
+        } else if(!products_tableView.getSelectionModel().getSelectedItem().getPassociatedParts().isEmpty()) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error message");
+            alert.setHeaderText(null);
+            alert.setContentText("The selected product " + selectedProduct + " has associated parts. Please modify it by deleting the associated parts, and try again.");
+            alert.showAndWait();
+
+        } else {
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure that you want to delete this product from the EM Inventory Management System?");
+            Optional<ButtonType> option = alert.showAndWait();
+
+            if(option.get().equals(ButtonType.OK)) {
+                Inventory.getAllProducts().remove(selectedProduct);
+//                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+//                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
+
+                try {
+                    homePage_modifyPartBtn.getScene().getWindow().hide();
+                    viewEMInventoryManagementSystem();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Deletion information");
+                alert.setHeaderText(null);
+                alert.setContentText(selectedProduct + " has been successfully removed from the EM Inventory Management System");
+                alert.showAndWait();
+
+                products_tableView.getSelectionModel().clearSelection();
+                parts_tableView.getSelectionModel().clearSelection();
+            }
+        }
     }
 
     /**

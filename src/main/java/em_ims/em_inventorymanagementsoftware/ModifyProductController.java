@@ -450,60 +450,62 @@ public class ModifyProductController implements Initializable {
 
         String getSingleAssociatedPartID = "";
         String getSingleAssociatedPartName = "";
-        String getSingleAssociatedPartStock = "";
-        String getSingleAssociatedPartPriceUnit = "";
+
+//        if(associatedParts_tableview.getSelectionModel().isEmpty()) {
+//
+//        } else if() {
+//
+//        } else {
+//
+//        }
 
         //check if a row has been selected
-        if(!associatedParts_tableview.getSelectionModel().isEmpty()) {
-            Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
-
-            getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
-            System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
-            getSingleAssociatedPartName = removeAssociatedPart.getName();
-            System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
-            getSingleAssociatedPartStock = String.valueOf(removeAssociatedPart.getStock());
-            System.out.println("the getSingleAssociatedPartStock value on line 121 is: " + getSingleAssociatedPartStock);
-            getSingleAssociatedPartPriceUnit = String.valueOf(removeAssociatedPart.getPrice());
-            System.out.println("the getSingleAssociatedPartPriceUnit value on line 123 is: " + getSingleAssociatedPartPriceUnit);
-
-            if(!associatedPartsIDsByProduct.getItems().isEmpty() && removeAssociatedPart != null) {
-                try{
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation Message");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Are you sure that you want to remove this associated part from the current product?");
-                    Optional<ButtonType> option = alert.showAndWait();
-
-                    if(option.get().equals(ButtonType.OK)) {
-//                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
-                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
-                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
-
-                        alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Deletion information");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Associated part has been successfully removed from the current product");
-                        alert.showAndWait();
-
-                        associatedParts_tableview.getSelectionModel().clearSelection();
-                        parts_tableView.getSelectionModel().clearSelection();
-                    } else {
-                        return;
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    e.getCause();
-                }
-            }
-
-        } else if(parts_tableView.getSelectionModel().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error message");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select the data row part that you want to remove from your associated parts table.");
-            alert.showAndWait();
-        }
+//        if(!associatedParts_tableview.getSelectionModel().isEmpty()) {
+//            Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
+//
+//            getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
+//            System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
+//            getSingleAssociatedPartName = removeAssociatedPart.getName();
+//            System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
+//
+//            if(!associatedPartsIDsByProduct.getItems().isEmpty() && removeAssociatedPart != null) {
+//                try{
+//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//                    alert.setTitle("Confirmation Message");
+//                    alert.setHeaderText(null);
+//                    alert.setContentText("Are you sure that you want to remove this associated part from the current product?");
+//                    Optional<ButtonType> option = alert.showAndWait();
+//
+//                    if(option.get().equals(ButtonType.OK)) {
+////                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
+//                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+//                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
+//
+//                        alert = new Alert(Alert.AlertType.INFORMATION);
+//                        alert.setTitle("Deletion information");
+//                        alert.setHeaderText(null);
+//                        alert.setContentText("Associated part has been successfully removed from the current product");
+//                        alert.showAndWait();
+//
+//                        associatedParts_tableview.getSelectionModel().clearSelection();
+//                        parts_tableView.getSelectionModel().clearSelection();
+//                    } else {
+//                        return;
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    e.getCause();
+//                }
+//            }
+//
+//        } else if(parts_tableView.getSelectionModel().isEmpty()){
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error message");
+//            alert.setHeaderText(null);
+//            alert.setContentText("Please select the data row part that you want to remove from your associated parts table.");
+//            alert.showAndWait();
+//        }
     }
 
     /**
