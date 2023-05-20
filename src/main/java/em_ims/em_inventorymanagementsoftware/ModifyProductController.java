@@ -183,17 +183,6 @@ public class ModifyProductController implements Initializable {
             associatedParts_tableview.getSelectionModel().clearSelection();
             parts_tableView.getSelectionModel().clearSelection();
         }
-
-
-
-
-//        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//        associatedParts_tableview.getSelectionModel().clearSelection();
-//        parts_tableView.getSelectionModel().clearSelection();
     }
 
     /**
