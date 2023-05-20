@@ -550,7 +550,7 @@ public class HelloController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
             alert.setHeaderText(null);
-            alert.setContentText("The selected product " + selectedProduct + " has associated parts. Please modify it by deleting the associated parts, and try again.");
+            alert.setContentText("The selected product " + selectedProduct.getProduct_name() + " has associated parts. Please modify it by deleting the associated parts, and try again.");
             alert.showAndWait();
 
         } else {
@@ -576,7 +576,7 @@ public class HelloController implements Initializable {
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Deletion information");
                 alert.setHeaderText(null);
-                alert.setContentText(selectedProduct + " has been successfully removed from the EM Inventory Management System");
+                alert.setContentText(selectedProduct.getProduct_name() + " has been successfully removed from the EM Inventory Management System");
                 alert.showAndWait();
 
                 products_tableView.getSelectionModel().clearSelection();
