@@ -99,8 +99,6 @@ public class AddProductController implements Initializable {
     }
 
     private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) {
-//        Part singlePart = parts_tableView.getSelectionModel().getSelectedItem();
-//        String getSingleAssociatedPartID = String.valueOf(singlePart.getId());
 
         newProduct.setpAssociatedParts(singlePart);
         associatedParts_tableview.setItems(newProduct.getPassociatedParts());
@@ -111,6 +109,9 @@ public class AddProductController implements Initializable {
         associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
+
+        associatedParts_tableview.getSelectionModel().clearSelection();
+        parts_tableView.getSelectionModel().clearSelection();
     }
 
 
@@ -157,119 +158,15 @@ public class AddProductController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("The selected item is already part of this product. Please try again later.");
                     alert.showAndWait();
+
+                    parts_tableView.getSelectionModel().clearSelection();
+
                     return;
 
                 }
             }
 
         }
-
-
-
-
-
-//        Inventory inventory = new Inventory();
-//        index = parts_tableView.getSelectionModel().getSelectedIndex();
-//
-//        String getSingleAssociatedPartID = "";
-//
-//        //check if a row has been selected
-//        if(index > -1) {
-//
-//            if(associatedPartsIDsByProduct.getItems().isEmpty() || associatedPartsIDsByProduct.getItems() == null) {
-//                try{
-//                    Part selectedPartToAssociate = parts_tableView.getSelectionModel().getSelectedItem();
-//
-//                    getSingleAssociatedPartID = String.valueOf(selectedPartToAssociate.getId());
-//                    System.out.println("the getSingleAssociatedPartID value on line 121 is: " + getSingleAssociatedPartID);
-//
-//                    if(Integer.valueOf(getSingleAssociatedPartID) > 0){
-//
-//                        try {
-//                            inventory.associatedPartDetails(getSingleAssociatedPartID);
-//
-//                            associatedPartsList.setAll(inventory.getAllAssociatedParts());
-//
-//                            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//                            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//                            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//                            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//                            associatedParts_tableview.setItems(associatedPartsList);
-//
-//                            associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
-//                            index = -1;
-//                            getSingleAssociatedPartID = "";
-//
-//                            newProduct.setpAssociatedParts(selectedPartToAssociate);
-//                            parts_tableView.getSelectionModel().clearSelection();
-//
-//                        } catch(Exception e){
-//                            e.printStackTrace();
-//                            e.getCause();
-//                        }
-//
-//                    }
-//
-//                } catch(Exception e){
-//                    e.printStackTrace();
-//                    e.getCause();
-//                }
-//
-//            } else if(!associatedPartsIDsByProduct.getItems().isEmpty()) {
-//                try{
-//                    Part selectedPartToAssociate = parts_tableView.getSelectionModel().getSelectedItem();
-//
-//                    getSingleAssociatedPartID = String.valueOf(selectedPartToAssociate.getId());
-//                    System.out.println("the getSingleAssociatedPartID value on line 162 is: " + getSingleAssociatedPartID);
-//
-////                    if(Integer.valueOf(getSingleAssociatedPartID) > 0){
-//                    if(!associatedPartsIDsByProduct.getItems().contains(getSingleAssociatedPartID)){
-//
-//                        try {
-//                            inventory.validateAssociatedPart(getSingleAssociatedPartID);
-//
-//                            associatedPartsList.setAll(inventory.getAllAssociatedParts());
-//
-//                            associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//                            associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//                            associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//                            associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//                            associatedParts_tableview.setItems(associatedPartsList);
-//
-//                            associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
-//                            index = -1;
-//                            getSingleAssociatedPartID = "";
-//
-//                            newProduct.setpAssociatedParts(selectedPartToAssociate);
-//                            parts_tableView.getSelectionModel().clearSelection();
-//
-//                        } catch(Exception e){
-//                            e.printStackTrace();
-//                            e.getCause();
-//                        }
-//
-//                    } else if (associatedPartsIDsByProduct.getItems().contains(getSingleAssociatedPartID)) {
-//                        Alert alert = new Alert(Alert.AlertType.ERROR);
-//                        alert.setTitle("Error message");
-//                        alert.setHeaderText(null);
-//                        alert.setContentText("The selected item is already part of this product. Please try again later.");
-//                        alert.showAndWait();
-//                    }
-//                } catch(Exception e){
-//                    e.printStackTrace();
-//                    e.getCause();
-//                }
-//            }
-//
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Please select the data row part that you want to associate with your product.");
-//            alert.showAndWait();
-//        }
     }
 
 
@@ -760,6 +657,7 @@ public class AddProductController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         associatedParts_tableview.getSelectionModel().clearSelection();
+        parts_tableView.getSelectionModel().clearSelection();
 
         Inventory inventory = new Inventory();
 

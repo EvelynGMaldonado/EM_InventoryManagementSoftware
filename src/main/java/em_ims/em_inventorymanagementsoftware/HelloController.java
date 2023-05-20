@@ -629,8 +629,11 @@ public class HelloController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        parts_tableView.getSelectionModel().clearSelection();
+        products_tableView.getSelectionModel().clearSelection();
+
         Inventory inventory = new Inventory();
-//        addStartDataTables(inventory);
+
         parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
         parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
         parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
