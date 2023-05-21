@@ -14,11 +14,17 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * @author Evelyn G Morrow.
+ * @version 1.1.
+ * Public class ModifyPartController is used to retrieve and display the data row after selecting the part that the user needs to modify from the parts table, and click the modify part button.
+ * RUNTIME ERROR:
+ * FUTURE ENHANCEMENT:
+ */
 public class ModifyPartController implements Initializable {
     Part selectedPart;
     int selectedIndex;
     Part part;
-
 
     @FXML
     private Button addPartPageBtn;
