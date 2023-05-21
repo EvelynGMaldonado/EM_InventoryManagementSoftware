@@ -28,8 +28,10 @@ import java.util.logging.Logger;
 
 /**
  * @author Evelyn G Morrow.
- * @version 1.0.
+ * @version 1.1.
  * Public class HelloController is used to retrieve and display the most up-to-date data on the parts and products tables after the user successfully signs in, as well as to manage some functionality such as delete, search, etc.
+ * RUNTIME ERROR:
+ * FUTURE ENHANCEMENT:
  */
 public class HelloController implements Initializable {
     Inventory inventory;
@@ -136,10 +138,6 @@ public class HelloController implements Initializable {
     private ObservableList<Part> partInventorySearchList = FXCollections.observableArrayList();
     private ObservableList<Product> productInventorySearchList = FXCollections.observableArrayList();
 
-//    private ObservableList<Part> currentPartsList = FXCollections.observableArrayList(
-//            new Part(new Outsourced(1, "Seat post", 15.50, 15, 1, 20, "Super Seat-posts"));
-//    );
-
     /**
      * Void closeBtnAction() method is used to close the landing page which will basically close the application.
      * @param event represents the event that triggers the action.
@@ -173,6 +171,12 @@ public class HelloController implements Initializable {
         ppMainWindow.show();
     }
 
+    /**
+     * Void KeyReleaseSearchPart() method is used to find a part row by typing information in the input field.
+     * @param event represents the event that triggers the action.
+     * @exception SQLException if a database error or other errors occur.
+     * @see SQLException
+     */
     @FXML
     void KeyReleaseSearchPart(KeyEvent event) {
 //
@@ -219,6 +223,12 @@ public class HelloController implements Initializable {
         }
     }
 
+    /**
+     * Void btnSearchProduct() method is used to find a product row by typing information in the input field and clicking the search button.
+     * e represents the event that triggers the action.
+     * @exception SQLException if a database error or other errors occur.
+     * @see SQLException
+     */
     @FXML
     void KeyReleaseSearchProduct(KeyEvent event) {
 //        products_tableView.getItems().clear();
@@ -312,7 +322,12 @@ public class HelloController implements Initializable {
         addProductPageWindow.show();
     }
 
-
+    /**
+     * Void clickAddProductPageBtn() method is used to open Add Product Page.
+     * e represents the event that triggers the action.
+     * @exception IOException if an input or output error occurs.
+     * @see IOException
+     */
     @FXML
     void clickModifyPartPageBtn(ActionEvent event) {
         Part selectedItem = parts_tableView.getSelectionModel().getSelectedItem();
@@ -404,6 +419,15 @@ public class HelloController implements Initializable {
         }
     }
 
+    /**
+     * Void clickModifyProductPageBtn() method is used to open Modify Product Page.
+     * e represents the event that triggers the action.
+     * An error alert is displayed when no row has been selected.
+     * @exception IOException if an input or output error occurs.
+     * @see IOException
+     * @exception SQLException if a database error or other errors occur.
+     * @see SQLException
+     */
     @FXML
     void clickModifyProductPageBtn(ActionEvent event) {
         index = products_tableView.getSelectionModel().getSelectedIndex();
@@ -459,6 +483,12 @@ public class HelloController implements Initializable {
         }
     }
 
+    /**
+     * Void deleteSelectedPart() method is used to delete the records from the selected row on the parts table.
+     * e represents the event that triggers the action.
+     * A confirmation alert is displayed, if the user clicks ok then the part will be deleted, and the parts table will be updated. If the user clicks cancel, then the action is aborted.
+     * An error alert is displayed when no row has been selected.
+     */
     @FXML
     void deleteSelectedPart(ActionEvent event) {
         index = products_tableView.getSelectionModel().getSelectedIndex();
@@ -530,6 +560,13 @@ public class HelloController implements Initializable {
 
     }
 
+    /**
+     * Void deleteSelectedProduct() method is used to delete the product records from the selected row on the products table.
+     * e represents the event that triggers the action.
+     * A confirmation alert is displayed, if the user clicks ok then the product will be deleted, and the products table will be updated, unless an Exception is caught. If the user clicks cancel, then the action is aborted.
+     * An error alert is displayed when no row has been selected.
+     * An error alert is displayed when the selected product has an associated part.
+     */
     @FXML
     void deleteSelectedProduct(ActionEvent event) {
         Inventory inventory = new Inventory();

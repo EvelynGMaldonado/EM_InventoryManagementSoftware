@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * @author Evelyn G Morrow.
- * @version 1.0.
+ * @version 1.1.
  * Public class HelloApplication is the primary class of the EM Inventory Management System.
  * Public class HelloApplication extends the Application class, which is a standard class in Java.
  */
