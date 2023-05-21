@@ -19,6 +19,13 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * @author Evelyn G Morrow.
+ * @version 1.1.
+ * Public class AddProductController is used to add a new product to the EM management system database.
+ * RUNTIME ERROR:
+ * FUTURE ENHANCEMENT:
+ */
 public class AddProductController implements Initializable {
     @FXML
     private Button addPartPageBtn;
@@ -89,15 +96,17 @@ public class AddProductController implements Initializable {
 
     private ListView<String> associatedPartsIDsByProduct = new ListView<String>();
 
-//    Product temporaryProduct = new Product();
     Product newProduct = new Product();
-
-//    private static Product currentProduct = new Product();
-//    private static ObservableList<Part> associatedPartsByProduct = null;
 
     public AddProductController() {
     }
 
+    /**
+     * private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) method is called by the clickAddAssociatedPartBtn(ActionEvent event) to add the associated parts to the associated table.
+     * @param singlePart is passed by the clickAddAssociatedPartBtn(ActionEvent event) method.
+     * @param getSingleAssociatedPartID is passed by the clickAddAssociatedPartBtn(ActionEvent event) method.
+     * The bottom associated parts table updates and shows the current associated parts data after adding a new associated part, unless an exception is caught.
+     */
     private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) {
 
         newProduct.setpAssociatedParts(singlePart);
@@ -120,9 +129,8 @@ public class AddProductController implements Initializable {
      * event represents the event that triggers the action.
      * there is a validation to verify if one row from the part table has been selected.
      * All the data from the selected row is retrieved.
-     * displayAssociatedPartDataTableView() method is called when the data is successfully retrieved from the parts table and inserted into the associated parts table.
+     * addSelectedPart(singlePart, getSingleAssociatedPartID) method is called when the data is successfully retrieved from the parts table.
      * error alert is shown when there is no selected row or when the part has been already associated to the product.
-     * The bottom associated parts table updates and shows the current associated parts data after adding a new associated part, unless an exception is caught.
      */
     @FXML
     void clickAddAssociatedPartBtn(ActionEvent event){
@@ -343,6 +351,10 @@ public class AddProductController implements Initializable {
 
     }
 
+    /**
+     * Private void generateProductId(String productName) method is used to generate the unique product ID.
+     * @param productName is passed once the validateProductName() method verifies that the product name is unique in our EM database.
+     */
     private void generateProductId(String productName) {
         System.out.println("we are into generateProductId() method on line 389!! and the productName value we are working with is: " + productName);
 
@@ -363,7 +375,6 @@ public class AddProductController implements Initializable {
                     setProductID = productID;
                     System.out.println("the setProductID value on line 406 is: " + setProductID);
                 }
-
             }
             registerNewProduct(productName, productID);
             System.out.println("line 411 -- the productID value on line 410 is: " + productID);
