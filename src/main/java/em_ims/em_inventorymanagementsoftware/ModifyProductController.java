@@ -19,6 +19,13 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * @author Evelyn G Morrow.
+ * @version 1.1.
+ * Public class ModifyProductController is used to retrieve and display the data row after selecting the product that the user needs to modify from the products table, and click the modify product button.
+ * RUNTIME ERROR:
+ * FUTURE ENHANCEMENT:
+ */
 public class ModifyProductController implements Initializable {
     @FXML
     private Button addPartPageBtn;
@@ -157,6 +164,12 @@ public class ModifyProductController implements Initializable {
 
     }
 
+    /**
+     * private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) method is called by the clickAddAssociatedPartBtn(ActionEvent event) to add the associated parts to the associated table.
+     * @param singlePart is passed by the clickAddAssociatedPartBtn(ActionEvent event) method.
+     * @param getSingleAssociatedPartID is passed by the clickAddAssociatedPartBtn(ActionEvent event) method.
+     * The bottom associated parts table updates and shows the current associated parts data after adding a new associated part, unless an exception is caught.
+     */
     private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) {
 
         if(!associatedParts_tableview.getItems().contains(singlePart)){
@@ -188,7 +201,7 @@ public class ModifyProductController implements Initializable {
     /**
      * Void clickAddAssociatedPartBtn() method is located on the Modify Product page.
      * It checks if a row has been selected, retrieves data from parts table (choose part data), and inserts it into the associated parts data table.
-     * Once the insertion is done, we call the displayAssociatedPartDataTableView() method, to display the updated associated parts table on the modify product page.
+     * Once the insertion is done, we call the addSelectedPart(singlePart, getSingleAssociatedPartID) method.
      * @param event represents the event that triggers the action.
      */
     @FXML
