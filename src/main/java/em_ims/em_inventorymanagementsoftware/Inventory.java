@@ -3,7 +3,13 @@ package em_ims.em_inventorymanagementsoftware;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-
+/**
+ * @author Evelyn G Morrow.
+ * @version 1.1.
+ * Public class Inventory() holds the data for products, parts, and associated parts. It contains methods to retrieve and modify data.
+ * RUNTIME ERROR:
+ * FUTURE ENHANCEMENT:
+ */
 public class Inventory {
     HelloController helloController;
 
@@ -12,41 +18,57 @@ public class Inventory {
     public static ObservableList<Part> allParts = FXCollections.observableArrayList();
     public static ObservableList<Product> allProducts = FXCollections.observableArrayList();
 
+    /**
+     * Creates a new empty observable list that is backed by an arraylist.
+     */
     private ObservableList<Part> partInventorySearch = FXCollections.observableArrayList();
 
-
-
+    /**
+     * Method to return partInventorySearch updated list.
+     * @return partInventorySearch list.
+     */
     public ObservableList<Part> getPartInventorySearch() {
         return partInventorySearch;
     }
 
+    /**
+     * Creates a new empty observable list that is backed by an arraylist.
+     */
     private static ObservableList<Part> allAssociatedParts = FXCollections.observableArrayList();
+
+    /**
+     * Method to return allAssociatedParts updated list.
+     * @return allAssociatedParts list.
+     */
     public static ObservableList<Part> getAllAssociatedParts() {
         return allAssociatedParts;
     }
 
+    /**
+     * Creates a new empty observable list that is backed by an arraylist.
+     */
     private ObservableList<Product> productInventorySearch = FXCollections.observableArrayList();
 
-//    public ObservableList<Part> getAllParts() {
-//        return allParts;
-//    }
-
+    /**
+     * Method to return allParts updated list
+     * @return allParts list
+     */
     public static ObservableList<Part> getAllParts() {
         return allParts;
     }
 
+    /**
+     * Method to return the allProducts updated list.
+     * @return allProducts list.
+     */
     public static ObservableList<Product> getAllProducts() {
         return allProducts;
     }
 
-//    public int partListSize() {
-//        return allParts.size();
-//    }
-//
-//    public int productListSize() {
-//        return allProducts.size();
-//    }
-
+    /**
+     * @param getSingleAssociatedPartID the id of the selected associated part.
+     * @return the all associated parts.
+     */
     public ObservableList<Part> associatedPartDetails(String getSingleAssociatedPartID) {
         System.out.println("line 55 --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
 
@@ -77,6 +99,10 @@ public class Inventory {
 
     }
 
+    /**
+     * @param partSearchByKey the characters on key release
+     * @return the partInventorySearch
+     */
     public ObservableList<Part> keySearchPart(String partSearchByKey){
         System.out.println("the value of partSearchByKey is: " + partSearchByKey);
         getAllParts();
@@ -107,53 +133,57 @@ public class Inventory {
                         System.out.println("the partInventorySearch value for foundID on line 68 is: " + partInventorySearch);
                     }
                 }
-
                 return partInventorySearch;
-
             }
-//            else {
-//                Alert alert = new Alert(Alert.AlertType.ERROR);
-//                alert.setTitle("Error message");
-//                alert.setHeaderText(null);
-//                alert.setContentText("No matches have been found. Please try again.");
-//                alert.showAndWait();
-//            }
+            //else {
+                //Alert alert = new Alert(Alert.AlertType.ERROR);
+                //alert.setTitle("Error message");
+                //alert.setHeaderText(null);
+                //alert.setContentText("No matches have been found. Please try again.");
+                //alert.showAndWait();
+            //}
         }
-
         return null;
     }
 
-    public  static void addProduct(Product product) {
+    /**
+     * Public  static void addProduct(Product product) method adds a product to allProducts list.
+     * @param product the product to be added
+     */
+    public static void addProduct(Product product) {
         if(product != null) {
             allProducts.add(product);
         }
     }
 
+    /**
+     * Public void addPart() method adds a new part to allParts list.
+     * @param partID the partID to be added in the inventory.
+     * @param partName the partName to be added in the inventory.
+     * @param priceUnit the price of the part to be added in the inventory.
+     * @param inventoryLevel the number of parts in the inventory.
+     * @param min the min number of parts allowed in the inventory.
+     * @param max the max number of parts allowed in the inventory.
+     * @param machineID the machineID of the part to be added in the inventory.
+     */
     public void addPart(int partID, String partName, Double priceUnit, int inventoryLevel, int min, int max, int machineID) {
         Part newPart = new InHouse(partID, partName, priceUnit, inventoryLevel, min, max, machineID);
         allParts.add(newPart);
     }
 
+    /**
+     * Public void addProduct() method adds a new product to allProducts list.
+     * @param productID the productID to be added in the inventory.
+     * @param product_name the product_name to be added in the inventory.
+     * @param price_unit the price of the product to be added in the inventory.
+     * @param stock the number of products in the inventory.
+     * @param min the min number products allowed in the inventory.
+     * @param max the max number products allowed in the inventory.
+     */
     public void addProduct(int productID, String product_name, double price_unit, int stock, int min, int max) {
         Product newProduct = new Product(productID, product_name, price_unit, stock, min, max);
         allProducts.add(newProduct);
     }
-
-//    public void validateAssociatedPart(String getSingleAssociatedPartID) {
-//        System.out.println("line 170 we are into the validateAssociatedPart(String getSingleAssociatedPartID) method --- the value of getSingleAssociatedPartID is: " + getSingleAssociatedPartID);
-//
-//        Integer associatedPartID = Integer.valueOf(getSingleAssociatedPartID);
-//
-//        if(!allAssociatedParts.isEmpty()) {
-//            for (int i = 0; i < allAssociatedParts.size(); i++) {
-//                if(allAssociatedParts.get(i).getId() != associatedPartID) {
-//                    System.out.println("the selected part is not part of our product yet.");
-//                    associatedPartDetails(getSingleAssociatedPartID);
-//                    System.out.println("Calling the associatedPartDetails() method.");
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Public void updateProduct() method is used to replace an old product with the updated product.
