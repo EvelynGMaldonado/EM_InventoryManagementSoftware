@@ -7,7 +7,7 @@ package em_ims.em_inventorymanagementsoftware;
 /**
  * @author Evelyn G Morrow.
  * @version 1.1.
- * Public class PartData used to display the parts tableview on the dashboard at the Home Page, the founded parts at the Homepage, the available parts at the Add Product Page and at the Modify Product Page .
+ * Public class Part used to display the parts tableview on the dashboard at the Home Page, the founded parts at the Homepage, the available parts at the Add Product Page and at the Modify Product Page .
  * RUNTIME ERROR:
  * FUTURE ENHANCEMENT:
  */
@@ -24,15 +24,15 @@ public abstract class Part {
     }
 
     /**
-     * Public PartData Constructor is called when the ProductData object is instantiated.
+     * Public Part Constructor is called when the Product object is instantiated.
      * It has the function of initialize the newly created object before it is used.
-     * The list of parameters that the public PartData constructor can take are declared into the parenthesis, and listed below:
-     * @param id is taken by public PartData Constructor, and initializes the private Integer partID variable.
-     * @param name is taken by public PartData Constructor, and initializes the private String part_name variable.
-     * @param stock is taken by public PartData Constructor, and initializes the private Integer stock variable.
-     * @param price is taken by public PartData Constructor, and initializes the private BigDecimal price_unit variable.
-     * @param max is taken by public PartData Constructor, and initializes the private Integer max variable.
-     * @param min is taken by public PartData Constructor, and initializes the private Integer min variable.
+     * The list of parameters that the public Part constructor can take are declared into the parenthesis, and listed below:
+     * @param id is taken by public Part Constructor, and initializes the private Integer partID variable.
+     * @param name is taken by public Part Constructor, and initializes the private String part_name variable.
+     * @param stock is taken by public Part Constructor, and initializes the private Integer stock variable.
+     * @param price is taken by public Part Constructor, and initializes the private BigDecimal price_unit variable.
+     * @param max is taken by public Part Constructor, and initializes the private Integer max variable.
+     * @param min is taken by public Part Constructor, and initializes the private Integer min variable.
      */
     public Part(int id, String name, double price, int stock, int min, int max) {
         this.id = id;
