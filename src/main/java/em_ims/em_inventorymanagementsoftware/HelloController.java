@@ -152,6 +152,8 @@ public class HelloController implements Initializable {
      * Void LoginButtonOnAction() method is used after the user clicks the start button.
      * @param event represents the event that triggers the action.
      * @throws IOException that would be produced by failed or interrupted input/output operations.
+     * RUNTIME ERROR:
+     * FUTURE ENHANCEMENT:
      */
     @FXML
     void LoginButtonOnAction(ActionEvent event) throws IOException {
