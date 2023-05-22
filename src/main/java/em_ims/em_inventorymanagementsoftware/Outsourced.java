@@ -4,8 +4,9 @@ package em_ims.em_inventorymanagementsoftware;
  * @author Evelyn G Morrow.
  * @version 1.1.
  * Public class Outsourced is an extension of the Part class used to display the outsourced parts on the parts tableview.
- * RUNTIME ERROR:
- * FUTURE ENHANCEMENT:
+ * The javadocs will be on the ... folder.
+ * RUNTIME ERROR: I was trying to add the outsourced part by just the id and the machine number. I ended up modifying the inHouse class, and the inventory to be able to extend the part class to inHouse or Outsourced, depending on the type of part.
+ * FUTURE ENHANCEMENT: Creating the filter to insert the in house or outsourced part into the mysql database.
  */
 public class Outsourced extends Part {
     public String company_name;

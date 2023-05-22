@@ -8,8 +8,9 @@ import java.util.ArrayList;
  * @author Evelyn G Morrow.
  * @version 1.1.
  * Public class Product used to display the products tableview on the dashboard at the Home Page.
- * RUNTIME ERROR:
- * FUTURE ENHANCEMENT:
+ * The javadocs will be on the ... folder.
+ * RUNTIME ERROR: When creating a new product, it successfully added and removed associated parts; When modifying a product, the previously associated pats were displayed, but when adding or removing an associated part, it would updated the product without clicking on the save button. I fixed it by just removing or adding parts to the tableview, and then adding or removing the ones that weren't part of the product before clicking on the modify button.
+ * FUTURE ENHANCEMENT: Utilize mysql database for automatically add, or remove associated parts to the product, as well as creating filters for deleting parts/products from the database.
  */
 public class Product {
     private ObservableList<Part> pAssociatedParts = FXCollections.observableArrayList();

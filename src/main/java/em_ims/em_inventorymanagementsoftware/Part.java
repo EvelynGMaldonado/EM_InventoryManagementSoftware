@@ -7,9 +7,10 @@ package em_ims.em_inventorymanagementsoftware;
 /**
  * @author Evelyn G Morrow.
  * @version 1.1.
- * Public class Part used to display the parts tableview on the dashboard at the Home Page, the founded parts at the Homepage, the available parts at the Add Product Page and at the Modify Product Page .
- * RUNTIME ERROR:
- * FUTURE ENHANCEMENT:
+ * Public class Part used to display the parts tableview on the dashboard at the Home Page, the founded parts at the Homepage, the available parts at the Add Product Page and at the Modify Product Page.
+ * The javadocs will be on the ... folder.
+ * RUNTIME ERROR: I was trying to add the in house parts and the outsourced parts by just the id and the machine number / company name. I ended up modifying the inHouse class, the outsourced class, and the inventory to be able to extend the part class to inHouse or Outsourced, depending on the type of part.
+ * FUTURE ENHANCEMENT: Creating the filter to insert the in house or outsourced part into the mysql database.
  */
 public abstract class Part {
     private int id;
