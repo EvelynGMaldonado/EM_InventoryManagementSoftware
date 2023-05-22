@@ -12,7 +12,6 @@ import java.io.IOException;
  * @version 1.1.
  * Public class HelloApplication is the primary class of the EM Inventory Management System.
  * Public class HelloApplication extends the Application class, which is a standard class in Java.
- * The javadocs will be on the ... folder.
  * RUNTIME ERROR: Correctly displaying the landing page after the application is started. I changed the size of the scene for it to fully show the right dimensions, as well as the correct implementation of the css page.
  * FUTURE ENHANCEMENT: Implementing mysql database system for the backend.
  */

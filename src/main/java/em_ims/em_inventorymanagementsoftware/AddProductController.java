@@ -23,7 +23,6 @@ import java.util.ResourceBundle;
  * @author Evelyn G Morrow.
  * @version 1.1.
  * Public class AddProductController is used to add a new product to the EM management system database.
- * The javadocs will be on the ... folder.
  * RUNTIME ERROR: The product id was displaying the same number. I just created a conditional: if the product id already exists, count++ so the next product id would be the previous number + 1.
  * FUTURE ENHANCEMENT: auto generate, auto increment, unique product id in the mysql database.
  */
