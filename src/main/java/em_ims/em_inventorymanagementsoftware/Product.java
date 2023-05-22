@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * @author Evelyn G Morrow.
- * @version 1.0.
+ * @version 1.1.
  * Public class Product used to display the products tableview on the dashboard at the Home Page.
  * RUNTIME ERROR:
  * FUTURE ENHANCEMENT:
@@ -20,10 +20,6 @@ public class Product {
     private int min;
     private int max;
 
-//    private ArrayList<Part> associatedParts = new ArrayList<Part>();
-
-//    public ObservableList<Part> allProductAssociatedParts = FXCollections.observableArrayList();
-//
     public ObservableList<Part> getPassociatedParts() {
         return pAssociatedParts;
     }
@@ -39,13 +35,15 @@ public class Product {
     }
 
     /**
-     * Public ProductData Constructor is called when the ProductData object is instantiated.
+     * Public Product Constructor is called when the Product object is instantiated.
      * It has the function of initialize the newly created object before it is used.
-     * The list of parameters that the public ProductData constructor can take are declared into the parenthesis, and listed below:
-     * @param productID is taken by public ProductData Constructor, and initializes the private Integer productID variable.
-     * @param product_name is taken by public ProductData Constructor, and initializes the private String product_name variable.
-     * @param stock is taken by public ProductData Constructor, and initializes the private Integer stock variable.
-     * @param price_unit is taken by public ProductData Constructor, and initializes the private BigDecimal price_unit variable.
+     * The list of parameters that the public Product constructor can take are declared into the parenthesis, and listed below:
+     * @param productID is taken by public Product Constructor, and initializes the private Integer productID variable.
+     * @param product_name is taken by public Product Constructor, and initializes the private String product_name variable.
+     * @param stock is taken by public Product Constructor, and initializes the private Integer stock variable.
+     * @param price_unit is taken by public Product Constructor, and initializes the private BigDecimal price_unit variable.
+     * @param max is taken by public Product Constructor, and initializes the private Integer max variable.
+     * @param min is taken by public Product Constructor, and initializes the private Integer min variable.
      */
     public Product(int productID, String product_name, double price_unit, int stock, int min, int max) {
         setProductID(productID);
@@ -152,11 +150,4 @@ public class Product {
         this.max = max;
     }
 
-//    public ArrayList<Part> getAssociatedParts() {
-//        return associatedParts;
-//    }
-//
-//    public void setAssociatedParts(ArrayList<Part> associatedParts) {
-//        this.associatedParts = associatedParts;
-//    }
 }
