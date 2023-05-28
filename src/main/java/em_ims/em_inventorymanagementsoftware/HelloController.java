@@ -1,30 +1,24 @@
 package em_ims.em_inventorymanagementsoftware;
 
+import Model.*;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
-import java.text.DecimalFormat;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+
 
 /**
  * @author Evelyn G Morrow.
@@ -138,6 +132,50 @@ public class HelloController implements Initializable {
     private ObservableList<Part> partInventorySearchList = FXCollections.observableArrayList();
     private ObservableList<Product> productInventorySearchList = FXCollections.observableArrayList();
 
+    public static List<Integer> productsIDManagementList = new LinkedList<Integer>();
+
+    public void productsIDControl() {
+        if(!inventory.getAllProducts().isEmpty()) {
+            Integer productIdToStore = 0;
+            for(int i = 0; i < productsIDManagementList.size(); i++){
+                if(!productsIDManagementList.contains(productIdToStore)){
+                    productsIDManagementList.add(productIdToStore);
+                    Integer greatestProductID = Collections.max(productsIDManagementList);
+                    for (int j = 0; j < Inventory.allProducts.size(); j++) {
+                        if(Inventory.allProducts.get(j).getProductID() != greatestProductID && !productsIDManagementList.contains(Inventory.allProducts.get(j).getProductID())) {
+                            productIdToStore = Inventory.allProducts.get(j).getProductID();
+                            System.out.println("the productIdToStore value on line 147 is: " + productIdToStore);
+
+                            productsIDManagementList.add(productIdToStore);
+                        }
+                    }
+                    System.out.println("Max value on line 152 is: " + Collections.max(productsIDManagementList));
+                    break;
+                } else if(productsIDManagementList.contains(productIdToStore)){
+                    Integer greatestProductID = Collections.max(productsIDManagementList);
+                    for (int j = 0; j < Inventory.allProducts.size(); j++) {
+                        if(Inventory.allProducts.get(j).getProductID() != greatestProductID && !productsIDManagementList.contains(Inventory.allProducts.get(j).getProductID())) {
+                            productIdToStore = Inventory.allProducts.get(j).getProductID();
+                            System.out.println("the productIdToStore value on line 159 is: " + productIdToStore);
+
+                            productsIDManagementList.add(productIdToStore);
+                        }
+                    }
+                    System.out.println("Max value on line 164 is: " + Collections.max(productsIDManagementList));
+                    break;
+                }
+            }
+        } else if(inventory.getAllProducts().isEmpty()) {
+            Integer productIdToStore = 0;
+            for(int i = 0; i < productsIDManagementList.size(); i++){
+                if(!productsIDManagementList.contains(productIdToStore)){
+                    productsIDManagementList.add(productIdToStore);
+                    break;
+                }
+            }
+        }
+    }
+
     /**
      * Void closeBtnAction() method is used to close the landing page which will basically close the application.
      * @param event represents the event that triggers the action.
@@ -175,57 +213,83 @@ public class HelloController implements Initializable {
     }
 
     /**
-     * Void KeyReleaseSearchPart() method is used to find a part row by typing information in the input field.
-     * @param event represents the event that triggers the action.
+     * Void keyReleaseSearchPart() method is used to find a part row by typing information in the input field.
+     * e represents the event that triggers the action.
      * @exception SQLException if a database error or other errors occur.
      * @see SQLException
      */
     @FXML
-    void KeyReleaseSearchPart(KeyEvent event) {
-//
-//        parts_tableView.getItems().clear();
-        String text = homePage_searchPartInputField.getText().trim();
-        Inventory inventory = new Inventory();
-//        addStartDataTables(inventory);
-//
-        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+    void keySearchPart(ActionEvent event) {
+////        parts_tableView.getItems().clear();
+        String text = homePage_searchPartInputField.getText().trim().toLowerCase();
+        ObservableList<Part> partInventorySearchList = Inventory.lookupPart(text);
+        if (partInventorySearchList.size() == 0) {
+            try {
+                int partID = Integer.parseInt(text);
+                Part searchPartById = Inventory.lookupPart(partID);
 
-            inventory.keySearchPart(text);
-
-            partInventorySearchList.setAll(inventory.getPartInventorySearch());
-
-            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            parts_tableView.setItems(partInventorySearchList);
-
-        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error message");
-            alert.setHeaderText(null);
-            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
-            alert.showAndWait();
-
-            parts_tableView.getItems().clear();
-            homePage_searchPartInputField.clear();
-
-        } else {
-            inventory = new Inventory();
-//            addStartDataTables(inventory);
-            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            partInventoryList.setAll(inventory.getAllParts());
-            parts_tableView.setItems(partInventoryList);
-
+                if (searchPartById != null) {
+                    partInventorySearchList.add(searchPartById);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                e.getCause();
+            }
         }
+        parts_tableView.setItems(partInventorySearchList);
     }
 
+//    /**
+//     * Void KeyReleaseSearchPart() method is used to find a part row by typing information in the input field.
+//     * @param event represents the event that triggers the action.
+//     * @exception SQLException if a database error or other errors occur.
+//     * @see SQLException
+//     */
+//    @FXML
+//    void KeyReleaseSearchPart(KeyEvent event) {
+////
+////        parts_tableView.getItems().clear();
+//        String text = homePage_searchPartInputField.getText().trim();
+//        Inventory inventory = new Inventory();
+////        addStartDataTables(inventory);
+////
+//        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+//
+//            inventory.keySearchPart(text);
+//
+//            partInventorySearchList.setAll(inventory.getPartInventorySearch());
+//
+//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+//
+//            parts_tableView.setItems(partInventorySearchList);
+//
+//        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
+//
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error message");
+//            alert.setHeaderText(null);
+//            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
+//            alert.showAndWait();
+//
+//            parts_tableView.getItems().clear();
+//            homePage_searchPartInputField.clear();
+//
+//        } else {
+//            inventory = new Inventory();
+////            addStartDataTables(inventory);
+//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+//
+//            partInventoryList.setAll(inventory.getAllParts());
+//            parts_tableView.setItems(partInventoryList);
+//
+//        }
+//    }
     /**
      * Void btnSearchProduct() method is used to find a product row by typing information in the input field and clicking the search button.
      * e represents the event that triggers the action.
@@ -233,51 +297,77 @@ public class HelloController implements Initializable {
      * @see SQLException
      */
     @FXML
-    void KeyReleaseSearchProduct(KeyEvent event) {
-//        products_tableView.getItems().clear();
-        String text = homePage_searchProductInputField.getText().toLowerCase().trim();
-        Inventory inventory = new Inventory();
-//        addStartDataTables(inventory);
-//
-        if(!text.isEmpty() && !inventory.getAllProducts().isEmpty()) {
+    void KeyReleaseSearchProduct(ActionEvent event) {
+        String text = homePage_searchProductInputField.getText().trim().toLowerCase();
+        ObservableList<Product> productInventorySearchList = Inventory.lookupProduct(text);
+        if (productInventorySearchList.size() == 0) {
+            try {
+                int productID = Integer.parseInt(text);
+                Product searchProductById = Inventory.lookupProduct(productID);
 
-            productInventorySearchList.clear();
-            for(Product p : inventory.getAllProducts()) {
-                if(p.getProduct_name().toLowerCase().contains(text) || p.getProductID().toString().equals(text)) {
-                    productInventorySearchList.add(p);
+                if (searchProductById != null) {
+                    productInventorySearchList.add(searchProductById);
                 }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                e.getCause();
             }
-
-            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-
-            products_tableView.setItems(productInventorySearchList);
-
-        } else if(!text.isEmpty() && inventory.getAllProducts().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error message");
-            alert.setHeaderText(null);
-            alert.setContentText("No products have been added to the inventory system. Please try again later.");
-            alert.showAndWait();
-
-            products_tableView.getItems().clear();
-            homePage_searchProductInputField.clear();
-
-        } else {
-            inventory = new Inventory();
-//            addStartDataTables(inventory);
-            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-
-            productInventoryList.setAll(inventory.getAllProducts());
-            products_tableView.setItems(productInventoryList);
-
         }
+        products_tableView.setItems(productInventorySearchList);
     }
+
+//    /**
+//     * Void btnSearchProduct() method is used to find a product row by typing information in the input field and clicking the search button.
+//     * e represents the event that triggers the action.
+//     * @exception SQLException if a database error or other errors occur.
+//     * @see SQLException
+//     */
+//    @FXML
+//    void KeyReleaseSearchProduct(KeyEvent event) {
+////        products_tableView.getItems().clear();
+//        String text = homePage_searchProductInputField.getText().toLowerCase().trim();
+//        Inventory inventory = new Inventory();
+////        addStartDataTables(inventory);
+////
+//        if(!text.isEmpty() && !inventory.getAllProducts().isEmpty()) {
+//
+//            productInventorySearchList.clear();
+//            for(Product p : inventory.getAllProducts()) {
+//                if(p.getProduct_name().toLowerCase().contains(text) || p.getProductID().toString().equals(text)) {
+//                    productInventorySearchList.add(p);
+//                }
+//            }
+//
+//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+//
+//            products_tableView.setItems(productInventorySearchList);
+//
+//        } else if(!text.isEmpty() && inventory.getAllProducts().isEmpty()) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error message");
+//            alert.setHeaderText(null);
+//            alert.setContentText("No products have been added to the inventory system. Please try again later.");
+//            alert.showAndWait();
+//
+//            products_tableView.getItems().clear();
+//            homePage_searchProductInputField.clear();
+//
+//        } else {
+//            inventory = new Inventory();
+////            addStartDataTables(inventory);
+//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
+//
+//            productInventoryList.setAll(inventory.getAllProducts());
+//            products_tableView.setItems(productInventoryList);
+//
+//        }
+//    }
 
     /**
      * Void clickAddPartPageBtn() method is used to open Add Part Page.
@@ -334,7 +424,6 @@ public class HelloController implements Initializable {
     @FXML
     void clickModifyPartPageBtn(ActionEvent event) {
         Part selectedItem = parts_tableView.getSelectionModel().getSelectedItem();
-//        int index = parts_tableView.getSelectionModel().getSelectedIndex();
 
         String getSinglePartID = "";
         String getSinglePartName = "";
@@ -367,7 +456,7 @@ public class HelloController implements Initializable {
                     FXMLLoader modifyPartPageLoader = new FXMLLoader(getClass().getResource("modifyPart_page.fxml"));
                     ModifyPartController modifyPartController = new ModifyPartController(selectedItem, getSinglePartID, getSinglePartName, getSinglePartStock, getSinglePartPriceUnit, getSinglePartMin, getSinglePartMax, getSinglePartMachineID, getSinglePartCompanyName);
                     modifyPartPageLoader.setController(modifyPartController);
-//                modifyPartController.checkingIfInOrOutSourced(getSinglePartMachineID, getSinglePartCompanyName);
+                //modifyPartController.checkingIfInOrOutSourced(getSinglePartMachineID, getSinglePartCompanyName);
 
                     //set view in ppMainWindow
                     modifyPartPageWindow.setScene(new Scene(modifyPartPageLoader.load(), 600, 400));
@@ -545,9 +634,6 @@ public class HelloController implements Initializable {
      * @see IOException
      */
     public void viewEMInventoryManagementSystem() throws IOException {
-//        startBtn.getScene().getWindow().hide();
-//        Stage stage1 = (Stage) startBtn.getScene().getWindow();
-//        stage1.close();
         //create new stage
         Stage ppMainWindow = new Stage();
         ppMainWindow.setTitle("Parts and Products - EM Inventory Management System");
@@ -585,7 +671,7 @@ public class HelloController implements Initializable {
 
             return;
 
-        } else if(!products_tableView.getSelectionModel().getSelectedItem().getPassociatedParts().isEmpty()) {
+        } else if(!products_tableView.getSelectionModel().getSelectedItem().getAllAssociatedParts().isEmpty()) {
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
@@ -603,8 +689,6 @@ public class HelloController implements Initializable {
 
             if(option.get().equals(ButtonType.OK)) {
                 Inventory.getAllProducts().remove(selectedProduct);
-//                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
-//                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
 
                 try {
                     homePage_modifyPartBtn.getScene().getWindow().hide();
@@ -682,8 +766,6 @@ public class HelloController implements Initializable {
         parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
         parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-//        partInventoryList.setAll(inventory.getAllParts());
-//        parts_tableView.setItems(partInventoryList);
         parts_tableView.setItems(inventory.getAllParts());
 
 
@@ -692,11 +774,9 @@ public class HelloController implements Initializable {
         products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
         products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
 
-//        productInventoryList.setAll(inventory.getAllProducts());
-//        products_tableView.setItems(productInventoryList);
         products_tableView.setItems(inventory.getAllProducts());
 
-        Inventory.selectedPart = null;
-        Inventory.selectedProduct = null;
+        productsIDControl();
+
     }
 }

@@ -1,5 +1,8 @@
 package em_ims.em_inventorymanagementsoftware;
 
+import Model.InHouse;
+import Model.Inventory;
+import Model.Outsourced;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,7 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -225,10 +227,11 @@ public class AddPartController implements Initializable {
         String min = addPart_setMin.getText().trim();
         String max = addPart_setMax.getText().trim();
         String stock = addPart_setInventoryLevel.getText().trim();
+        String price = addPart_setPriceUnit.getText().trim();
         int min_check;
         int max_check;
         int stock_check;
-
+        double price_check;
         //Part Category Selection Validation - No null Accepted ~ it has to select inHouse or Outsourced
         if(inHouseRadioBtn.isSelected() || outsourcedRadioBtn.isSelected()) {
             //Not null accepted Input validation checks that none of the fields are blank or empty...
@@ -243,8 +246,19 @@ public class AddPartController implements Initializable {
                         if(max_check > min_check) {
                             //inventory validation --> inventory level has to be >= than min, and <= than max
                             if(stock_check >= min_check && stock_check <= max_check){
-                                //check if the part name is available or if it already exists using the validatePartName method
-                                validatePartName();
+                                if(price.matches("\\d+(\\.\\d*)?")){
+                                    price_check = Double.parseDouble(price);
+
+                                    //check if the part name is available or if it already exists using the validatePartName method
+                                    validatePartName(stock_check, min_check, max_check, price_check);
+
+                                } else {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error message");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("Your Price value should be enter with numbers, double values are prefered.");
+                                    alert.showAndWait();
+                                }
                             } else{
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Error message");
@@ -295,7 +309,7 @@ public class AddPartController implements Initializable {
      * When the validation passes, the method registerNewPart() is called, unless an Exception is caught.
      * When the validation does not pass, an error alert will show up, and the user will be requested to use a different name for the new part.
      */
-    public void validatePartName() {
+    public void validatePartName(Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         System.out.println("we are into validatePartName() method on line 300!!");
 
         Inventory inventory = new Inventory();
@@ -308,7 +322,7 @@ public class AddPartController implements Initializable {
         if(!verifyPartName.isEmpty() && inventory.getAllParts().isEmpty()) {
             partName = verifyPartName;
             System.out.println("the partName on line 306 is: " + partName);
-            generatePartId(partName);
+            generatePartId(partName, stock_check, min_check, max_check, price_check);
         }
         else if(!verifyPartName.isEmpty() && !inventory.getAllParts().isEmpty()){
             System.out.println("we are into validatePartName() method with no empty inventory on line 314!!");
@@ -317,7 +331,7 @@ public class AddPartController implements Initializable {
                 if(!Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
                     System.out.println("line 319 -- we are into validatePartName() method with no empty inventory and it does not match with any part name");
                     partName = verifyPartName;
-                    generatePartId(partName);
+                    generatePartId(partName, stock_check, min_check, max_check, price_check);
                     break;
                 } else if(Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
                     System.out.println("line 324--- we are into validatePartName() method with no empty inventory and part name already exists");
@@ -337,7 +351,7 @@ public class AddPartController implements Initializable {
      * Private void generatePartId(String partName) method is used to generate the unique part ID.
      * @param partName is passed once the validatePartName() method verifies that the part name is unique in our EM database.
      */
-    private void generatePartId(String partName) {
+    private void generatePartId(String partName, Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         System.out.println("we are into generatePartId() method on line 365!! and the partName value we are working with is: " + partName);
 
         Inventory inventory = new Inventory();
@@ -347,7 +361,7 @@ public class AddPartController implements Initializable {
         if(inventory.getAllParts().isEmpty()) {
             partID = setPartID;
             System.out.println("the PartID value on line 373 when inventory is empty is: " + partID);
-            registerNewPart(partName, partID);
+            registerNewPart(partName, partID, stock_check, min_check, max_check, price_check);
         } else if(!inventory.getAllParts().isEmpty()){
             partID = 1;
             for(int i = 0; i < Inventory.allParts.size(); i++) {
@@ -360,7 +374,7 @@ public class AddPartController implements Initializable {
                 }
 
             }
-            registerNewPart(partName, partID);
+            registerNewPart(partName, partID, stock_check, min_check, max_check, price_check);
             System.out.println("line 387 -- the partID value on line 386 is: " + partID);
             System.out.println("line 387 -- the partID and partName value on line 392 is: " + partID  + " " + partName);
         }
@@ -371,7 +385,7 @@ public class AddPartController implements Initializable {
      * @param partName is originally passed by the validatePartName() method, once it verifies that the chose part name is unique in our EM database, it passes the variable to the generatePartId(String partName) method.
      * @param partID is generated by the generatePartId(String partName) method, and passed to the registerNewPart(String partName, Integer partID) method to start the new part registration.
      */
-    private void registerNewPart(String partName, Integer partID) {
+    private void registerNewPart(String partName, Integer partID, Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         System.out.println("we are into private void registerNewPart method on line 402!! and the partID and partName values we are working with is: " + partID  + " " + partName);
 
         String inventoryLevel = addPart_setInventoryLevel.getText().trim().toLowerCase();
@@ -385,10 +399,10 @@ public class AddPartController implements Initializable {
             Inventory.allParts.add(new InHouse(
                     partID,
                     partName,
-                    Double.parseDouble(priceUnit),
-                    Integer.parseInt(inventoryLevel),
-                    Integer.parseInt(min),
-                    Integer.parseInt(max),
+                    price_check,
+                    stock_check,
+                    min_check,
+                    max_check,
                     Integer.parseInt(machineID)
             ));
             System.out.println("a new in house part has been saved");
@@ -402,10 +416,10 @@ public class AddPartController implements Initializable {
             Inventory.allParts.add(new Outsourced(
                     partID,
                     partName,
-                    Double.parseDouble(priceUnit),
-                    Integer.parseInt(inventoryLevel),
-                    Integer.parseInt(min),
-                    Integer.parseInt(max),
+                    price_check,
+                    stock_check,
+                    min_check,
+                    max_check,
                     companyName
             ));
             System.out.println("a new outsourced part has been saved");

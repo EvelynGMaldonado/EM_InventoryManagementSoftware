@@ -14,4 +14,6 @@ module em_ims.em_inventorymanagementsoftware {
 
     opens em_ims.em_inventorymanagementsoftware to javafx.fxml;
     exports em_ims.em_inventorymanagementsoftware;
+    exports Model;
+    opens Model to javafx.fxml;
 }

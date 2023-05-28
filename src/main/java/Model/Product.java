@@ -1,18 +1,19 @@
-package em_ims.em_inventorymanagementsoftware;
+package Model;
+//import Model.Part;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-
 /**
- * @author Evelyn G Morrow.
- * @version 1.1.
  * Public class Product used to display the products tableview on the dashboard at the Home Page.
  * RUNTIME ERROR: When creating a new product, it successfully added and removed associated parts; When modifying a product, the previously associated pats were displayed, but when adding or removing an associated part, it would updated the product without clicking on the save button. I fixed it by just removing or adding parts to the tableview, and then adding or removing the ones that weren't part of the product before clicking on the modify button.
  * FUTURE ENHANCEMENT: Utilize mysql database for automatically add, or remove associated parts to the product, as well as creating filters for deleting parts/products from the database.
+ * @author Evelyn G Morrow.
+ * @version 1.1.
+
  */
 public class Product {
-    private ObservableList<Part> pAssociatedParts = FXCollections.observableArrayList();
+    private ObservableList<Part> associatedParts = FXCollections.observableArrayList();
+
     private int productID;
     private String product_name;
     private double price_unit = 0.0;
@@ -20,15 +21,16 @@ public class Product {
     private int min;
     private int max;
 
-    public ObservableList<Part> getPassociatedParts() {
-        return pAssociatedParts;
-    }
 
-    public void setpAssociatedParts(Part part) {
-        pAssociatedParts.add(part);
-    }
+public ObservableList<Part> getAllAssociatedParts() {
+    return associatedParts;
+}
 
-    public void removepAssociatedParts(Part part) {pAssociatedParts.remove(part);}
+public void addAssociatedPart(Part part) {
+    associatedParts.add(part);
+}
+
+public void deleteAssociatedPart(Part part) {associatedParts.remove(part);}
 
     public Product() {
     }

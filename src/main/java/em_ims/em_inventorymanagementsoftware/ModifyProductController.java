@@ -1,5 +1,8 @@
 package em_ims.em_inventorymanagementsoftware;
 
+import Model.Inventory;
+import Model.Part;
+import Model.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -154,14 +158,7 @@ public class ModifyProductController implements Initializable {
         productData = product;
         System.out.println("line 145 --- the productData ID value is: " + productData.getProductID());
 
-        associatedPartsData = FXCollections.observableArrayList(productData.getPassociatedParts());
-//        associatedParts_tableview.setItems(associatedPartsData);
-//        int index = 0;
-//        while(index < associatedParts_tableview.getItems().size()) {
-//            productData.setpAssociatedParts(associatedParts_tableview.getItems().get(index));
-//            index++;
-//        }
-
+        associatedPartsData = FXCollections.observableArrayList(productData.getAllAssociatedParts());
     }
 
     /**
@@ -173,8 +170,8 @@ public class ModifyProductController implements Initializable {
     private void addSelectedPart(Part singlePart, String getSingleAssociatedPartID) {
 
         if(!associatedParts_tableview.getItems().contains(singlePart)){
-            newProduct.setpAssociatedParts(singlePart);
-            associatedParts_tableview.setItems(newProduct.getPassociatedParts());
+            newProduct.addAssociatedPart(singlePart);
+            associatedParts_tableview.setItems(newProduct.getAllAssociatedParts());
             associatedPartsIDsByProduct.getItems().add(getSingleAssociatedPartID);
 
             associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -186,7 +183,7 @@ public class ModifyProductController implements Initializable {
             parts_tableView.getSelectionModel().clearSelection();
 
         } else if(associatedParts_tableview.getItems().contains(singlePart)) {
-            associatedParts_tableview.setItems(newProduct.getPassociatedParts());
+            associatedParts_tableview.setItems(newProduct.getAllAssociatedParts());
 
             associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
             associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -206,7 +203,6 @@ public class ModifyProductController implements Initializable {
      */
     @FXML
     void clickAddAssociatedPartBtn(ActionEvent event){
-        Inventory inventory = new Inventory();
 
         if(parts_tableView.getSelectionModel().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -259,10 +255,11 @@ public class ModifyProductController implements Initializable {
         String min = modifyProduct_setMin.getText().trim();
         String max = modifyProduct_setMax.getText().trim();
         String stock = modifyProduct_setInventoryLevel.getText().trim();
+        String price = modifyProduct_setPriceUnit.getText().trim();
         int min_check;
         int max_check;
         int stock_check;
-
+        double price_check;
         if(!modifyProduct_setProductName.getText().trim().isEmpty() || !modifyProduct_setInventoryLevel.getText().trim().isEmpty() || !modifyProduct_setPriceUnit.getText().trim().isEmpty() || !modifyProduct_setMax.getText().trim().isEmpty() || !modifyProduct_setMin.getText().isEmpty()) {
             if(min.matches("\\d+") && max.matches("\\d+") && stock.matches("\\d+")){
                 min_check = Integer.parseInt(min);
@@ -274,8 +271,19 @@ public class ModifyProductController implements Initializable {
                     if(max_check > min_check) {
                         //inventory validation --> inventory level has to be >= than min, and <= than max
                         if(stock_check >= min_check && stock_check <= max_check){
-                            //check if the product name is available or if it already exists using the validateProductName method
-                            validateUpdatedProductNameAndProductID();
+                            if(price.matches("\\d+(\\.\\d*)?")){
+                                price_check = Double.parseDouble(price);
+
+                                //check if the product name is available or if it already exists using the validateProductName method
+                                validateUpdatedProductNameAndProductID(stock_check, min_check, max_check, price_check);
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error message");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Your Price value should be enter with numbers, double values are prefered.");
+                                alert.showAndWait();
+                            }
+
                         } else {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Error message");
@@ -318,9 +326,9 @@ public class ModifyProductController implements Initializable {
      * If the validation passes (product name matches with its ID), the method updateProduct() is called, unless an Exception is caught.
      * When the validation does not pass(product name does not match with its ID), the method verifyIfProductNameAlreadyExists() is called, unless an Exception is caught.
      */
-    public void validateUpdatedProductNameAndProductID() {
+    public void validateUpdatedProductNameAndProductID(Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         System.out.println("we are into validateUpdatedProductNameAndProductID() method on line 352!!");
-        Inventory inventory = new Inventory();
+//        Inventory inventory = new Inventory();
 
         String verifyProductName = modifyProduct_setProductName.getText().trim().toLowerCase();
         String productName = "";
@@ -334,7 +342,7 @@ public class ModifyProductController implements Initializable {
                 System.out.println("line 304 -- we are into validateUpdatedProductNameAndProductID() method where productID does not match with the updated product name");
                 productName = verifyProductName;
                 productID = verifyProductID;
-                verifyIfProductNameAlreadyExists(productName, productID);
+                verifyIfProductNameAlreadyExists(productName, productID, stock_check, min_check, max_check, price_check);
 
                 break;
             } else if(Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(verifyProductName) && Inventory.allProducts.get(i).getProductID() == verifyProductID) {
@@ -342,7 +350,7 @@ public class ModifyProductController implements Initializable {
                 productID = verifyProductID;
                 productName = verifyProductName;
 
-                updateProduct(productID, productName);
+                updateProduct(productID, productName, stock_check, min_check, max_check, price_check);
             }
         }
     }
@@ -354,11 +362,11 @@ public class ModifyProductController implements Initializable {
      * @param productName
      * @param productID
      */
-    public void verifyIfProductNameAlreadyExists(String productName, Integer productID) {
+    public void verifyIfProductNameAlreadyExists(String productName, Integer productID, Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         for(int i = 0; i < Inventory.allProducts.size(); i++) {
             if(!Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(productName)) {
                 System.out.println("line 327 -- we are into verifyIfProductNameAlreadyExists(String productName, Integer productID) method. Product name does not exist");
-                updateProduct(productID, productName);
+                updateProduct(productID, productName, stock_check, min_check, max_check, price_check);
                 break;
             } else if(Inventory.allProducts.get(i).getProduct_name().trim().toLowerCase().contains(productName)) {
                 System.out.println("line 331--- we are into verifyIfProductNameAlreadyExists(String productName, Integer productID) method. Product name already exists");
@@ -379,7 +387,7 @@ public class ModifyProductController implements Initializable {
      * an information alert is displayed to notify that the product has been successfully updated into the database, unless an Exception is caught.
      * updateCurrentProductAssociatedParts() method will be called, unless an Exception is caught.
      */
-    private void updateProduct(Integer productID, String productName) {
+    private void updateProduct(Integer productID, String productName, Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
 
         String modifyPage_productID = modifyProduct_productIDTextField.getText();
         String updatedProductName = modifyProduct_setProductName.getText();
@@ -392,15 +400,19 @@ public class ModifyProductController implements Initializable {
             Product updatedProductWithoutAssociatedParts = new Product(
                     productID,
                     productName,
-                    Double.parseDouble(updatedProductPriceUnit),
-                    Integer.parseInt(updatedProductInventoryLevel),
-                    Integer.parseInt(updatedProductMin),
-                    Integer.parseInt(updatedProductMax)
+                    price_check,
+                    stock_check,
+                    min_check,
+                    max_check
+//                    Double.parseDouble(updatedProductPriceUnit),
+//                    Integer.parseInt(updatedProductInventoryLevel),
+//                    Integer.parseInt(updatedProductMin),
+//                    Integer.parseInt(updatedProductMax)
             );
             int index = 0;
             while(index < associatedParts_tableview.getItems().size()) {
                 Part partToAssociate = associatedParts_tableview.getItems().get(index);
-                updatedProductWithoutAssociatedParts.setpAssociatedParts(partToAssociate);
+                updatedProductWithoutAssociatedParts.addAssociatedPart(partToAssociate);
                 index++;
             }
             Inventory.updateProduct(Inventory.getAllProducts().indexOf(productData), updatedProductWithoutAssociatedParts);
@@ -421,15 +433,19 @@ public class ModifyProductController implements Initializable {
             Product updatedProductWithAssociatedParts = new Product(
                     productID,
                     productName,
-                    Double.parseDouble(updatedProductPriceUnit),
-                    Integer.parseInt(updatedProductInventoryLevel),
-                    Integer.parseInt(updatedProductMin),
-                    Integer.parseInt(updatedProductMax)
+                    price_check,
+                    stock_check,
+                    min_check,
+                    max_check
+//                    Double.parseDouble(updatedProductPriceUnit),
+//                    Integer.parseInt(updatedProductInventoryLevel),
+//                    Integer.parseInt(updatedProductMin),
+//                    Integer.parseInt(updatedProductMax)
             );
             int index = 0;
             while(index < associatedParts_tableview.getItems().size()) {
                 Part partToAssociate = associatedParts_tableview.getItems().get(index);
-                updatedProductWithAssociatedParts.setpAssociatedParts(partToAssociate);
+                updatedProductWithAssociatedParts.addAssociatedPart(partToAssociate);
                 index++;
             }
             Inventory.updateProduct(Inventory.getAllProducts().indexOf(productData), updatedProductWithAssociatedParts);
@@ -486,19 +502,6 @@ public class ModifyProductController implements Initializable {
 
                 if(option.get().equals(ButtonType.OK)) {
 
-//                    if(associatedParts_tableview.getItems().contains(removeAssociatedPart)) {
-//                        newProduct.removepAssociatedParts(removeAssociatedPart);
-//                        associatedParts_tableview.setItems(newProduct.getPassociatedParts());
-//
-//                        associatedParts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//                        associatedParts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//                        associatedParts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//                        associatedParts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//                        associatedParts_tableview.getSelectionModel().clearSelection();
-//                        parts_tableView.getSelectionModel().clearSelection();
-//                    }
-
                         associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
                         associatedParts_tableview.getItems().remove(removeAssociatedPart);
 
@@ -514,54 +517,6 @@ public class ModifyProductController implements Initializable {
                         return;
                 }
         }
-
-        //check if a row has been selected
-//        if(!associatedParts_tableview.getSelectionModel().isEmpty()) {
-//            Part removeAssociatedPart = associatedParts_tableview.getSelectionModel().getSelectedItem();
-//
-//            getSingleAssociatedPartID = String.valueOf(removeAssociatedPart.getId());
-//            System.out.println("the getSingleAssociatedPartID value on line 117 is: " + getSingleAssociatedPartID);
-//            getSingleAssociatedPartName = removeAssociatedPart.getName();
-//            System.out.println("the getSingleAssociatedPartName value on line 119 is: " + getSingleAssociatedPartName);
-//
-//            if(!associatedPartsIDsByProduct.getItems().isEmpty() && removeAssociatedPart != null) {
-//                try{
-//                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//                    alert.setTitle("Confirmation Message");
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Are you sure that you want to remove this associated part from the current product?");
-//                    Optional<ButtonType> option = alert.showAndWait();
-//
-//                    if(option.get().equals(ButtonType.OK)) {
-////                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
-//                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
-//                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
-//
-//                        alert = new Alert(Alert.AlertType.INFORMATION);
-//                        alert.setTitle("Deletion information");
-//                        alert.setHeaderText(null);
-//                        alert.setContentText("Associated part has been successfully removed from the current product");
-//                        alert.showAndWait();
-//
-//                        associatedParts_tableview.getSelectionModel().clearSelection();
-//                        parts_tableView.getSelectionModel().clearSelection();
-//                    } else {
-//                        return;
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    e.getCause();
-//                }
-//            }
-//
-//        } else if(parts_tableView.getSelectionModel().isEmpty()){
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Please select the data row part that you want to remove from your associated parts table.");
-//            alert.showAndWait();
-//        }
     }
 
     /**
@@ -668,54 +623,81 @@ public class ModifyProductController implements Initializable {
     }
 
     /**
-     * Void keyReleaseSearchPart() method is used to find a part row by typing information in the input field.
-     * @param event represents the event that triggers the action.
+     * Void keySearchPart() method is used to find a part row by typing information in the input field.
+     * e represents the event that triggers the action.
+     * @exception SQLException if a database error or other errors occur.
+     * @see SQLException
      */
     @FXML
-    void keyReleaseSearchPart(KeyEvent event) {
-        //
-//        parts_tableView.getItems().clear();
-        String text = modifyProduct_searchPartInputField.getText().trim();
-        Inventory inventory = new Inventory();
-//        addStartDataTables(inventory);
-//
-        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+    void keySearchPart(ActionEvent event) {
+////        parts_tableView.getItems().clear();
+        String text = modifyProduct_searchPartInputField.getText().trim().toLowerCase();
+        ObservableList<Part> partInventorySearchList = Inventory.lookupPart(text);
+        if (partInventorySearchList.size() == 0) {
+            try {
+                int partID = Integer.parseInt(text);
+                Part searchPartById = Inventory.lookupPart(partID);
 
-            inventory.keySearchPart(text);
-
-            partInventorySearchList.setAll(inventory.getPartInventorySearch());
-
-            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            parts_tableView.setItems(partInventorySearchList);
-
-        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error message");
-            alert.setHeaderText(null);
-            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
-            alert.showAndWait();
-
-            parts_tableView.getItems().clear();
-            modifyProduct_searchPartInputField.clear();
-
-        } else {
-            inventory = new Inventory();
-//            addStartDataTables(inventory);
-            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            partInventoryList.setAll(inventory.getAllParts());
-            parts_tableView.setItems(partInventoryList);
-
+                if (searchPartById != null) {
+                    partInventorySearchList.add(searchPartById);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                e.getCause();
+            }
         }
+        parts_tableView.setItems(partInventorySearchList);
     }
+
+//    /**
+//     * Void keyReleaseSearchPart() method is used to find a part row by typing information in the input field.
+//     * @param event represents the event that triggers the action.
+//     */
+//    @FXML
+//    void keyReleaseSearchPart(KeyEvent event) {
+//        //
+////        parts_tableView.getItems().clear();
+//        String text = modifyProduct_searchPartInputField.getText().trim();
+//        Inventory inventory = new Inventory();
+////        addStartDataTables(inventory);
+////
+//        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
+//
+//            inventory.keySearchPart(text);
+//
+//            partInventorySearchList.setAll(inventory.getPartInventorySearch());
+//
+//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+//
+//            parts_tableView.setItems(partInventorySearchList);
+//
+//        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
+//
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error message");
+//            alert.setHeaderText(null);
+//            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
+//            alert.showAndWait();
+//
+//            parts_tableView.getItems().clear();
+//            modifyProduct_searchPartInputField.clear();
+//
+//        } else {
+//            inventory = new Inventory();
+////            addStartDataTables(inventory);
+//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
+//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
+//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+//
+//            partInventoryList.setAll(inventory.getAllParts());
+//            parts_tableView.setItems(partInventoryList);
+//
+//        }
+//    }
 
     //SIDE MENU
     /**
@@ -821,11 +803,11 @@ public class ModifyProductController implements Initializable {
         modifyProduct_setMin.setText(getSingleProductMin);
         modifyProduct_setMax.setText(getSingleProductMax);
 
-//        associatedPartsData = FXCollections.observableArrayList(productData.getPassociatedParts());
+
         associatedParts_tableview.setItems(associatedPartsData);
         int index = 0;
         while(index < associatedParts_tableview.getItems().size()) {
-            newProduct.setpAssociatedParts(associatedParts_tableview.getItems().get(index));
+            newProduct.addAssociatedPart(associatedParts_tableview.getItems().get(index));
             index++;
         }
 

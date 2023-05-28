@@ -1,4 +1,4 @@
-package em_ims.em_inventorymanagementsoftware;
+package Model;
 
 /**
  * @author Evelyn G Morrow.
@@ -25,13 +25,6 @@ public class Outsourced extends Part {
     public Outsourced(int id, String name, double price, int stock, int min, int max, String company_name){
         super(id, name, price, stock, min, max);
         this.company_name = company_name;
-//        setId(id);
-//        setName(name);
-//        setPrice(price);
-//        setStock(stock);
-//        setMin(min);
-//        setMax(max);
-//        setCompany_name(company_name);
     }
 
     /**

@@ -1,5 +1,9 @@
 package em_ims.em_inventorymanagementsoftware;
 
+import Model.InHouse;
+import Model.Inventory;
+import Model.Outsourced;
+import Model.Part;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -149,10 +153,11 @@ public class ModifyPartController implements Initializable {
         String min = modifyPart_setMin.getText().trim();
         String max = modifyPart_setMax.getText().trim();
         String stock = modifyPart_setInventoryLevel.getText().trim();
+        String price = modifyPart_setPriceUnit.getText().trim();
         int min_check;
         int max_check;
         int stock_check;
-
+        double price_check;
         //Part Category Selection Validation - No null Accepted ~ it has to select inHouse or Outsourced
         if(modifyPartInHouseRadioBtn.isSelected() || modifyPartOutsourcedRadioBtn.isSelected()) {
             //Not null accepted Input validation checks that none of the fields are blank or empty...
@@ -167,8 +172,20 @@ public class ModifyPartController implements Initializable {
                         if(max_check > min_check) {
                             //inventory validation --> inventory level has to be >= than min, and <= than max
                             if(stock_check >= min_check && stock_check <= max_check){
-                                //check if the part name is available or if it already exists using the validatePartName method
-                                validateUpdatedPartNameAndPartID();
+                                if(price.matches("\\d+(\\.\\d*)?")){
+                                    price_check = Double.parseDouble(price);
+
+                                    //check if the part name is available or if it already exists using the validatePartName method
+                                    validateUpdatedPartNameAndPartID(stock_check, min_check, max_check, price_check);
+
+                                } else {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error message");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("Your Price value should be enter with numbers, double values are prefered.");
+                                    alert.showAndWait();
+                                }
+
                             } else{
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Error message");
@@ -219,7 +236,7 @@ public class ModifyPartController implements Initializable {
      * If the validation passes (part name matches with its ID), the method UpdatePart() is called, unless an Exception is caught.
      * When the validation does not pass(part name does not match with its ID), the method verifyIfPartNameAlreadyExists() is called, unless an Exception is caught.
      */
-    public void validateUpdatedPartNameAndPartID() {
+    public void validateUpdatedPartNameAndPartID(Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         System.out.println("we are into validateUpdatedPartNameAndPartID() method with no empty inventory on line 220!!");
         Inventory inventory = new Inventory();
 
@@ -236,9 +253,10 @@ public class ModifyPartController implements Initializable {
             if(Inventory.allParts.get(i).getId() == partID && Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
                 String lastPartName = Inventory.allParts.get(i).getName();
                 partName = lastPartName;
+                verifyPartName = partName;
                 System.out.println("line 233 -- we are into validateUpdatedPartNameAndPartID() getting the old part name of the currend part id which is: " + lastPartName);
                 System.out.println("line 232 -- the partName is: " + partName);
-                UpdatePart(partName, partID);
+                UpdatePart(verifyPartName, partID, stock_check, min_check, max_check, price_check);
                 break;
 
             //if updated part name does not match with the ID... call the verifyIfPartNameAlreadyExists(); method
@@ -246,7 +264,7 @@ public class ModifyPartController implements Initializable {
                 System.out.println("line 241 -- our updated part name does not match with the name previously related to our partID");
                 partName = verifyPartName;
                 System.out.println("line 242 -- the partName is: " + partName);
-                verifyIfPartNameAlreadyExists(partName, partID);
+                verifyIfPartNameAlreadyExists(partName, partID, stock_check, min_check, max_check, price_check);
                 break;
             }
         }
@@ -258,25 +276,20 @@ public class ModifyPartController implements Initializable {
      * When the validation does not pass (part name already exists in the EM database), an error alert will show up, and the user will be requested to use a different name for the updated part.
      * @param partName
      */
-    public void verifyIfPartNameAlreadyExists(String partName, Integer partID) {
+    public void verifyIfPartNameAlreadyExists(String partName, Integer partID, Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
         System.out.println("we are into verifyIfPartNameAlreadyExists() method on line 277 and are working with partName value: " + partName);
-
-        Inventory inventory = new Inventory();
-
-        String verifyPartName = modifyPart_setPartName.getText().trim().toLowerCase();
-        System.out.println("the name of the part on line 283 is: " + verifyPartName);
 
         try {
             for(int i = 0; i < Inventory.allParts.size(); i++) {
                 //if updated part name does not exist in our DB, and it does not match with the current ID... then call the call the UpdatePart();
-                if(!Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
-                    System.out.println("line 287 -- we are into verifyIfPartNameAlreadyExists(String partName) method and verifyPartName value is: " + verifyPartName);
-                    partName = verifyPartName;
-                    UpdatePart(partName, partID);
+                if(!Inventory.allParts.get(i).getName().trim().toLowerCase().contains(partName)) {
+                    System.out.println("line 287 -- we are into verifyIfPartNameAlreadyExists(String partName) method and verifyPartName value is: " + partName);
+                    String verifyPartName = partName;
+                    UpdatePart(verifyPartName, partID, stock_check, min_check, max_check, price_check);
                     break;
 
                 //if updated part name already exists in our DB, but it does not match with the current ID ... show an error alert
-                } else if(Inventory.allParts.get(i).getName().trim().toLowerCase().contains(verifyPartName)) {
+                } else if(Inventory.allParts.get(i).getName().trim().toLowerCase().contains(partName)) {
                     System.out.println("line 295--- we are into verifyIfPartNameAlreadyExists(String partName) method and part name already exists");
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error message");
@@ -296,17 +309,12 @@ public class ModifyPartController implements Initializable {
      * Public void UpdatePart() method called after the part name validation is passed, and no exceptions were caught.
      * Once the data is successfully updated into the EM database, the modifyPartRedirectsToEMIMSHomePage() method will be called, if no exceptions are caught.
      * An information alert is displayed to notify that the part has been successfully updated into the database.
-     * @param partName
+     * @param verifyPartName is the new part name value
      */
-    private void UpdatePart(String partName, Integer partID) {
-        System.out.println("we are into private void UpdatePart(String partName) method on line 317!! and the partName value is: " + partName);
+    private void UpdatePart(String verifyPartName, Integer partID, Integer stock_check, Integer min_check, Integer max_check, Double price_check) {
+        System.out.println("we are into private void UpdatePart(String verifyPartName) method on line 317!! and the verifyPartName value is: " + verifyPartName);
 
         String modifyPage_partID = modifyPart_partIDTextField.getText();
-//        String updatedPartName = modifyPart_setPartName.getText().trim().toLowerCase();
-        String updatedPartInventoryLevel = modifyPart_setInventoryLevel.getText();
-        String updatedPartPriceUnit = modifyPart_setPriceUnit.getText();
-        String updatedPartMax= modifyPart_setMax.getText();
-        String updatedPartMin = modifyPart_setMin.getText();
         String updateMachineID = modifyPart_inputCompanyOrMachineInputField.getText().trim();
         String updateCompanyName = modifyPart_inputCompanyOrMachineInputField.getText().trim().toLowerCase();
 
@@ -320,11 +328,11 @@ public class ModifyPartController implements Initializable {
 
             Inventory.allParts.add(new InHouse(
                     partID,
-                    partName,
-                    Double.parseDouble(updatedPartPriceUnit),
-                    Integer.parseInt(updatedPartInventoryLevel),
-                    Integer.parseInt(updatedPartMin),
-                    Integer.parseInt(updatedPartMax),
+                    verifyPartName,
+                    price_check,
+                    stock_check,
+                    min_check,
+                    max_check,
                     Integer.parseInt(updateMachineID)
             ));
             System.out.println("a new in house part has been saved");
@@ -337,11 +345,11 @@ public class ModifyPartController implements Initializable {
         } else if(modifyPartOutsourcedRadioBtn.isSelected()) {
             Inventory.allParts.add(new Outsourced(
                     Integer.parseInt(modifyPage_partID),
-                    partName,
-                    Double.parseDouble(updatedPartPriceUnit),
-                    Integer.parseInt(updatedPartInventoryLevel),
-                    Integer.parseInt(updatedPartMin),
-                    Integer.parseInt(updatedPartMax),
+                    verifyPartName,
+                    price_check,
+                    stock_check,
+                    min_check,
+                    max_check,
                     updateCompanyName
             ));
             System.out.println("a new outsourced part has been saved");
