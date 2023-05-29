@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * @author Evelyn G Morrow.
- * @version 1.1.
  * Public class Inventory() holds the data for products, parts, and associated parts. It contains methods to retrieve and modify data.
  * RUNTIME ERROR: I was trying to add the in house part by just the id and the machine number. I ended up modifying the inHouse class, and the inventory to be able to extend the part class to inHouse or Outsourced, depending on the type of part.
  * FUTURE ENHANCEMENT: Creating the filter to insert the in house or outsourced part into the mysql database.
+ * @author Evelyn G Morrow.
+ * @version 1.1.
  */
 public class Inventory {
     public static ObservableList<Part> allParts = FXCollections.observableArrayList();

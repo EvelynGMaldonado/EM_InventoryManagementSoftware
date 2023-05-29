@@ -24,11 +24,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
- * @author Evelyn G Morrow.
- * @version 1.1.
  * Public class ModifyProductController is used to retrieve and display the data row after selecting the product that the user needs to modify from the products table, and click the modify product button.
  * RUNTIME ERROR: Correctly displaying the landing page after the application is started. I changed the size of the scene for it to fully show the right dimensions, as well as the correct implementation of the css page.
  * FUTURE ENHANCEMENT: Implementing mysql database system for the backend.
+ * @author Evelyn G Morrow.
+ * @version 1.1.
  */
 public class ModifyProductController implements Initializable {
     @FXML

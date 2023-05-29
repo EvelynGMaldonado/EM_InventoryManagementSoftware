@@ -21,11 +21,11 @@ import java.util.*;
 
 
 /**
- * @author Evelyn G Morrow.
- * @version 1.1.
  * Public class HelloController is used to retrieve and display the most up-to-date data on the parts and products tables after the user successfully signs in, as well as to manage some functionality such as delete, search, etc.
  * RUNTIME ERROR: Fetching the data and transfer it to the next controller. I found out I need to have all the variables into the method I will use to open th next window, and transfer it into the next window controller. The next window page needs to have the next window controller set up in order for us to be able to fetch the data.
  * FUTURE ENHANCEMENT: Implementing mysql database.
+ * @author Evelyn G Morrow.
+ * @version 1.1.
  */
 public class HelloController implements Initializable {
     Inventory inventory;

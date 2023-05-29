@@ -19,11 +19,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
- * @author Evelyn G Morrow.
- * @version 1.1.
  * Public class AddPartController is used to add a new part to the inventory after the user successfully clicks the add part button located on the home page or side menu.
  * RUNTIME ERROR: The part id was displaying the same number. I just created a conditional: if the part id already exists, count++ so the next part id would be the previous number + 1.
  * FUTURE ENHANCEMENT: auto generate, auto increment, unique part id in the mysql database.
+ * @author Evelyn G Morrow.
+ * @version 1.1.
  */
 public class AddPartController implements Initializable {
 
