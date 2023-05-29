@@ -1,14 +1,8 @@
 package Model;
 
-import em_ims.em_inventorymanagementsoftware.AddProductController;
-import em_ims.em_inventorymanagementsoftware.HelloController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
-import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Public class Inventory() holds the data for products, parts, and associated parts. It contains methods to retrieve and modify data.

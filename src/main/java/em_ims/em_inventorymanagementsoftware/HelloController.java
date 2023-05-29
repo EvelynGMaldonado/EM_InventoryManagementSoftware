@@ -490,7 +490,7 @@ public class HelloController implements Initializable {
                 Optional<ButtonType> option = alert.showAndWait();
 
                 if(option.get().equals(ButtonType.OK)) {
-                    Inventory.getAllParts().remove(selectedItem);
+                    Inventory.deletePart(selectedItem);
 
                     alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Deletion information");
@@ -580,7 +580,7 @@ public class HelloController implements Initializable {
             Optional<ButtonType> option = alert.showAndWait();
 
             if(option.get().equals(ButtonType.OK)) {
-                Inventory.getAllProducts().remove(selectedProduct);
+                Inventory.deleteProduct(selectedProduct);
 
                 try {
                     homePage_modifyPartBtn.getScene().getWindow().hide();
