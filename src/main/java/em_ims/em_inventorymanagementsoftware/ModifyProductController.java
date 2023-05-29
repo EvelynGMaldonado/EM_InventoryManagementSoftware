@@ -404,10 +404,6 @@ public class ModifyProductController implements Initializable {
                     stock_check,
                     min_check,
                     max_check
-//                    Double.parseDouble(updatedProductPriceUnit),
-//                    Integer.parseInt(updatedProductInventoryLevel),
-//                    Integer.parseInt(updatedProductMin),
-//                    Integer.parseInt(updatedProductMax)
             );
             int index = 0;
             while(index < associatedParts_tableview.getItems().size()) {
@@ -502,17 +498,19 @@ public class ModifyProductController implements Initializable {
 
                 if(option.get().equals(ButtonType.OK)) {
 
-                        associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
-                        associatedParts_tableview.getItems().remove(removeAssociatedPart);
+                    associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
+                    associatedParts_tableview.getItems().remove(removeAssociatedPart);
+                    newProduct.deleteAssociatedPart(removeAssociatedPart);
 
-                        alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Deletion information");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Associated part has been successfully removed from the current product");
-                        alert.showAndWait();
 
-                        associatedParts_tableview.getSelectionModel().clearSelection();
-                        parts_tableView.getSelectionModel().clearSelection();
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Deletion information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Associated part has been successfully removed from the current product");
+                    alert.showAndWait();
+
+                    associatedParts_tableview.getSelectionModel().clearSelection();
+                    parts_tableView.getSelectionModel().clearSelection();
                 } else {
                         return;
                 }

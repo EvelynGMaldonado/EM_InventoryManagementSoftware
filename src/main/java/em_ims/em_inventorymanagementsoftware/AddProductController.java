@@ -238,6 +238,7 @@ public class AddProductController implements Initializable {
 //                        Inventory.getAllAssociatedParts().remove(removeAssociatedPart);
                         associatedPartsIDsByProduct.getItems().remove(getSingleAssociatedPartID);
                         associatedParts_tableview.getItems().remove(removeAssociatedPart);
+                        newProduct.deleteAssociatedPart(removeAssociatedPart);
 
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Deletion information");

@@ -32,9 +32,6 @@ public void addAssociatedPart(Part part) {
 
 public void deleteAssociatedPart(Part part) {associatedParts.remove(part);}
 
-    public Product() {
-    }
-
     /**
      * Public Product Constructor is called when the Product object is instantiated.
      * It has the function of initialize the newly created object before it is used.
@@ -53,6 +50,9 @@ public void deleteAssociatedPart(Part part) {associatedParts.remove(part);}
         setStock(stock);
         setMin(min);
         setMax(max);
+    }
+
+    public Product() {
     }
 
     /**

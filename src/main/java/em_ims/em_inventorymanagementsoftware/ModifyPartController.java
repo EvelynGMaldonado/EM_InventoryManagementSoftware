@@ -102,6 +102,7 @@ public class ModifyPartController implements Initializable {
     private final String getSinglePartMax;
     private final String getSinglePartMachineID;
     private final String getSinglePartCompanyName;
+    private static Part partData = null;
 
     /**
      * Public ModifyPartController Constructor accepts:
@@ -126,6 +127,8 @@ public class ModifyPartController implements Initializable {
         this.getSinglePartMax= getSinglePartMax;
         this.getSinglePartMachineID= getSinglePartMachineID;
         this.getSinglePartCompanyName= getSinglePartCompanyName;
+
+        partData = part;
     }
 
     /**
@@ -319,13 +322,7 @@ public class ModifyPartController implements Initializable {
         String updateCompanyName = modifyPart_inputCompanyOrMachineInputField.getText().trim().toLowerCase();
 
         if(modifyPartInHouseRadioBtn.isSelected()) {
-             for(int i = 0; i < Inventory.allParts.size(); i++) {
-                 if(Inventory.allParts.get(i).getId() == Integer.parseInt(modifyPage_partID)){
-                     Inventory.allParts.remove(i);
-                     break;
-                 }
-             }
-            Inventory.allParts.add(new InHouse(
+            InHouse inhouse = new InHouse(
                     partID,
                     verifyPartName,
                     price_check,
@@ -333,8 +330,9 @@ public class ModifyPartController implements Initializable {
                     min_check,
                     max_check,
                     Integer.parseInt(updateMachineID)
-            ));
-            System.out.println("a new in house part has been saved");
+            );
+            Inventory.updatePart(Inventory.getAllParts().indexOf(partData), inhouse);
+            System.out.println("line 350 at modifypartcontroller -- a new in house part has been saved");
             try {
                 modifyPartRedirectsToEMIMSHomePage();
             } catch (IOException e) {
@@ -342,16 +340,17 @@ public class ModifyPartController implements Initializable {
             }
 
         } else if(modifyPartOutsourcedRadioBtn.isSelected()) {
-            Inventory.allParts.add(new Outsourced(
-                    Integer.parseInt(modifyPage_partID),
+            Outsourced outsourced = new Outsourced(
+                    partID,
                     verifyPartName,
                     price_check,
                     stock_check,
                     min_check,
                     max_check,
                     updateCompanyName
-            ));
-            System.out.println("a new outsourced part has been saved");
+            );
+            Inventory.updatePart(Inventory.getAllParts().indexOf(partData), outsourced);
+            System.out.println("a new outsourced part has been saved on line 377 at modify part controller");
             try {
                 modifyPartRedirectsToEMIMSHomePage();
             } catch (IOException e) {
