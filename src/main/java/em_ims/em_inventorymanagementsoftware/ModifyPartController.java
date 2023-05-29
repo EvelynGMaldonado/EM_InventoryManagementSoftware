@@ -162,7 +162,7 @@ public class ModifyPartController implements Initializable {
         int stock_check;
         double price_check;
         //Part Category Selection Validation - No null Accepted ~ it has to select inHouse or Outsourced
-        if(modifyPartInHouseRadioBtn.isSelected() || modifyPartOutsourcedRadioBtn.isSelected()) {
+        if(modifyPartInHouseRadioBtn.isSelected() && modifyPart_inputCompanyOrMachineInputField.getText().trim().matches("\\d+") || modifyPartOutsourcedRadioBtn.isSelected()) {
             //Not null accepted Input validation checks that none of the fields are blank or empty...
             if(!modifyPart_setPartName.getText().trim().isEmpty() || !modifyPart_setInventoryLevel.getText().trim().isEmpty() || modifyPart_setPriceUnit.getText().trim().isEmpty() || !modifyPart_setMax.getText().trim().isEmpty() || !modifyPart_setMin.getText().trim().isEmpty() || !modifyPart_inputCompanyOrMachineInputField.getText().trim().isEmpty()) {
                 if(min.matches("\\d+") && max.matches("\\d+") && stock.matches("\\d+")){
@@ -229,7 +229,7 @@ public class ModifyPartController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
             alert.setHeaderText(null);
-            alert.setContentText("Please select the Part Category: In-House or Outsourced.");
+            alert.setContentText("Please select the Part Category: In-House (must enter only numbers) or Outsourced (accepts letters and numbers).");
             alert.showAndWait();
         }
     }

@@ -233,7 +233,7 @@ public class AddPartController implements Initializable {
         int stock_check;
         double price_check;
         //Part Category Selection Validation - No null Accepted ~ it has to select inHouse or Outsourced
-        if(inHouseRadioBtn.isSelected() || outsourcedRadioBtn.isSelected()) {
+        if(inHouseRadioBtn.isSelected() && inputCompanyOrMachineInputField.getText().trim().matches("\\d+") || outsourcedRadioBtn.isSelected()) {
             //Not null accepted Input validation checks that none of the fields are blank or empty...
             if(!addPart_setPartName.getText().trim().isEmpty() || !addPart_setInventoryLevel.getText().trim().isEmpty() || !addPart_setPriceUnit.getText().trim().isEmpty() || !addPart_setMax.getText().trim().isEmpty() || !addPart_setMin.getText().trim().isEmpty() || !inputCompanyOrMachineInputField.getText().trim().isEmpty()) {
                 if(min.matches("\\d+") && max.matches("\\d+") && stock.matches("\\d+")){
@@ -299,7 +299,7 @@ public class AddPartController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error message");
             alert.setHeaderText(null);
-            alert.setContentText("Please select the Part Category: In-House or Outsourced.");
+            alert.setContentText("Please select the Part Category: In-House (must enter only numbers) or Outsourced (accepts letters and numbers).");
             alert.showAndWait();
         }
     }
