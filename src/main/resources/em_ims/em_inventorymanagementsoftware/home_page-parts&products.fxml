@@ -17,7 +17,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="home_page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="em_ims.em_inventorymanagementsoftware.HelloController">
+<StackPane fx:id="home_page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" stylesheets="@startPageDesign.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="em_ims.em_inventorymanagementsoftware.HelloController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -107,7 +107,7 @@
                                     <Font size="10.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="modifyProductPageBtn" layoutX="11.0" layoutY="201.0" mnemonicParsing="false" onAction="#clickModifyProductPageBtn" prefHeight="27.0" prefWidth="85.0" styleClass="em-buttons" stylesheets="@startPageDesign.css" text="Modify Product" textFill="WHITE">
+                              <Button fx:id="modifyProductPageBtn" layoutX="11.0" layoutY="201.0" mnemonicParsing="false" onAction="#clickAddProductPageBtn" prefHeight="27.0" prefWidth="85.0" styleClass="em-buttons" stylesheets="@startPageDesign.css" text="Modify Product" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
@@ -173,7 +173,7 @@
                                           <TableColumn fx:id="parts_tableView_col_priceUnit" prefWidth="75.0" text="Price/Unit" />
                                       </columns>
                                     </TableView>
-                                    <TextField fx:id="homePage_searchPartInputField" layoutX="232.0" layoutY="36.0" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
+                                    <TextField fx:id="homePage_searchPartInputField" layoutX="232.0" layoutY="36.0" onAction="#keySearchPart" onKeyReleased="#keySearchPart" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -181,18 +181,18 @@
                                     <Button fx:id="homePage_addNewPartBtn" layoutX="152.0" layoutY="242.0" mnemonicParsing="false" onAction="#clickAddPartPageBtn" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Add" />
                                     <Button fx:id="homePage_modifyPartBtn" layoutX="196.0" layoutY="242.0" mnemonicParsing="false" onAction="#clickModifyPartPageBtn" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Modify" />
                                     <Button fx:id="homePage_deletePartBtn" layoutX="255.0" layoutY="242.0" mnemonicParsing="false" onAction="#deleteSelectedPart" styleClass="editions-btns" stylesheets="@startPageDesign.css" text="Delete" />
-                                    <Button fx:id="homePage_searchPartBtn" layoutX="201.0" layoutY="36.0" mnemonicParsing="false" onAction="#keySearchPart" prefHeight="19.0" prefWidth="31.0" styleClass="searchbar-btn" stylesheets="startPageDesign.css">
+                                    <Button fx:id="homePage_searchPartBtn" layoutX="201.0" layoutY="36.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="31.0" styleClass="searchbar-btn" stylesheets="@startPageDesign.css">
                                        <graphic>
                                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../../../../../../EM_InventoryManagementSoftware/src/main/resources/em_ims/em_inventorymanagementsoftware/assets/magnify.png" />
+                                                <Image url="@assets/magnify.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
                                     </Button>
                                     <ImageView fitHeight="12.0" fitWidth="12.0" layoutX="-78.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../../../../EM_InventoryManagementSoftware/src/main/resources/em_ims/em_inventorymanagementsoftware/assets/magnify.png" />
+                                          <Image url="@assets/magnify.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -216,7 +216,7 @@
                                           <TableColumn fx:id="products_tableView_col_priceUnit" prefWidth="75.0" text="Price/Unit" />
                                        </columns>
                                     </TableView>
-                                    <TextField fx:id="homePage_searchProductInputField" layoutX="236.0" layoutY="36.0" onKeyReleased="#KeyReleaseSearchProduct" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
+                                    <TextField fx:id="homePage_searchProductInputField" layoutX="236.0" layoutY="36.0" onAction="#keySearchProduct" onKeyReleased="#keySearchProduct" prefHeight="26.5" prefWidth="74.0" promptText="Search" styleClass="textfield-search" stylesheets="@startPageDesign.css">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -228,7 +228,7 @@
                                        <graphic>
                                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../../../../../../EM_InventoryManagementSoftware/src/main/resources/em_ims/em_inventorymanagementsoftware/assets/magnify.png" />
+                                                <Image url="@assets/magnify.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>

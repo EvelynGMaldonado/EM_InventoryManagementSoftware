@@ -494,25 +494,21 @@ public class AddProductController implements Initializable {
      * @see SQLException
      */
     @FXML
-    void keySearchPart(ActionEvent event) {
-
-////        parts_tableView.getItems().clear();
-        String text = addProduct_searchPartInputField.getText().trim().toLowerCase();
-        ObservableList<Part> partInventorySearchList = Inventory.lookupPart(text);
-        if(partInventorySearchList.size() == 0){
+    void keySearchPart(KeyEvent event) {
+        System.out.println("we are into key search part method");
+        String text = addProduct_searchPartInputField.getText().trim();
+        ObservableList<Part> searchedParts = Inventory.lookupPart(text);
+        if(searchedParts.size() == 0){
             try {
                 int partID = Integer.parseInt(text);
-                Part searchPartById = Inventory.lookupPart(partID);
+                Part findPart = Inventory.lookupPart(partID);
 
-                if(searchPartById != null) {
-                    partInventorySearchList.add(searchPartById);
+                if (findPart != null) {
+                    searchedParts.add(findPart);
                 }
-            } catch (NumberFormatException e){
-                e.printStackTrace();
-                e.getCause();
-            }
+            } catch (Exception e){}
         }
-        parts_tableView.setItems(partInventorySearchList);
+        parts_tableView.setItems(searchedParts);
     }
 
     //Navigation

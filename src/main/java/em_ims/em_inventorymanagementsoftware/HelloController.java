@@ -219,77 +219,23 @@ public class HelloController implements Initializable {
      * @see SQLException
      */
     @FXML
-    void keySearchPart(ActionEvent event) {
-////        parts_tableView.getItems().clear();
-        String text = homePage_searchPartInputField.getText().trim().toLowerCase();
-        ObservableList<Part> partInventorySearchList = Inventory.lookupPart(text);
-        if (partInventorySearchList.size() == 0) {
+    void keySearchPart(KeyEvent event) {
+        System.out.println("we are into key search part method");
+        String text = homePage_searchPartInputField.getText().trim();
+        ObservableList<Part> searchedParts = Inventory.lookupPart(text);
+        if(searchedParts.size() == 0){
             try {
                 int partID = Integer.parseInt(text);
-                Part searchPartById = Inventory.lookupPart(partID);
+                Part findPart = Inventory.lookupPart(partID);
 
-                if (searchPartById != null) {
-                    partInventorySearchList.add(searchPartById);
+                if (findPart != null) {
+                    searchedParts.add(findPart);
                 }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                e.getCause();
-            }
+            } catch (Exception e){}
         }
-        parts_tableView.setItems(partInventorySearchList);
+        parts_tableView.setItems(searchedParts);
     }
 
-//    /**
-//     * Void KeyReleaseSearchPart() method is used to find a part row by typing information in the input field.
-//     * @param event represents the event that triggers the action.
-//     * @exception SQLException if a database error or other errors occur.
-//     * @see SQLException
-//     */
-//    @FXML
-//    void KeyReleaseSearchPart(KeyEvent event) {
-////
-////        parts_tableView.getItems().clear();
-//        String text = homePage_searchPartInputField.getText().trim();
-//        Inventory inventory = new Inventory();
-////        addStartDataTables(inventory);
-////
-//        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
-//
-//            inventory.keySearchPart(text);
-//
-//            partInventorySearchList.setAll(inventory.getPartInventorySearch());
-//
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//            parts_tableView.setItems(partInventorySearchList);
-//
-//        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
-//
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
-//            alert.showAndWait();
-//
-//            parts_tableView.getItems().clear();
-//            homePage_searchPartInputField.clear();
-//
-//        } else {
-//            inventory = new Inventory();
-////            addStartDataTables(inventory);
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//            partInventoryList.setAll(inventory.getAllParts());
-//            parts_tableView.setItems(partInventoryList);
-//
-//        }
-//    }
     /**
      * Void btnSearchProduct() method is used to find a product row by typing information in the input field and clicking the search button.
      * e represents the event that triggers the action.
@@ -297,77 +243,23 @@ public class HelloController implements Initializable {
      * @see SQLException
      */
     @FXML
-    void KeyReleaseSearchProduct(ActionEvent event) {
-        String text = homePage_searchProductInputField.getText().trim().toLowerCase();
-        ObservableList<Product> productInventorySearchList = Inventory.lookupProduct(text);
-        if (productInventorySearchList.size() == 0) {
+    void keySearchProduct(KeyEvent event) {
+        System.out.println("we are into key search product method");
+        String text = homePage_searchProductInputField.getText().trim();
+        ObservableList<Product> searchedProducts = Inventory.lookupProduct(text);
+        if(searchedProducts.size() == 0){
             try {
                 int productID = Integer.parseInt(text);
-                Product searchProductById = Inventory.lookupProduct(productID);
+                Product findProduct = Inventory.lookupProduct(productID);
 
-                if (searchProductById != null) {
-                    productInventorySearchList.add(searchProductById);
+                if (findProduct != null) {
+                    searchedProducts.add(findProduct);
                 }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                e.getCause();
-            }
+            } catch (Exception e){}
         }
-        products_tableView.setItems(productInventorySearchList);
-    }
+        products_tableView.setItems(searchedProducts);
 
-//    /**
-//     * Void btnSearchProduct() method is used to find a product row by typing information in the input field and clicking the search button.
-//     * e represents the event that triggers the action.
-//     * @exception SQLException if a database error or other errors occur.
-//     * @see SQLException
-//     */
-//    @FXML
-//    void KeyReleaseSearchProduct(KeyEvent event) {
-////        products_tableView.getItems().clear();
-//        String text = homePage_searchProductInputField.getText().toLowerCase().trim();
-//        Inventory inventory = new Inventory();
-////        addStartDataTables(inventory);
-////
-//        if(!text.isEmpty() && !inventory.getAllProducts().isEmpty()) {
-//
-//            productInventorySearchList.clear();
-//            for(Product p : inventory.getAllProducts()) {
-//                if(p.getProduct_name().toLowerCase().contains(text) || p.getProductID().toString().equals(text)) {
-//                    productInventorySearchList.add(p);
-//                }
-//            }
-//
-//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            products_tableView.setItems(productInventorySearchList);
-//
-//        } else if(!text.isEmpty() && inventory.getAllProducts().isEmpty()) {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("No products have been added to the inventory system. Please try again later.");
-//            alert.showAndWait();
-//
-//            products_tableView.getItems().clear();
-//            homePage_searchProductInputField.clear();
-//
-//        } else {
-//            inventory = new Inventory();
-////            addStartDataTables(inventory);
-//            products_tableView_col_productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-//            products_tableView_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-//            products_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            products_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price_unit"));
-//
-//            productInventoryList.setAll(inventory.getAllProducts());
-//            products_tableView.setItems(productInventoryList);
-//
-//        }
-//    }
+    }
 
     /**
      * Void clickAddPartPageBtn() method is used to open Add Part Page.
@@ -756,6 +648,7 @@ public class HelloController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+//        root.getStylesheets().add(getClass().getResource("startPageDesign.css").toExternalForm());
         parts_tableView.getSelectionModel().clearSelection();
         products_tableView.getSelectionModel().clearSelection();
 

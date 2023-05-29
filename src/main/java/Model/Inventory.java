@@ -1,7 +1,14 @@
 package Model;
 
+import em_ims.em_inventorymanagementsoftware.AddProductController;
+import em_ims.em_inventorymanagementsoftware.HelloController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author Evelyn G Morrow.
@@ -42,9 +49,9 @@ public class Inventory {
     public static Part lookupPart(int partID) {
         ObservableList<Part> allParts = Inventory.getAllParts();
         for(int i = 0; i < allParts.size(); i++){
-            Part findPartByID = allParts.get(i);
-            if(findPartByID.getId() == partID){
-                return findPartByID;
+            Part findPart = allParts.get(i);
+            if(findPart.getId() == partID){
+                return findPart;
             }
         }
         return null;
@@ -56,15 +63,17 @@ public class Inventory {
      * @return foundedPartNameList observable array list
      */
     public static ObservableList<Part> lookupPart(String partName) {
-        ObservableList<Part> foundedPartNameList = FXCollections.observableArrayList();
+        ObservableList <Part> findPartByName = FXCollections.observableArrayList();
         ObservableList<Part> allParts = Inventory.getAllParts();
-        for(int i = 0; i < allParts.size(); i++){
-            Part findPartByName = allParts.get(i);
-            if(findPartByName.getName().contains(partName)){
-                foundedPartNameList.add(findPartByName);
+        for (Part findPart : allParts) {
+            if(findPart.getName().toLowerCase().contains(partName.toLowerCase())){
+                findPartByName.add(findPart);
             }
         }
-        return foundedPartNameList;
+//        if(findPartByName.isEmpty()){
+//            return getAllParts();
+//        }
+        return findPartByName;
     }
 
     /**
@@ -75,9 +84,9 @@ public class Inventory {
     public static Product lookupProduct(int productID) {
         ObservableList<Product> allProducts = Inventory.getAllProducts();
         for(int i = 0; i < allProducts.size(); i++){
-            Product findProductByID = allProducts.get(i);
-            if(findProductByID.getProductID() == productID){
-                return findProductByID;
+            Product findProduct = allProducts.get(i);
+            if(findProduct.getProductID() == productID){
+                return findProduct;
             }
         }
         return null;
@@ -89,15 +98,17 @@ public class Inventory {
      * @return foundedProductNameList observable array list
      */
     public static ObservableList<Product> lookupProduct(String productName) {
-        ObservableList<Product> foundedProductNameList = FXCollections.observableArrayList();
+        ObservableList <Product> findProductByName = FXCollections.observableArrayList();
         ObservableList<Product> allProducts = Inventory.getAllProducts();
-        for(int i = 0; i < allProducts.size(); i++){
-            Product findProductByName = allProducts.get(i);
-            if(findProductByName.getProduct_name().contains(productName)){
-                foundedProductNameList.add(findProductByName);
+        for(Product findProduct : allProducts) {
+            if(findProduct.getProduct_name().toLowerCase().contains(productName.toLowerCase())){
+                findProductByName.add(findProduct);
             }
         }
-        return foundedProductNameList;
+//        if(findProductByName.isEmpty()){
+//            return getAllProducts();
+//        }
+        return findProductByName;
     }
 
     /**

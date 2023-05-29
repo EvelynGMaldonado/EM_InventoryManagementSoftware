@@ -629,75 +629,22 @@ public class ModifyProductController implements Initializable {
      * @see SQLException
      */
     @FXML
-    void keySearchPart(ActionEvent event) {
-////        parts_tableView.getItems().clear();
-        String text = modifyProduct_searchPartInputField.getText().trim().toLowerCase();
-        ObservableList<Part> partInventorySearchList = Inventory.lookupPart(text);
-        if (partInventorySearchList.size() == 0) {
+    void keySearchPart(KeyEvent event) {
+        System.out.println("we are into key search part method");
+        String text = modifyProduct_searchPartInputField.getText().trim();
+        ObservableList<Part> searchedParts = Inventory.lookupPart(text);
+        if(searchedParts.size() == 0){
             try {
                 int partID = Integer.parseInt(text);
-                Part searchPartById = Inventory.lookupPart(partID);
+                Part findPart = Inventory.lookupPart(partID);
 
-                if (searchPartById != null) {
-                    partInventorySearchList.add(searchPartById);
+                if (findPart != null) {
+                    searchedParts.add(findPart);
                 }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                e.getCause();
-            }
+            } catch (Exception e){}
         }
-        parts_tableView.setItems(partInventorySearchList);
+        parts_tableView.setItems(searchedParts);
     }
-
-//    /**
-//     * Void keyReleaseSearchPart() method is used to find a part row by typing information in the input field.
-//     * @param event represents the event that triggers the action.
-//     */
-//    @FXML
-//    void keyReleaseSearchPart(KeyEvent event) {
-//        //
-////        parts_tableView.getItems().clear();
-//        String text = modifyProduct_searchPartInputField.getText().trim();
-//        Inventory inventory = new Inventory();
-////        addStartDataTables(inventory);
-////
-//        if(!text.isEmpty() && !inventory.getAllParts().isEmpty()) {
-//
-//            inventory.keySearchPart(text);
-//
-//            partInventorySearchList.setAll(inventory.getPartInventorySearch());
-//
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//            parts_tableView.setItems(partInventorySearchList);
-//
-//        } else if (!text.isEmpty() && inventory.getAllParts().isEmpty()){
-//
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Error message");
-//            alert.setHeaderText(null);
-//            alert.setContentText("No parts have been added to the inventory system. Please try again later.");
-//            alert.showAndWait();
-//
-//            parts_tableView.getItems().clear();
-//            modifyProduct_searchPartInputField.clear();
-//
-//        } else {
-//            inventory = new Inventory();
-////            addStartDataTables(inventory);
-//            parts_tableView_col_partID.setCellValueFactory(new PropertyValueFactory<>("id"));
-//            parts_tableView_col_partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//            parts_tableView_col_inventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
-//            parts_tableView_col_priceUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
-//
-//            partInventoryList.setAll(inventory.getAllParts());
-//            parts_tableView.setItems(partInventoryList);
-//
-//        }
-//    }
 
     //SIDE MENU
     /**
